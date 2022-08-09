@@ -1,125 +1,197 @@
 package uv.index.parts.main.ui
 
+import androidx.compose.animation.rememberSplineBasedDecay
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uv.index.ui.theme.UVIndexAppTheme
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen() {
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .systemBarsPadding()
-    ) {
+
+
+    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+    val scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        decayAnimationSpec,
+        rememberTopAppBarState()
+    )
+
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
         val boxWithConstraintsScope = this
         val density = LocalDensity.current
 
         val pxRadius by remember(density, boxWithConstraintsScope) {
             derivedStateOf {
-                boxWithConstraintsScope.maxWidth.value * density.density * 1.2f
+                boxWithConstraintsScope.maxWidth.value * density.density * 1.1f
 
             }
         }
 
         val dX by remember(density, boxWithConstraintsScope) {
             derivedStateOf {
-                boxWithConstraintsScope.maxWidth.value * density.density
+                boxWithConstraintsScope.maxWidth.value * density.density * 0.8f
 
             }
         }
 
-        LazyColumn(
+        val lazyListState = rememberLazyListState()
+
+        val centerOffset by remember(dX, density, lazyListState, scrollBehavior.state) {
+            derivedStateOf {
+                Offset(dX, dX * (-scrollBehavior.state.collapsedFraction) * 1f)
+            }
+        }
+
+
+        val gColor2 by remember(scrollBehavior.state.collapsedFraction) {
+            derivedStateOf {
+                val placeCollapsedColor = Color(0x99E53935)
+                placeCollapsedColor.copy(alpha = scrollBehavior.state.collapsedFraction)
+            }
+        }
+
+        Spacer(
             modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .fillMaxSize()
+                .background(
+                    brush =
+                    Brush.radialGradient(
+                        colors = listOf(
+                            Color(0xFFE53935),
+                            Color(0xAAE53935),
+//                                    Color(0x99FF753E),
+                            Color.Transparent
+                        ),
+                        center = centerOffset,
+                        radius = pxRadius,
+                    )
+                )
+                .background(
+                    brush =
+                    Brush.verticalGradient(
+                        colors = listOf(
+//                            Color(0xFFE53935),
+                            gColor2,
+//                                    Color(0x99FF753E),
+                            Color.Transparent,
+                        ),
+                        startY = centerOffset.y / 10f,
+                        endY = with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() + 64.dp.toPx() } // pxRadius / 3f + centerOffset.y / 10f
+                    )
+                )
+        )
+
+        Scaffold(
+            containerColor = Color.Transparent,
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                    MainTopBarPart(
+//                    modifier = Modifier.systemBarsPadding(),
+                        scrollBehavior = scrollBehavior
+                    )
+            }
         ) {
+            LazyColumn(
+                modifier = Modifier
+//                    .fillMaxSize()
+//                    .systemBarsPadding()
+                    .padding(it)
+                ,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                state = lazyListState
+            ) {
 
-
-            item {
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-//                        .background(
-//                            brush =
-//                            Brush.radialGradient(
-//                                colors = listOf(
-//                                    Color(0xFFFF753E),
-//                                    Color(0xBBFF753E),
-////                                    Color(0x99FF753E),
-//                                    Color.Transparent
-//                                ),
-//                                center = Offset(dX, 0f - 128.dp.value * density.density),
-//                                radius = pxRadius,
+//                item {
+//
+//                    Column(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(vertical = 16.dp),
+//
+//                        ) {
+//
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(horizontal = 16.dp),
+//                        ) {
+//                            MainPlacePart(
+//                                modifier = Modifier.fillMaxWidth()
 //                            )
+//                        }
+//
+//                        MainCurrentIndexPart(
+//                            modifier = Modifier
+//                                .fillMaxSize()
+//                                .aspectRatio(1f / 1f)
+//                                .padding(horizontal = 16.dp)
 //                        )
-                    ,
+//                    }
+//                }
 
-                ) {
-
-                    Box(
+                item {
+                    MainProtectionPart(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        contentAlignment = Alignment.CenterEnd
+//                            .padding(horizontal = 16.dp)
+                    )
+                }
+
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
                     ) {
-                        MainPlacePart(
-                            modifier = Modifier
+                        MainTimeToBurnPart(
+                            modifier = Modifier.weight(1f)
+                        )
+                        MainVitaminDPart(
+                            modifier = Modifier.weight(1f)
                         )
                     }
+                }
 
-                    MainCurrentIndexPart(
+                item {
+                    MainHourPart(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .aspectRatio(1f / 1f)
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
                     )
                 }
-            }
-
-            item {
-                MainProtectionPart(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-            }
-
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    MainTimeToBurnPart(
-                        modifier = Modifier.weight(1f)
-                    )
-                    MainVitaminDPart(
-                        modifier = Modifier.weight(1f)
+                items(100) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "5"
                     )
                 }
-            }
-
-            item {
-                MainHourPart(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
             }
         }
+
+
+
+
+
     }
 }
 

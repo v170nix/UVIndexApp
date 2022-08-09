@@ -25,7 +25,7 @@ class AppNavigationActions(navController: NavController) : NavigationActions(nav
 @Stable
 sealed class AppScreen(
     override val route: String,
-    val isDarkSystemIcons: Boolean = true,
+    val isDarkSystemIcons: Boolean = false,
 ) : Screen<AppNavigationActions>(
     enterTransition = { fadeIn(animationSpec = tween(450)) },
     exitTransition = { fadeOut(animationSpec = tween(250, 300)) },

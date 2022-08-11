@@ -130,7 +130,7 @@ internal fun MainTopBarBoxPart(
 
             Box(
                 Modifier.layoutId("subTitleContent").fillMaxWidth().graphicsLayer {
-                    alpha = fraction
+                    alpha = hourAlpha
                     scaleY = fraction
                 },
             ) {

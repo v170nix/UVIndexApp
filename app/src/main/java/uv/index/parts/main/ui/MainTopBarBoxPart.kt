@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.TextStyle
@@ -26,56 +27,71 @@ interface MainTopBarTextStyles {
 
     @Composable
     fun indexTextStyle(fraction: Float): State<TextStyle>
+
+    @Composable
+    fun peakHourTextStyle(fraction: Float): State<TextStyle>
+
+    @Composable
+    fun riseSetTextStyle(fraction: Float): State<TextStyle>
 }
 
 object MainTopBarDefaults {
+
     @Composable
     fun mainTopBarTextStyles(
         placeExpandedStyle: TextStyle,
         placeCollapsedStyle: TextStyle,
         titleExpandedStyle: TextStyle,
         titleCollapsedStyle: TextStyle,
+        riseSetTextStyle: TextStyle,
         indexExpandedStyle: TextStyle,
-        indexCollapsedStyle: TextStyle
+        indexCollapsedStyle: TextStyle,
+        peakHourStyle: TextStyle,
     ): MainTopBarTextStyles {
         return remember(
             placeExpandedStyle,
             placeCollapsedStyle,
             titleExpandedStyle,
             titleCollapsedStyle,
+            riseSetTextStyle,
             indexExpandedStyle,
-            indexCollapsedStyle
+            indexCollapsedStyle,
+            peakHourStyle
         ) {
             AnimatingMainTopBarTextStyles(
                 placeExpandedStyle,
                 placeCollapsedStyle,
                 titleExpandedStyle,
                 titleCollapsedStyle,
+                riseSetTextStyle,
                 indexExpandedStyle,
-                indexCollapsedStyle
+                indexCollapsedStyle,
+                peakHourStyle
             )
         }
-
     }
 }
 
 @Composable
-fun MainTopBarBoxPart(
+internal fun MainTopBarBoxPart(
     modifier: Modifier = Modifier,
     collapsedFraction: Float,
     minHeight: Dp,
     textStyles: MainTopBarTextStyles,
     placeContent: @Composable (fraction: Float) -> Unit,
     titleContent: @Composable (fraction: Float) -> Unit,
-    indexContent: @Composable (fraction: Float) -> Unit
-
+    riseSetContent: @Composable (fraction: Float) -> Unit,
+    indexContent: @Composable (fraction: Float) -> Unit,
+    maxHourContent: @Composable (fraction: Float) -> Unit,
 ) {
-    val placeAlpha = (1f - collapsedFraction * 1.5f).coerceAtLeast(0f)
+    val placeAlpha = (1f - collapsedFraction * 1.5f).coerceIn(0.01f, 1f)
     val fraction = 1f - collapsedFraction
 
     val placeStyle by textStyles.placeTextStyle(fraction = fraction)
     val titleStyle by textStyles.titleTextStyle(fraction = fraction)
     val indexStyle by textStyles.indexTextStyle(fraction = fraction)
+    val hourStyle by textStyles.peakHourTextStyle(fraction = fraction)
+    val riseStyle by textStyles.riseSetTextStyle(fraction = fraction)
 
     Layout(
         modifier = modifier,
@@ -99,9 +115,27 @@ fun MainTopBarBoxPart(
             }
 
             Box(
+                Modifier.layoutId("riseSetContent")
+            ) {
+                ProvideTextStyle(value = placeStyle) { riseSetContent(fraction) }
+            }
+
+            Box(
                 Modifier.layoutId("indexContent")
             ) {
                 ProvideTextStyle(value = indexStyle) { indexContent(fraction) }
+            }
+
+            Box(
+                Modifier.layoutId("peakHourContent")
+            ) {
+                ProvideTextStyle(value = hourStyle) {
+                    CompositionLocalProvider(
+                        LocalContentColor provides hourStyle.color.copy(alpha = placeAlpha)
+                    ) {
+                        maxHourContent(fraction)
+                    }
+                }
             }
         }
     )
@@ -116,8 +150,10 @@ fun MainTopBarBoxPart(
         val indexPlaceable = measurables.first { it.layoutId == "indexContent" }
             .measure(constraints)
 
+        val peakHourPlaceable = measurables.first { it.layoutId == "peakHourContent" }
+            .measure(constraints)
 
-
+        val indexBaseline = indexPlaceable[FirstBaseline]
 
         layout(constraints.maxWidth, constraints.maxHeight) {
 
@@ -129,13 +165,15 @@ fun MainTopBarBoxPart(
             val yUVCurrentPosition = ((minHeight.toPx().toInt() - uvTitlePlaceable.height) / 2)
                 .coerceAtLeast(yUVTopPosition)
 
-
             val yIndexCollapsedPosition = (minHeight.toPx().toInt() - indexPlaceable.height) / 2
             val yIndexExpandedPosition = constraints.maxHeight - indexPlaceable.height
 
             val yIndexPosition = yIndexCollapsedPosition +
                     ((1f - collapsedFraction) * (yIndexExpandedPosition - yIndexCollapsedPosition)).toInt()
 
+            val yPeakHourPosition = yIndexPosition + indexBaseline - peakHourPlaceable.height
+            val xPeakHourPosition = (constraints.maxWidth / 2)
+                    .coerceAtLeast(indexPlaceable.width)
 
             placePlaceable.placeRelative(
                 x = 0,
@@ -152,6 +190,11 @@ fun MainTopBarBoxPart(
                 y = yIndexPosition
             )
 
+            peakHourPlaceable.placeRelative(
+                x = xPeakHourPosition,
+                y = yPeakHourPosition
+            )
+
         }
     }
 
@@ -163,8 +206,10 @@ private class AnimatingMainTopBarTextStyles(
     private val placeCollapsedStyle: TextStyle,
     private val titleExpandedStyle: TextStyle,
     private val titleCollapsedStyle: TextStyle,
+    private val riseSetTextStyle: TextStyle,
     private val indexExpandedStyle: TextStyle,
-    private val indexCollapsedStyle: TextStyle
+    private val indexCollapsedStyle: TextStyle,
+    private val peakHourStyle: TextStyle
 
 ) : MainTopBarTextStyles {
 
@@ -195,9 +240,23 @@ private class AnimatingMainTopBarTextStyles(
         }
     }
 
+    @Composable
+    override fun peakHourTextStyle(fraction: Float): State<TextStyle> {
+        return remember(Unit) { mutableStateOf(peakHourStyle) }
+    }
+
+    @Composable
+    override fun riseSetTextStyle(fraction: Float): State<TextStyle> {
+        return remember(Unit) { mutableStateOf(riseSetTextStyle) }
+    }
+
     private companion object {
 
-        private fun getFractionTextStyle(cStyle: TextStyle, eStyle: TextStyle, fraction: Float): TextStyle {
+        private fun getFractionTextStyle(
+            cStyle: TextStyle,
+            eStyle: TextStyle,
+            fraction: Float
+        ): TextStyle {
             val style = eStyle.takeIf { fraction > 0.5 } ?: cStyle
             return style.copy(
                 color = getFractionColor(cStyle.color, eStyle.color, fraction),
@@ -217,7 +276,8 @@ private class AnimatingMainTopBarTextStyles(
                 getFractionValue(
                     cFontWeight.weight.toFloat(),
                     eFontWeight.weight.toFloat(),
-                    fraction).toInt()
+                    fraction
+                ).toInt()
             )
         }
 
@@ -271,8 +331,9 @@ private fun Preview() {
                     titleCollapsedStyle = MaterialTheme.typography.titleMedium,
                     indexExpandedStyle = MaterialTheme.typography.displayLarge,
                     indexCollapsedStyle = MaterialTheme.typography.titleMedium,
-
-                    ),
+                    peakHourStyle = MaterialTheme.typography.labelLarge,
+                    riseSetTextStyle = MaterialTheme.typography.labelLarge
+                ),
                 minHeight = 64.dp,
                 placeContent = {
                     MainPlacePart(
@@ -292,7 +353,9 @@ private fun Preview() {
                         style = MaterialTheme.typography.displayLarge,
                         color = Color.Black,
                     )
-                }
+                },
+                riseSetContent = {},
+                maxHourContent = {}
             )
         }
     }

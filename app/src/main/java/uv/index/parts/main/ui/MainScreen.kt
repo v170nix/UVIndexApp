@@ -5,6 +5,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -13,148 +14,65 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import uv.index.ui.theme.UVIndexAppTheme
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
 
-
-
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
-    val scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        decayAnimationSpec,
-        rememberTopAppBarState()
-    )
+    val scrollBehavior: TopAppBarScrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+            decayAnimationSpec,
+            rememberTopAppBarState()
+        )
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
-        val boxWithConstraintsScope = this
-        val density = LocalDensity.current
-
-        val pxRadius by remember(density, boxWithConstraintsScope) {
-            derivedStateOf {
-                boxWithConstraintsScope.maxWidth.value * density.density * 1.1f
-
-            }
-        }
-
-        val dX by remember(density, boxWithConstraintsScope) {
-            derivedStateOf {
-                boxWithConstraintsScope.maxWidth.value * density.density * 0.8f
-
-            }
-        }
-
         val lazyListState = rememberLazyListState()
 
-        val centerOffset by remember(dX, density, lazyListState, scrollBehavior.state) {
-            derivedStateOf {
-                Offset(dX, dX * (-scrollBehavior.state.collapsedFraction) * 1f)
-            }
-        }
-
-
-        val gColor2 by remember(scrollBehavior.state.collapsedFraction) {
-            derivedStateOf {
-                val placeCollapsedColor = Color(0x99E53935)
-                placeCollapsedColor.copy(alpha = scrollBehavior.state.collapsedFraction)
-            }
-        }
-
-        Spacer(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush =
-                    Brush.radialGradient(
-                        colors = listOf(
-                            Color(0xFFE53935),
-                            Color(0xAAE53935),
-//                                    Color(0x99FF753E),
-                            Color.Transparent
-                        ),
-                        center = centerOffset,
-                        radius = pxRadius,
-                    )
-                )
-                .background(
-                    brush =
-                    Brush.verticalGradient(
-                        colors = listOf(
-//                            Color(0xFFE53935),
-                            gColor2,
-//                                    Color(0x99FF753E),
-                            Color.Transparent,
-                        ),
-                        startY = centerOffset.y / 10f,
-                        endY = with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() + 64.dp.toPx() } // pxRadius / 3f + centerOffset.y / 10f
-                    )
-                )
+        MainBackground(
+            state = scrollBehavior.state,
+            collapsedHeight = 64.dp,
+            highlightColor = Color(0xFFE53935),
+            backgroundColor = Color.White
         )
 
         Scaffold(
             containerColor = Color.Transparent,
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                    MainTopBarPart(
-//                    modifier = Modifier.systemBarsPadding(),
-                        scrollBehavior = scrollBehavior
-                    )
+                MainTopBar(
+                    scrollBehavior = scrollBehavior
+                )
             }
         ) {
             LazyColumn(
-                modifier = Modifier
-//                    .fillMaxSize()
-//                    .systemBarsPadding()
-                    .padding(it)
-                ,
+                modifier = Modifier.padding(it),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 state = lazyListState
             ) {
 
-//                item {
-//
-//                    Column(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(vertical = 16.dp),
-//
-//                        ) {
-//
-//                        Box(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(horizontal = 16.dp),
-//                        ) {
-//                            MainPlacePart(
-//                                modifier = Modifier.fillMaxWidth()
-//                            )
-//                        }
-//
-//                        MainCurrentIndexPart(
-//                            modifier = Modifier
-//                                .fillMaxSize()
-//                                .aspectRatio(1f / 1f)
-//                                .padding(horizontal = 16.dp)
-//                        )
-//                    }
-//                }
+                mainBackgroundHeader(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(16.dp),
+                    state = scrollBehavior.state
+                )
 
                 item {
-                    MainProtectionPart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-//                            .padding(horizontal = 16.dp)
-                    )
+                    MainProtectionPart(modifier = Modifier.fillMaxWidth())
                 }
 
                 item {
@@ -189,9 +107,98 @@ fun MainScreen() {
         }
 
 
+    }
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BoxWithConstraintsScope.MainBackground(
+    modifier: Modifier = Modifier,
+    state: TopAppBarState,
+    collapsedHeight: Dp,
+    highlightColor: Color,
+    backgroundColor: Color,
+) {
+    val boxScope = this
+    val density = LocalDensity.current
+    val statusBar = WindowInsets.statusBars
 
+    val xCenterOffset by remember(density, boxScope) {
+        derivedStateOf { boxScope.maxWidth.value * 0.8f * density.density }
+    }
 
+    val radius by remember(density, boxScope) {
+        derivedStateOf { boxScope.maxWidth.value * 1.1f * density.density }
+    }
+
+    val endYVerticalGradient by remember(density, statusBar, collapsedHeight) {
+        derivedStateOf {
+            statusBar.getTop(density) + collapsedHeight.value * density.density
+        }
+    }
+
+    Spacer(
+        modifier = modifier
+            .fillMaxSize()
+            .graphicsLayer {
+                translationY = radius * (-state.collapsedFraction) * 0.909f
+                alpha = (1f - state.collapsedFraction / 0.9f).coerceIn(0.01f, 1f)
+            }
+            .background(
+                brush =
+                Brush.radialGradient(
+                    colors = listOf(
+                        highlightColor,
+                        highlightColor.copy(alpha = 0xAA.toFloat() / 0xFF),
+                        backgroundColor
+                    ),
+                    center = Offset(xCenterOffset, 0f),
+                    radius = radius,
+                )
+            )
+    )
+
+    Spacer(
+        modifier = modifier
+            .fillMaxSize()
+            .graphicsLayer {
+                alpha = (state.collapsedFraction + 0.5f).coerceIn(0.01f, 0.8f)
+            }
+            .background(
+                brush =
+                Brush.verticalGradient(
+                    colors = listOf(
+                        highlightColor.copy(alpha = 0xFF.toFloat() / 0xFF),
+                        Color.Transparent,
+                    ),
+                    startY = 0f,
+                    endY = endYVerticalGradient
+                )
+            )
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+private fun LazyListScope.mainBackgroundHeader(
+    modifier: Modifier = Modifier,
+    state: TopAppBarState,
+) {
+    stickyHeader {
+        Box(modifier = modifier) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .alpha(state.collapsedFraction.coerceIn(0.01f, 1f))
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White,
+                                Color.Transparent
+                            ),
+                        )
+                    )
+            )
+        }
     }
 }
 

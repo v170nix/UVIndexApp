@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
@@ -80,18 +81,31 @@ internal fun MainTopBarBoxPart(
     textStyles: MainTopBarTextStyles,
     placeContent: @Composable (fraction: Float) -> Unit,
     titleContent: @Composable (fraction: Float) -> Unit,
-    riseSetContent: @Composable (fraction: Float) -> Unit,
+    subTitleContent: @Composable (fraction: Float) -> Unit,
     indexContent: @Composable (fraction: Float) -> Unit,
     maxHourContent: @Composable (fraction: Float) -> Unit,
 ) {
-    val placeAlpha = (1f - collapsedFraction * 1.5f).coerceIn(0.01f, 1f)
+
+
+    val placeAlpha by remember(collapsedFraction) {
+        derivedStateOf {
+            (1f - collapsedFraction * 1.5f).coerceIn(0.01f, 1f)
+        }
+    }
+
+    val hourAlpha by remember(collapsedFraction) {
+        derivedStateOf {
+            (1f - collapsedFraction * 3f).coerceIn(0.01f, 1f)
+        }
+    }
+
     val fraction = 1f - collapsedFraction
 
     val placeStyle by textStyles.placeTextStyle(fraction = fraction)
     val titleStyle by textStyles.titleTextStyle(fraction = fraction)
     val indexStyle by textStyles.indexTextStyle(fraction = fraction)
     val hourStyle by textStyles.peakHourTextStyle(fraction = fraction)
-    val riseStyle by textStyles.riseSetTextStyle(fraction = fraction)
+    val subTitleStyle by textStyles.riseSetTextStyle(fraction = fraction)
 
     Layout(
         modifier = modifier,
@@ -109,15 +123,18 @@ internal fun MainTopBarBoxPart(
             }
 
             Box(
-                Modifier.layoutId("uvTitleContent")
+                Modifier.layoutId("titleContent")
             ) {
                 ProvideTextStyle(value = titleStyle) { titleContent(fraction) }
             }
 
             Box(
-                Modifier.layoutId("riseSetContent")
+                Modifier.layoutId("subTitleContent").fillMaxWidth().graphicsLayer {
+                    alpha = fraction
+                    scaleY = fraction
+                },
             ) {
-                ProvideTextStyle(value = placeStyle) { riseSetContent(fraction) }
+                ProvideTextStyle(value = subTitleStyle) { subTitleContent(fraction) }
             }
 
             Box(
@@ -131,7 +148,7 @@ internal fun MainTopBarBoxPart(
             ) {
                 ProvideTextStyle(value = hourStyle) {
                     CompositionLocalProvider(
-                        LocalContentColor provides hourStyle.color.copy(alpha = placeAlpha)
+                        LocalContentColor provides hourStyle.color.copy(alpha = hourAlpha)
                     ) {
                         maxHourContent(fraction)
                     }
@@ -144,8 +161,11 @@ internal fun MainTopBarBoxPart(
         val placePlaceable = measurables.first { it.layoutId == "placeContent" }
             .measure(constraints.copy(minHeight = 0))
 
-        val uvTitlePlaceable = measurables.first { it.layoutId == "uvTitleContent" }
+        val titlePlaceable = measurables.first { it.layoutId == "titleContent" }
             .measure(constraints)
+
+        val subTitlePlaceable = measurables.first { it.layoutId == "subTitleContent" }
+            .measure(constraints.copy(minWidth = constraints.maxWidth))
 
         val indexPlaceable = measurables.first { it.layoutId == "indexContent" }
             .measure(constraints)
@@ -162,7 +182,7 @@ internal fun MainTopBarBoxPart(
             val yUVTopPosition = (yPlacePosition + placePlaceable.height)
                 .coerceAtLeast(0)
 
-            val yUVCurrentPosition = ((minHeight.toPx().toInt() - uvTitlePlaceable.height) / 2)
+            val yUVCurrentPosition = ((minHeight.toPx().toInt() - titlePlaceable.height) / 2)
                 .coerceAtLeast(yUVTopPosition)
 
             val yIndexCollapsedPosition = (minHeight.toPx().toInt() - indexPlaceable.height) / 2
@@ -180,21 +200,29 @@ internal fun MainTopBarBoxPart(
                 y = yPlacePosition
             )
 
-            uvTitlePlaceable.placeRelative(
-                x = constraints.maxWidth - uvTitlePlaceable.width,
+            titlePlaceable.placeRelative(
+                x = constraints.maxWidth - titlePlaceable.width,
                 y = yUVCurrentPosition
             )
+
+            if (collapsedFraction < 0.8) {
+                subTitlePlaceable.placeRelative(
+                    x = 0,
+                    y = yUVCurrentPosition + titlePlaceable.height
+                )
+            }
 
             indexPlaceable.placeRelative(
                 x = 0,
                 y = yIndexPosition
             )
 
-            peakHourPlaceable.placeRelative(
-                x = xPeakHourPosition,
-                y = yPeakHourPosition
-            )
-
+            if (collapsedFraction < 0.4) {
+                peakHourPlaceable.placeRelative(
+                    x = xPeakHourPosition,
+                    y = yPeakHourPosition
+                )
+            }
         }
     }
 
@@ -354,7 +382,7 @@ private fun Preview() {
                         color = Color.Black,
                     )
                 },
-                riseSetContent = {},
+                subTitleContent = {},
                 maxHourContent = {}
             )
         }

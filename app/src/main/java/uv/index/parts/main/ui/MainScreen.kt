@@ -37,7 +37,7 @@ fun MainScreen() {
             rememberTopAppBarState()
         )
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(Color.White)) {
 
         val lazyListState = rememberLazyListState()
 
@@ -57,6 +57,7 @@ fun MainScreen() {
                 )
             }
         ) {
+
             LazyColumn(
                 modifier = Modifier.padding(it),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -128,7 +129,7 @@ private fun BoxWithConstraintsScope.MainBackground(
     }
 
     val radius by remember(density, boxScope) {
-        derivedStateOf { boxScope.maxWidth.value * 1.1f * density.density }
+        derivedStateOf { boxScope.maxWidth.value * 1.4f * density.density }
     }
 
     val endYVerticalGradient by remember(density, statusBar, collapsedHeight) {
@@ -141,7 +142,7 @@ private fun BoxWithConstraintsScope.MainBackground(
         modifier = modifier
             .fillMaxSize()
             .graphicsLayer {
-                translationY = radius * (-state.collapsedFraction) * 0.909f
+                translationY = radius * (-state.collapsedFraction) * 1.1f
                 alpha = (1f - state.collapsedFraction / 0.9f).coerceIn(0.01f, 1f)
             }
             .background(
@@ -185,10 +186,19 @@ private fun LazyListScope.mainBackgroundHeader(
 ) {
     stickyHeader {
         Box(modifier = modifier) {
+
+            val alpha by remember(state.collapsedFraction) {
+                derivedStateOf {
+                    ((state.collapsedFraction - 0.9)
+                        .coerceAtLeast(0.0) * 10.0)
+                        .coerceIn(0.01, 1.0)
+                        .toFloat()
+                }
+            }
             Spacer(
                 modifier = Modifier
                     .fillMaxSize()
-                    .alpha(state.collapsedFraction.coerceIn(0.01f, 1f))
+                    .alpha(alpha)
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
@@ -198,6 +208,7 @@ private fun LazyListScope.mainBackgroundHeader(
                         )
                     )
             )
+
         }
     }
 }

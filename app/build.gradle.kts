@@ -6,15 +6,15 @@ plugins {
     kotlin("plugin.serialization") version "1.6.21"
 }
 
-val composeVersion = "1.2.0"
+val composeVersion = "1.3.0-alpha03"
 
 android {
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "uv.index"
         minSdk = 24
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1000
         versionName = "1.0"
 
@@ -44,7 +44,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = composeVersion
+        kotlinCompilerExtensionVersion = "1.3.0"
     }
 
     namespace = "uv.index"
@@ -82,9 +82,8 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.compose.ui:ui:$composeVersion")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha15")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha16")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("androidx.activity:activity-compose:1.5.1")
 

@@ -92,6 +92,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-navigation-animation:0.24.13-rc")
 
     implementation("com.github.v170nix:arwix-common-library:0.4.0")
+    implementation("com.github.v170nix:uv-index-library:1.0.4")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

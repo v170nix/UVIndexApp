@@ -10,10 +10,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import uv.index.LocalAppState
+import uv.index.parts.main.ui.MainViewModel
 import uv.index.parts.main.ui.composable.MainScreen
 
 fun NavBackStackEntry.lifecycleIsResumed() =
@@ -39,8 +41,9 @@ sealed class AppScreen(
         override val content: @Composable (backStackEntry: NavBackStackEntry) -> Unit =
             { _ ->
                 UIEffect(isDarkSystemIcons = isDarkSystemIcons)
+                val viewModel: MainViewModel = hiltViewModel()
                 CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-                    MainScreen()
+                    MainScreen(viewModel)
                 }
             }
     }

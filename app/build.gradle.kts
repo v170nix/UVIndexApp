@@ -67,18 +67,30 @@ kapt {
 
 dependencies {
 
+    val room_version = "2.4.3"
+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
 
-    implementation("com.google.dagger:hilt-android:2.38.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
+    implementation("com.google.dagger:hilt-android:2.43.2")
+    kapt("com.google.dagger:hilt-android-compiler:2.43.2")
 
     implementation("androidx.navigation:navigation-compose:2.5.1")
     implementation("androidx.navigation:navigation-common-ktx:2.5.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    implementation("io.ktor:ktor-client-core:2.0.3")
+    implementation("io.ktor:ktor-client-okhttp:2.0.3")
+    implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
 
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.compose.ui:ui:$composeVersion")
@@ -92,9 +104,10 @@ dependencies {
     implementation("com.google.accompanist:accompanist-navigation-animation:0.24.13-rc")
 
     implementation("com.github.v170nix:arwix-common-library:0.4.0")
-    implementation("com.github.v170nix:uv-index-library:1.0.4")
+    implementation("com.github.v170nix:uv-index-library:1.0.5")
 
     testImplementation("junit:junit:4.13.2")
+    testImplementation("androidx.room:room-testing:$room_version")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")

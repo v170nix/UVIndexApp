@@ -4,9 +4,37 @@ import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
+
+class UVIColors(
+    val night: Color,
+    val twilight: Color,
+    val lowUV: Color,
+    val moderateUV: Color,
+    val highUV: Color,
+    val veryHighUV: Color,
+    val extremeUV: Color
+)
+
+private val uviColors = UVIColors(
+    night = Color(0xFF104568),
+    twilight = Color(0xFF1369A0),
+    lowUV = Color(0xFF40CF9C),
+    moderateUV = Color(0xFFFCDC71),
+    highUV = Color(0xFFFE8340),
+    veryHighUV = Color(0xFFFA1818),
+    extremeUV = Color(0xFFBA00FF)
+)
+
+private val LocalUVIColors = staticCompositionLocalOf { uviColors }
+
+object UVITheme {
+    val colors: UVIColors
+        @Composable
+        get() = LocalUVIColors.current
+}
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -68,7 +96,8 @@ fun UVIndexAppTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
-    val view = LocalView.current
+
+//    val view = LocalView.current
 //    if (!view.isInEditMode) {
 //        SideEffect {
 //            (view.context as Activity).window.statusBarColor = Color.TRANSPARENT

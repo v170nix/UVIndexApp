@@ -6,12 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -21,18 +19,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import uv.index.lib.data.UVIndexData
 import uv.index.lib.data.UVSummaryDayData
-import uv.index.ui.theme.UVIndexAppTheme
+import uv.index.parts.main.common.rememberCurrentZonedDateTime
+import uv.index.parts.main.ui.MainContract
+import uv.index.parts.main.ui.MainViewModel
 import java.time.LocalDate
 import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(viewModel: MainViewModel) {
 
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior: TopAppBarScrollBehavior =
@@ -41,11 +40,19 @@ fun MainScreen() {
             rememberTopAppBarState()
         )
 
+    val state by viewModel.state.collectAsState()
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+
+        val isDataLoaded by remember(state) {
+            derivedStateOf {
+                state.currentDayData != null && state.place != null
+            }
+        }
 
         val lazyListState = rememberLazyListState()
 
@@ -56,97 +63,129 @@ fun MainScreen() {
             backgroundColor = MaterialTheme.colorScheme.background
         )
 
-        Scaffold(
-            containerColor = Color.Transparent,
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            topBar = {
-                MainCurrentInfoTopBar(scrollBehavior = scrollBehavior)
-            }
+        if (isDataLoaded) {
+            DataPart(
+                lazyListState = lazyListState,
+                scrollBehavior = scrollBehavior,
+                state = state)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BoxWithConstraintsScope.DataPart(
+    lazyListState: LazyListState,
+    scrollBehavior: TopAppBarScrollBehavior,
+    state: MainContract.State
+) {
+
+    val currentZDT = rememberCurrentZonedDateTime(place = state.place)
+
+    Scaffold(
+        containerColor = Color.Transparent,
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            MainCurrentInfoTopBar(
+                scrollBehavior = scrollBehavior,
+                state = state,
+                currentDateTime = currentZDT
+            )
+        }
+    ) {
+
+
+        LazyColumn(
+            modifier = Modifier.padding(it),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            state = lazyListState,
         ) {
 
-            LazyColumn(
-                modifier = Modifier.padding(it),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                state = lazyListState,
-            ) {
+            mainBackgroundHeader(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(16.dp),
+                state = scrollBehavior.state
+            )
 
-                mainBackgroundHeader(
+            item {
+                MainTimeToEventPart(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(16.dp),
-                    state = scrollBehavior.state
+                        .padding(horizontal = 16.dp)
                 )
+            }
+            item {
+                MainProtectionPart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp, bottom = 0.dp),
+                    uvSummaryDayData = state.currentSummaryDayData
+                )
+            }
 
-                item {
-                    MainTimeToEventPart(
+            item {
+                MainSunRiseSetPart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 0.dp)
+                )
+            }
+
+            item {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Прогноз",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    MainForecastHoursPart(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 0.dp),
+                        currentDateTime = currentZDT,
+                        hoursList = state.hoursData
                     )
-                }
-
-
-                item {
-                    MainProtectionPart(
-                        modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 0.dp)
-                    )
-                }
-
-                item {
-                    MainSunRiseSetPart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 0.dp)
-                    )
-                }
-
-                item {
-                    Column(Modifier.fillMaxWidth().padding(top = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "Прогноз",
-                            style = MaterialTheme.typography.labelLarge
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MainHourPart(
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 0.dp)
-                        )
-                    }
-                }
-
-                item {
-                    MainForecastPart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp).padding(top = 16.dp),
-                        data = listOf(
-                            UVSummaryDayData(
-                                day = LocalDate.now().plusDays(1),
-                                maxIndex = UVIndexData(0L, 0, 0, 4.3),
-                                timeProtectionBegin = LocalTime.now(),
-                                timeProtectionEnd = LocalTime.now()
-                            ),
-                            UVSummaryDayData(
-                                day = LocalDate.now().plusDays(2),
-                                maxIndex = UVIndexData(0L, 0, 0, 7.3),
-                                timeProtectionBegin = LocalTime.now(),
-                                timeProtectionEnd = LocalTime.now()
-                            ),
-                            UVSummaryDayData(
-                                day = LocalDate.now().plusDays(3),
-                                maxIndex = UVIndexData(0L, 0, 0, 9.8),
-                                timeProtectionBegin = LocalTime.now(),
-                                timeProtectionEnd = LocalTime.now()
-                            )
-                        )
-                    )
-
                 }
             }
+
+            item {
+                MainForecastDayPart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 16.dp),
+                    data = listOf(
+                        UVSummaryDayData(
+                            day = LocalDate.now().plusDays(1),
+                            maxIndex = UVIndexData(0L, 0, 0, 4.3),
+                            timeProtectionBegin = LocalTime.now(),
+                            timeProtectionEnd = LocalTime.now()
+                        ),
+                        UVSummaryDayData(
+                            day = LocalDate.now().plusDays(2),
+                            maxIndex = UVIndexData(0L, 0, 0, 7.3),
+                            timeProtectionBegin = LocalTime.now(),
+                            timeProtectionEnd = LocalTime.now()
+                        ),
+                        UVSummaryDayData(
+                            day = LocalDate.now().plusDays(3),
+                            maxIndex = UVIndexData(0L, 0, 0, 9.8),
+                            timeProtectionBegin = LocalTime.now(),
+                            timeProtectionEnd = LocalTime.now()
+                        )
+                    )
+                )
+
+            }
         }
-
-
     }
 }
 
@@ -247,20 +286,6 @@ private fun LazyListScope.mainBackgroundHeader(
                         )
                     )
             )
-
-        }
-    }
-}
-
-@Preview(
-    name = "Main Screen",
-    showBackground = true
-)
-@Composable
-private fun PreviewMainScreen() {
-    UVIndexAppTheme {
-        Surface {
-            MainScreen()
         }
     }
 }

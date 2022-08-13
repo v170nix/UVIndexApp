@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">UVIndexApp</string>
+
+    <string-array name="uvindex_status_info">
+        <item>Low UV</item>
+        <item>Moderate UV</item>
+        <item>High UV</item>
+        <item>Very High UV</item>
+        <item>Extreme UV</item>
+    </string-array>
+
+    <string name="uvindex_sunburn_title">Time to sunburn</string>
+    <string name="uvindex_sunburn_hour_part">h</string>
+    <string name="uvindex_sunburn_min_part">min</string>
+
+    <string name="uvindex_forecast_title_recommendation">Recommendation</string>
+    <string name="uvindex_forecast_title_max_index">Max index</string>
+    <string name="uvindex_forecast_item_protection_not_required">Sun protection not required</string>
+    <string name="uvindex_forecast_item_protection_required">Sun protection recommended from %s to %s</string>
+    <string name="uvindex_current_protection_not_required">@string/uvindex_forecast_item_protection_not_required</string>
+    <string name="uvindex_current_protection_required_first_part">Sun protection recommended</string>
+    <string name="uvindex_current_protection_required_second_part">from %s to %s</string>
+
+
 </resources>

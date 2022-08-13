@@ -1,11 +1,9 @@
 package uv.index.parts.main.ui.composable
 
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,13 +14,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import uv.index.R
+import uv.index.lib.data.getCurrentIndex
+import uv.index.parts.main.ui.MainContract
+import java.time.ZonedDateTime
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
-    collapsedHeight: Dp = 64.dp
+    collapsedHeight: Dp = 64.dp,
+    currentDateTime: ZonedDateTime?,
+    state: MainContract.State
 ) {
     val statusHeight: Dp by animateDpAsState(
         targetValue = max(
@@ -30,6 +34,16 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
             collapsedHeight
         )
     )
+
+    val currentIndexValue by rememberCurrentIndexValue(currentDateTime, state)
+
+    val indexString by remember(currentIndexValue, state.currentSummaryDayData) {
+        derivedStateOf {
+            val maxIndex = state.currentSummaryDayData?.maxIndex?.getIntIndex() ?: 0
+            "$currentIndexValue/$maxIndex"
+        }
+    }
+
 
     SmallTopAppBar(
         modifier = modifier
@@ -51,7 +65,8 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
                         titleCollapsedStyle = MaterialTheme.typography.titleLarge.copy(color = surface),
                         riseSetTextStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
                         indexExpandedStyle = MaterialTheme.typography.displayLarge
-                            .copy(fontWeight = FontWeight.SemiBold, fontSize = 72.sp).copy(color = surface),
+                            .copy(fontWeight = FontWeight.SemiBold, fontSize = 72.sp)
+                            .copy(color = surface),
                         indexCollapsedStyle = MaterialTheme.typography.titleLarge.copy(color = surface),
                         peakHourStyle = MaterialTheme.typography.labelLarge.copy(color = surface),
                     ),
@@ -71,8 +86,7 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
                     indexContent = {
                         Text(
                             modifier = Modifier,
-                            text = "8/10",
-//                            fontWeight = FontWeight.ExtraBold,
+                            text = indexString,
                         )
                     },
                     subTitleContent = {
@@ -82,7 +96,7 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
                                 .padding(end = 16.dp, top = 16.dp),
                             horizontalArrangement = Arrangement.End,
                             verticalAlignment = Alignment.CenterVertically
-                            ) {
+                        ) {
 
                             Icon(
                                 modifier = Modifier.size(48.dp),
@@ -127,32 +141,11 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
                                 contentDescription = ""
                             )
                         }
-
-
-//                        Row(
-//                            modifier.fillMaxWidth()
-//                                .padding(
-//                                    top = 16.dp,
-//                                    end = 16.dp
-//                                ),
-//                            horizontalArrangement = Arrangement.SpaceBetween
-//                        ) {
-//                            Text(
-//                                text = "Восход\n7:23",
-//                                textAlign = TextAlign.Start
-//                            )
-//                            Text(
-//                                text = "Закат\n18:25",
-//                                textAlign = TextAlign.End
-//                            )
-//                        }
-
                     },
                     maxHourContent = {
                         Column(
                             modifier = Modifier.padding(start = 8.dp, end = 16.dp)
                         ) {
-                            Log.e("4", "4")
                             Text(text = "пиковый час")
                             Text(text = "14:00")
                         }
@@ -167,4 +160,20 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
         ),
         scrollBehavior = scrollBehavior
     )
+}
+
+@Composable
+private fun rememberCurrentIndexValue(
+    currentDateTime: ZonedDateTime?,
+    state: MainContract.State,
+): State<Int?> {
+
+    return remember(state.currentDayData, currentDateTime) {
+        derivedStateOf {
+            val time = currentDateTime ?: return@derivedStateOf null
+            state.currentDayData?.getCurrentIndex(time.hour + time.minute / 60.0)?.roundToInt()
+        }
+    }
+
+
 }

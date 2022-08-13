@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.FirstBaseline
@@ -129,10 +130,13 @@ internal fun MainTopBarBoxPart(
             }
 
             Box(
-                Modifier.layoutId("subTitleContent").fillMaxWidth().graphicsLayer {
-                    alpha = hourAlpha
-                    scaleY = fraction
-                },
+                Modifier
+                    .layoutId("subTitleContent")
+                    .fillMaxWidth()
+                    .graphicsLayer {
+                        alpha = hourAlpha
+                        scaleY = fraction
+                    },
             ) {
                 ProvideTextStyle(value = subTitleStyle) { subTitleContent(fraction) }
             }
@@ -144,14 +148,12 @@ internal fun MainTopBarBoxPart(
             }
 
             Box(
-                Modifier.layoutId("peakHourContent")
+                Modifier
+                    .layoutId("peakHourContent")
+                    .alpha(hourAlpha)
             ) {
                 ProvideTextStyle(value = hourStyle) {
-                    CompositionLocalProvider(
-                        LocalContentColor provides hourStyle.color.copy(alpha = hourAlpha)
-                    ) {
-                        maxHourContent(fraction)
-                    }
+                    maxHourContent(fraction)
                 }
             }
         }
@@ -193,7 +195,7 @@ internal fun MainTopBarBoxPart(
 
             val yPeakHourPosition = yIndexPosition + indexBaseline - peakHourPlaceable.height
             val xPeakHourPosition = (constraints.maxWidth / 2)
-                    .coerceAtLeast(indexPlaceable.width)
+                .coerceAtLeast(indexPlaceable.width)
 
             placePlaceable.placeRelative(
                 x = 0,

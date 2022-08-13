@@ -24,7 +24,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import uv.index.lib.data.UVIndexData
+import uv.index.lib.data.UVSummaryDayData
 import uv.index.ui.theme.UVIndexAppTheme
+import java.time.LocalDate
+import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +41,11 @@ fun MainScreen() {
             rememberTopAppBarState()
         )
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(Color.White)) {
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
 
         val lazyListState = rememberLazyListState()
 
@@ -45,16 +53,14 @@ fun MainScreen() {
             state = scrollBehavior.state,
             collapsedHeight = 64.dp,
             highlightColor = Color(0xFFE53935),
-            backgroundColor = Color.White
+            backgroundColor = MaterialTheme.colorScheme.background
         )
 
         Scaffold(
             containerColor = Color.Transparent,
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                MainTopBar(
-                    scrollBehavior = scrollBehavior
-                )
+                MainCurrentInfoTopBar(scrollBehavior = scrollBehavior)
             }
         ) {
 
@@ -62,7 +68,7 @@ fun MainScreen() {
                 modifier = Modifier.padding(it),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                state = lazyListState
+                state = lazyListState,
             ) {
 
                 mainBackgroundHeader(
@@ -73,36 +79,69 @@ fun MainScreen() {
                 )
 
                 item {
-                    MainProtectionPart(modifier = Modifier.fillMaxWidth())
-                }
-
-                item {
-                    Row(
+                    MainTimeToEventPart(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
-                    ) {
-                        MainTimeToBurnPart(
-                            modifier = Modifier.weight(1f)
+                    )
+                }
+
+
+                item {
+                    MainProtectionPart(
+                        modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 0.dp)
+                    )
+                }
+
+                item {
+                    MainSunRiseSetPart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 0.dp)
+                    )
+                }
+
+                item {
+                    Column(Modifier.fillMaxWidth().padding(top = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Прогноз",
+                            style = MaterialTheme.typography.labelLarge
                         )
-                        MainVitaminDPart(
-                            modifier = Modifier.weight(1f)
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        MainHourPart(
+                            modifier = Modifier.fillMaxWidth().padding(bottom = 0.dp)
                         )
                     }
                 }
 
                 item {
-                    MainHourPart(
+                    MainForecastPart(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = 16.dp).padding(top = 16.dp),
+                        data = listOf(
+                            UVSummaryDayData(
+                                day = LocalDate.now().plusDays(1),
+                                maxIndex = UVIndexData(0L, 0, 0, 4.3),
+                                timeProtectionBegin = LocalTime.now(),
+                                timeProtectionEnd = LocalTime.now()
+                            ),
+                            UVSummaryDayData(
+                                day = LocalDate.now().plusDays(2),
+                                maxIndex = UVIndexData(0L, 0, 0, 7.3),
+                                timeProtectionBegin = LocalTime.now(),
+                                timeProtectionEnd = LocalTime.now()
+                            ),
+                            UVSummaryDayData(
+                                day = LocalDate.now().plusDays(3),
+                                maxIndex = UVIndexData(0L, 0, 0, 9.8),
+                                timeProtectionBegin = LocalTime.now(),
+                                timeProtectionEnd = LocalTime.now()
+                            )
+                        )
                     )
-                }
-                items(100) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "5"
-                    )
+
                 }
             }
         }
@@ -202,7 +241,7 @@ private fun LazyListScope.mainBackgroundHeader(
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.White,
+                                MaterialTheme.colorScheme.background,
                                 Color.Transparent
                             ),
                         )

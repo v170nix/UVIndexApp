@@ -3,7 +3,10 @@ package uv.index.navigation
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
@@ -32,10 +35,13 @@ sealed class AppScreen(
 ) {
 
     object Main : AppScreen(route = "main") {
+        @OptIn(ExperimentalFoundationApi::class)
         override val content: @Composable (backStackEntry: NavBackStackEntry) -> Unit =
             { _ ->
                 UIEffect(isDarkSystemIcons = isDarkSystemIcons)
-                MainScreen()
+                CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+                    MainScreen()
+                }
             }
     }
 }

@@ -22,9 +22,24 @@ private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
     tertiary = Pink40,
-    background = Color(0xFFFFFCF6),
+    background = Color(0xFFF7F7F7),
     onBackground = Color(0xFF4A6894),
-    onSurface = Color(0xFF4A6894),
+    onSurface = Color(0xFF354A69),
+    surfaceVariant = Color.White,
+    onSurfaceVariant = Color(0xFF354A69),
+//    onTertiaryContainer = Color.White,
+//    onSecondary = Color.White,
+//    onPrimary = Color.White,
+//    onError = Color.Red,
+//    onErrorContainer = Color.Red,
+//    onPrimaryContainer = Color.Yellow,
+//    onSecondaryContainer = Color.Green,
+//    onSurfaceVariant = Color.Magenta,
+
+    inverseOnSurface = Color.White,
+
+    onTertiary = Color.Magenta,
+
 
 
     /* Other default colors to override
@@ -62,7 +77,7 @@ fun UVIndexAppTheme(
 //    }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = LightColorScheme,
         typography = Typography,
         content = content
     )

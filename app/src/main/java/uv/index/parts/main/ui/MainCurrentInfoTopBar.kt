@@ -17,10 +17,9 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import uv.index.R
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BoxWithConstraintsScope.MainTopBar(
+fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
     collapsedHeight: Dp = 64.dp
@@ -38,19 +37,23 @@ fun BoxWithConstraintsScope.MainTopBar(
             .height(statusHeight),
         title = {
             Column(Modifier.statusBarsPadding()) {
+
+                val inverseSurface = contentColorFor(MaterialTheme.colorScheme.inverseSurface)
+                val surface = contentColorFor(MaterialTheme.colorScheme.surface)
+
                 MainTopBarBoxPart(
                     minHeight = collapsedHeight,
                     collapsedFraction = scrollBehavior.state.collapsedFraction,
                     textStyles = MainTopBarDefaults.mainTopBarTextStyles(
-                        placeExpandedStyle = MaterialTheme.typography.labelLarge.copy(color = Color.White),
-                        placeCollapsedStyle = MaterialTheme.typography.labelLarge.copy(color = Color.White),
-                        titleExpandedStyle = MaterialTheme.typography.displaySmall.copy(color = Color.White),
-                        titleCollapsedStyle = MaterialTheme.typography.titleLarge,
-                        riseSetTextStyle = MaterialTheme.typography.labelLarge,
+                        placeExpandedStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
+                        placeCollapsedStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
+                        titleExpandedStyle = MaterialTheme.typography.displaySmall.copy(color = inverseSurface),
+                        titleCollapsedStyle = MaterialTheme.typography.titleLarge.copy(color = surface),
+                        riseSetTextStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
                         indexExpandedStyle = MaterialTheme.typography.displayLarge
-                            .copy(fontWeight = FontWeight.SemiBold, fontSize = 72.sp),
-                        indexCollapsedStyle = MaterialTheme.typography.titleLarge,
-                        peakHourStyle = MaterialTheme.typography.labelLarge,
+                            .copy(fontWeight = FontWeight.SemiBold, fontSize = 72.sp).copy(color = surface),
+                        indexCollapsedStyle = MaterialTheme.typography.titleLarge.copy(color = surface),
+                        peakHourStyle = MaterialTheme.typography.labelLarge.copy(color = surface),
                     ),
                     placeContent = {
                         MainPlacePart(
@@ -68,7 +71,7 @@ fun BoxWithConstraintsScope.MainTopBar(
                     indexContent = {
                         Text(
                             modifier = Modifier,
-                            text = "4/10",
+                            text = "8/10",
 //                            fontWeight = FontWeight.ExtraBold,
                         )
                     },
@@ -150,7 +153,7 @@ fun BoxWithConstraintsScope.MainTopBar(
                             modifier = Modifier.padding(start = 8.dp, end = 16.dp)
                         ) {
                             Log.e("4", "4")
-                            Text(text = "peak hour")
+                            Text(text = "пиковый час")
                             Text(text = "14:00")
                         }
                     }

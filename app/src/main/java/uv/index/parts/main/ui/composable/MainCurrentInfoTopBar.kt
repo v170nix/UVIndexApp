@@ -3,7 +3,10 @@ package uv.index.parts.main.ui.composable
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,10 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import uv.index.R
-import uv.index.lib.data.getCurrentIndex
+import uv.index.parts.main.common.rememberCurrentIndexValue
 import uv.index.parts.main.ui.MainContract
 import java.time.ZonedDateTime
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -160,20 +162,4 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
         ),
         scrollBehavior = scrollBehavior
     )
-}
-
-@Composable
-private fun rememberCurrentIndexValue(
-    currentDateTime: ZonedDateTime?,
-    state: MainContract.State,
-): State<Int?> {
-
-    return remember(state.currentDayData, currentDateTime) {
-        derivedStateOf {
-            val time = currentDateTime ?: return@derivedStateOf null
-            state.currentDayData?.getCurrentIndex(time.hour + time.minute / 60.0)?.roundToInt()
-        }
-    }
-
-
 }

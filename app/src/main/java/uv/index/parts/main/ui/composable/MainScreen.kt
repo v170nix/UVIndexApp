@@ -23,11 +23,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import uv.index.lib.data.UVIndexData
 import uv.index.lib.data.UVSummaryDayData
+import uv.index.parts.main.common.getUVIColor
+import uv.index.parts.main.common.rememberCurrentIndexValue
 import uv.index.parts.main.common.rememberCurrentZonedDateTime
 import uv.index.parts.main.ui.MainContract
 import uv.index.parts.main.ui.MainViewModel
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZonedDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,12 +57,18 @@ fun MainScreen(viewModel: MainViewModel) {
             }
         }
 
+        val currentZDT = rememberCurrentZonedDateTime(place = state.place)
+        val currentIndexValue by rememberCurrentIndexValue(currentZDT, state)
+
+
         val lazyListState = rememberLazyListState()
 
+
         MainBackground(
-            state = scrollBehavior.state,
+            behaviorState = scrollBehavior.state,
             collapsedHeight = 64.dp,
-            highlightColor = Color(0xFFE53935),
+
+            highlightColor = getUVIColor(index = currentIndexValue ?: 0),
             backgroundColor = MaterialTheme.colorScheme.background
         )
 
@@ -67,7 +76,9 @@ fun MainScreen(viewModel: MainViewModel) {
             DataPart(
                 lazyListState = lazyListState,
                 scrollBehavior = scrollBehavior,
-                state = state)
+                state = state,
+                currentZDT = currentZDT
+            )
         }
     }
 }
@@ -77,10 +88,9 @@ fun MainScreen(viewModel: MainViewModel) {
 private fun BoxWithConstraintsScope.DataPart(
     lazyListState: LazyListState,
     scrollBehavior: TopAppBarScrollBehavior,
-    state: MainContract.State
+    state: MainContract.State,
+    currentZDT: ZonedDateTime?
 ) {
-
-    val currentZDT = rememberCurrentZonedDateTime(place = state.place)
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -193,7 +203,7 @@ private fun BoxWithConstraintsScope.DataPart(
 @Composable
 private fun BoxWithConstraintsScope.MainBackground(
     modifier: Modifier = Modifier,
-    state: TopAppBarState,
+    behaviorState: TopAppBarState,
     collapsedHeight: Dp,
     highlightColor: Color,
     backgroundColor: Color,
@@ -220,8 +230,8 @@ private fun BoxWithConstraintsScope.MainBackground(
         modifier = modifier
             .fillMaxSize()
             .graphicsLayer {
-                translationY = radius * (-state.collapsedFraction) * 1.1f
-                alpha = (1f - state.collapsedFraction / 0.9f).coerceIn(0.01f, 1f)
+                translationY = radius * (-behaviorState.collapsedFraction) * 1.1f
+                alpha = (1f - behaviorState.collapsedFraction / 0.9f).coerceIn(0.01f, 1f)
             }
             .background(
                 brush =
@@ -241,7 +251,7 @@ private fun BoxWithConstraintsScope.MainBackground(
         modifier = modifier
             .fillMaxSize()
             .graphicsLayer {
-                alpha = (state.collapsedFraction + 0.5f).coerceIn(0.01f, 0.8f)
+                alpha = (behaviorState.collapsedFraction + 0.5f).coerceIn(0.01f, 0.8f)
             }
             .background(
                 brush =

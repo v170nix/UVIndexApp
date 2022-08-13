@@ -5,10 +5,28 @@ import androidx.compose.ui.graphics.Color
 import uv.index.common.LifecycleTimer
 import uv.index.lib.data.UVIPlaceData
 import uv.index.lib.data.UVSummaryDayData
+import uv.index.lib.data.getCurrentIndex
+import uv.index.parts.main.ui.MainContract
 import uv.index.ui.theme.UVITheme
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import kotlin.math.roundToInt
+
+
+@Composable
+internal fun rememberCurrentIndexValue(
+    currentDateTime: ZonedDateTime?,
+    state: MainContract.State,
+): State<Int?> {
+
+    return remember(state.currentDayData, currentDateTime) {
+        derivedStateOf {
+            val time = currentDateTime ?: return@derivedStateOf null
+            state.currentDayData?.getCurrentIndex(time.hour + time.minute / 60.0)?.roundToInt()
+        }
+    }
+}
 
 @Composable
 internal fun getUVIColor(index: Int): Color {

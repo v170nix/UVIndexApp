@@ -1,4 +1,4 @@
-package uv.index.parts.main.ui
+package uv.index.parts.main.ui.composable
 
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.Box

@@ -14,7 +14,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import uv.index.LocalAppState
-import uv.index.parts.main.ui.MainScreen
+import uv.index.parts.main.ui.composable.MainScreen
 
 fun NavBackStackEntry.lifecycleIsResumed() =
     lifecycle.currentState == Lifecycle.State.RESUMED

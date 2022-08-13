@@ -1,4 +1,4 @@
-package uv.index.parts.main.ui
+package uv.index.parts.main.ui.composable
 
 import android.util.Log
 import androidx.compose.animation.core.animateDpAsState

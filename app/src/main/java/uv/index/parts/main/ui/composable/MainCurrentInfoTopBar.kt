@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -17,9 +18,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import uv.index.R
-import uv.index.parts.main.common.rememberCurrentIndexValue
+import uv.index.parts.main.common.getUVITitle
+import uv.index.parts.main.domain.SunPosition
 import uv.index.parts.main.ui.MainContract
-import java.time.ZonedDateTime
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,7 +29,6 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
     collapsedHeight: Dp = 64.dp,
-    currentDateTime: ZonedDateTime?,
     state: MainContract.State
 ) {
     val statusHeight: Dp by animateDpAsState(
@@ -37,12 +38,25 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
         )
     )
 
-    val currentIndexValue by rememberCurrentIndexValue(currentDateTime, state)
-
-    val indexString by remember(currentIndexValue, state.currentSummaryDayData) {
+    val indexString by remember(state.currentIndexValue, state.currentSummaryDayData) {
         derivedStateOf {
+            val currentIndex = state.currentIndexValue?.roundToInt() ?: 0
             val maxIndex = state.currentSummaryDayData?.maxIndex?.getIntIndex() ?: 0
-            "$currentIndexValue/$maxIndex"
+            "$currentIndex/$maxIndex"
+        }
+    }
+
+    val context = LocalContext.current
+
+    val titleString by remember(
+        state.currentIndexValue,
+        state.currentSunPosition,
+        context
+    ) {
+        derivedStateOf {
+            val currentIndex = state.currentIndexValue?.roundToInt() ?: Int.MIN_VALUE
+            val array = context.resources.getStringArray(R.array.uvindex_status_info)
+            getUVITitle(currentIndex, state.currentSunPosition ?: SunPosition.Above, array)
         }
     }
 
@@ -76,13 +90,13 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
                             modifier = Modifier
                                 .padding(end = 8.dp)
                                 .fillMaxWidth(),
-                            currentDateTime = currentDateTime
+                            currentDateTime = state.currentZdt
                         )
                     },
                     titleContent = {
                         Text(
                             modifier = Modifier.padding(end = 16.dp),
-                            text = "Экстремальный УФ",
+                            text = titleString,
                         )
                     },
                     indexContent = {

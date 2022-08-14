@@ -2,6 +2,8 @@
     <string name="app_name">UVIndexApp</string>
 
     <string-array name="uvindex_status_info">
+        <item>Night</item>
+        <item>Twilight</item>
         <item>Low UV</item>
         <item>Moderate UV</item>
         <item>High UV</item>

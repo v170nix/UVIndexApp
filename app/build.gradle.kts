@@ -103,8 +103,11 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.25.0")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.24.13-rc")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+
     implementation("com.github.v170nix:arwix-common-library:0.4.0")
     implementation("com.github.v170nix:uv-index-library:1.0.5")
+    implementation("com.github.v170nix.astronomy-core:astronomy-core:1.0.0-alpha22")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.room:room-testing:$room_version")

@@ -27,13 +27,12 @@ import uv.index.common.LifecycleTimer
 import uv.index.lib.data.UVIndexData
 import uv.index.lib.data.UVSummaryDayData
 import uv.index.parts.main.common.getUVIColor
-import uv.index.parts.main.common.rememberCurrentIndexValue
-import uv.index.parts.main.common.rememberCurrentZonedDateTime
+import uv.index.parts.main.domain.SunPosition
 import uv.index.parts.main.ui.MainContract
 import uv.index.parts.main.ui.MainViewModel
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.ZonedDateTime
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +48,11 @@ fun MainScreen(viewModel: MainViewModel) {
     val state by viewModel.state.collectAsState()
 
     LifecycleTimer(timeMillis = 60_000L) {
-        viewModel.doEvent(MainContract.Event.DoAutoUpdate)
+        viewModel.doEvent(MainContract.Event.DoDataAutoUpdate)
+    }
+
+    LifecycleTimer(timeMillis = 1_000L) {
+        viewModel.doEvent(MainContract.Event.DoUpdateCurrentTime)
     }
 
     BoxWithConstraints(
@@ -64,14 +67,11 @@ fun MainScreen(viewModel: MainViewModel) {
             }
         }
 
-        val currentZDT = rememberCurrentZonedDateTime(place = state.place)
-        val currentIndexValue by rememberCurrentIndexValue(currentZDT, state)
-
         val lazyListState = rememberLazyListState()
         MainBackground(
             behaviorState = scrollBehavior.state,
+            state = state,
             collapsedHeight = 64.dp,
-            highlightColor = currentIndexValue?.run { getUVIColor(index = this) } ?: Color.White,
             backgroundColor = MaterialTheme.colorScheme.background
         )
 
@@ -79,8 +79,7 @@ fun MainScreen(viewModel: MainViewModel) {
             DataPart(
                 lazyListState = lazyListState,
                 scrollBehavior = scrollBehavior,
-                state = state,
-                currentZDT = currentZDT
+                state = state
             )
         }
     }
@@ -91,8 +90,7 @@ fun MainScreen(viewModel: MainViewModel) {
 private fun BoxWithConstraintsScope.DataPart(
     lazyListState: LazyListState,
     scrollBehavior: TopAppBarScrollBehavior,
-    state: MainContract.State,
-    currentZDT: ZonedDateTime?
+    state: MainContract.State
 ) {
 
     Scaffold(
@@ -101,8 +99,7 @@ private fun BoxWithConstraintsScope.DataPart(
         topBar = {
             MainCurrentInfoTopBar(
                 scrollBehavior = scrollBehavior,
-                state = state,
-                currentDateTime = currentZDT
+                state = state
             )
         }
     ) {
@@ -165,8 +162,7 @@ private fun BoxWithConstraintsScope.DataPart(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 0.dp),
-                        currentDateTime = currentZDT,
-                        hoursList = state.hoursData
+                        hoursList = state.currentUiHoursData
                     )
                 }
             }
@@ -209,21 +205,35 @@ private fun BoxWithConstraintsScope.DataPart(
 private fun BoxWithConstraintsScope.MainBackground(
     modifier: Modifier = Modifier,
     behaviorState: TopAppBarState,
+    state: MainContract.State,
     collapsedHeight: Dp,
-    highlightColor: Color,
     backgroundColor: Color,
 ) {
     val boxScope = this
     val density = LocalDensity.current
     val statusBar = WindowInsets.statusBars
 
+    val currentIndexIntValue by remember(state.currentIndexValue) {
+        derivedStateOf {
+            state.currentIndexValue?.roundToInt() ?: Int.MIN_VALUE
+        }
+    }
+
+    val currentSunPosition by remember(state.currentSunPosition) {
+        derivedStateOf {
+            state.currentSunPosition ?: SunPosition.Above
+        }
+    }
+
     val currentHighlightColor by animateColorAsState(
-        targetValue = highlightColor, animationSpec = tween(
+        targetValue = getUVIColor(currentIndexIntValue, currentSunPosition, backgroundColor),
+        animationSpec = tween(
             durationMillis = 500,
         )
     )
     val currentBgColor by animateColorAsState(
-        targetValue = backgroundColor, animationSpec = tween(
+        targetValue = backgroundColor,
+        animationSpec = tween(
             durationMillis = 500,
         )
     )

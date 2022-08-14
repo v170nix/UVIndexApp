@@ -21,12 +21,22 @@ class UVIColors(
 private val uviColors = UVIColors(
     night = Color(0xFF104568),
     twilight = Color(0xFF1369A0),
-    lowUV = Color(0xFF40CF9C),
-    moderateUV = Color(0xFFFCDC71),
-    highUV = Color(0xFFFE8340),
-    veryHighUV = Color(0xFFFA1818),
-    extremeUV = Color(0xFFBA00FF)
+    lowUV = Color(0xFF47C0AF),
+    moderateUV = Color(0xFFFFB74D),
+    highUV = Color(0xFFFF7043),
+    veryHighUV = Color(0xFFF44336),
+    extremeUV = Color(0xFFAB47BC)
 )
+
+//private val uviColors = UVIColors(
+//    night = Color(0xFF104568),
+//    twilight = Color(0xFF1369A0),
+//    lowUV = Color(0xFF4DB6AC),
+//    moderateUV = Color(0xFF06284E), // A300
+//    highUV = Color(0xFFFE8340),
+//    veryHighUV = Color(0xFFFA1818),
+//    extremeUV = Color(0xFFBA00FF)
+//)
 
 private val LocalUVIColors = staticCompositionLocalOf { uviColors }
 

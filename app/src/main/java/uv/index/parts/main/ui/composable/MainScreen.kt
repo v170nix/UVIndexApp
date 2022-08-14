@@ -1,5 +1,7 @@
 package uv.index.parts.main.ui.composable
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -67,8 +69,7 @@ fun MainScreen(viewModel: MainViewModel) {
         MainBackground(
             behaviorState = scrollBehavior.state,
             collapsedHeight = 64.dp,
-
-            highlightColor = getUVIColor(index = currentIndexValue ?: 0),
+            highlightColor = currentIndexValue?.run { getUVIColor(index = this) } ?: Color.White,
             backgroundColor = MaterialTheme.colorScheme.background
         )
 
@@ -212,6 +213,17 @@ private fun BoxWithConstraintsScope.MainBackground(
     val density = LocalDensity.current
     val statusBar = WindowInsets.statusBars
 
+    val currentHighlightColor by animateColorAsState(
+        targetValue = highlightColor, animationSpec = tween(
+            durationMillis = 500,
+        )
+    )
+    val currentBgColor by animateColorAsState(
+        targetValue = backgroundColor, animationSpec = tween(
+            durationMillis = 500,
+        )
+    )
+
     val xCenterOffset by remember(density, boxScope) {
         derivedStateOf { boxScope.maxWidth.value * 0.8f * density.density }
     }
@@ -237,9 +249,9 @@ private fun BoxWithConstraintsScope.MainBackground(
                 brush =
                 Brush.radialGradient(
                     colors = listOf(
-                        highlightColor,
-                        highlightColor.copy(alpha = 0xAA.toFloat() / 0xFF),
-                        backgroundColor
+                        currentHighlightColor,
+                        currentHighlightColor.copy(alpha = 0xAA.toFloat() / 0xFF),
+                        currentBgColor
                     ),
                     center = Offset(xCenterOffset, 0f),
                     radius = radius,
@@ -257,7 +269,7 @@ private fun BoxWithConstraintsScope.MainBackground(
                 brush =
                 Brush.verticalGradient(
                     colors = listOf(
-                        highlightColor.copy(alpha = 0xFF.toFloat() / 0xFF),
+                        currentHighlightColor.copy(alpha = 0xFF.toFloat() / 0xFF),
                         Color.Transparent,
                     ),
                     startY = 0f,
@@ -266,6 +278,20 @@ private fun BoxWithConstraintsScope.MainBackground(
             )
     )
 }
+
+//internal fun Modifier.mainBackground(color: Color, center: Offset, radius: Float): Modifier {
+//    return background(
+//        Brush.radialGradient(
+//            colors = listOf(
+//                color,
+//                color.copy(alpha = 0xAA.toFloat() / 0xFF),
+//                currentBgColor
+//            ),
+//            center = Offset(xCenterOffset, 0f),
+//            radius = radius,
+//        )
+//    )
+//}
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 private fun LazyListScope.mainBackgroundHeader(

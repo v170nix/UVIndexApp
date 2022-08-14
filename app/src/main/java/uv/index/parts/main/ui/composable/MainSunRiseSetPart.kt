@@ -4,19 +4,41 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import uv.index.R
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+
+private val formatter by lazy {
+    DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+}
 
 @Composable
 internal fun MainSunRiseSetPart(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    riseTime: LocalTime?,
+    setTime: LocalTime?
 ) {
+
+    val riseString by remember(riseTime) {
+        derivedStateOf {
+            riseTime?.format(formatter) ?: "--:--"
+        }
+    }
+
+    val setString by remember(setTime) {
+        derivedStateOf {
+            setTime?.format(formatter) ?: "--:--"
+        }
+    }
+
+
     CompositionLocalProvider(
         LocalContentColor provides contentColorFor(
             MaterialTheme.colorScheme.surface
@@ -38,7 +60,7 @@ internal fun MainSunRiseSetPart(
                 )
 
                 Text(
-                    text = "7:23",
+                    text = riseString,
                     textAlign = TextAlign.Start,
                     style = MaterialTheme.typography.titleMedium
                 )
@@ -48,7 +70,7 @@ internal fun MainSunRiseSetPart(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "18:25",
+                    text = setString,
                     textAlign = TextAlign.End,
                     style = MaterialTheme.typography.titleMedium
                 )

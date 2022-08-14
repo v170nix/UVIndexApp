@@ -6,11 +6,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.arwix.extension.ConflatedJob
 import net.arwix.mvi.SimpleViewModel
 import net.arwix.mvi.UISideEffect
 import uv.index.lib.data.*
 import uv.index.lib.domain.UVIndexRemoteUpdateUseCase
+import uv.index.parts.main.domain.SunRiseSetUseCase
 import uv.index.parts.main.domain.UVForecastHoursUseCase
 import java.time.LocalDate
 import java.time.ZoneId
@@ -19,16 +21,17 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository: UVIndexRepository,
-    private val skinRepository: UVSkinRepository
+    private val dataRepository: UVIndexRepository,
+    private val skinRepository: UVSkinRepository,
+    private val sunRiseSetUseCase: SunRiseSetUseCase
 ) : SimpleViewModel<MainContract.Event, MainContract.State, UISideEffect>(
     MainContract.State(
         skinType = skinRepository.getSkinOrNull() ?: UVSkinType.Type3
     )
 ) {
 
-    private val remoteUpdateUseCase = UVIndexRemoteUpdateUseCase(repository, viewModelScope)
-    private val hoursUseCase = UVForecastHoursUseCase(repository)
+    private val remoteUpdateUseCase = UVIndexRemoteUpdateUseCase(dataRepository, viewModelScope)
+    private val hoursUseCase = UVForecastHoursUseCase(dataRepository)
     private val updateJob = ConflatedJob()
 
     init {
@@ -46,11 +49,12 @@ class MainViewModel @Inject constructor(
                         isViewLoadingData = false
                     )
                 }
+                updateRiseSetData(place)
             }
             .filterNotNull()
             .flatMapLatest { place ->
                 val dateAtStartDay = LocalDate.now(place.zone).atStartOfDay(place.zone)
-                repository.getDataAsFlow(
+                dataRepository.getDataAsFlow(
                     place.longitude,
                     place.latitude,
                     dateAtStartDay
@@ -75,7 +79,7 @@ class MainViewModel @Inject constructor(
             .launchIn(viewModelScope)
 
         remoteUpdateUseCase.asFlow
-            .onEach {  state ->
+            .onEach { state ->
                 reduceState {
                     when (state) {
                         is UVIndexRepository.RemoteUpdateState.Failure -> {
@@ -89,7 +93,7 @@ class MainViewModel @Inject constructor(
                                 isViewLoadingData = true,
                                 isViewRetry = false
                             )
-                        is UVIndexRepository.RemoteUpdateState.Success<*> ->  {
+                        is UVIndexRepository.RemoteUpdateState.Success<*> -> {
                             place?.run(::updateForecastData)
                             copy(
                                 isViewLoadingData = false,
@@ -112,7 +116,7 @@ class MainViewModel @Inject constructor(
     private fun updateForecastData(place: UVIPlaceData) {
         updateJob += viewModelScope.launch(Dispatchers.IO) {
             val dateAtStartDay = LocalDate.now(place.zone).atStartOfDay(place.zone)
-            val forecastList = repository.getForecastData(
+            val forecastList = dataRepository.getForecastData(
                 place.longitude,
                 place.latitude,
                 dateAtStartDay.plusDays(1L)
@@ -131,8 +135,29 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private suspend fun updateRiseSetData(
+        place: UVIPlaceData,
+    ) = withContext(Dispatchers.Default) {
+        val currentZdt = LocalDate.now(place.zone).atStartOfDay(place.zone)
+        val (riseTime, setTime) = sunRiseSetUseCase(place, currentZdt)
+        reduceState {
+            copy(
+                riseTime = riseTime,
+                setTime = setTime
+            )
+        }
+    }
+
     override fun handleEvents(event: MainContract.Event) {
-        TODO("Not yet implemented")
+        when (event) {
+            MainContract.Event.DoAutoUpdate -> {
+                remoteUpdateUseCase.checkAndUpdate(state.value.place, state.value.currentDayData)
+                val place = state.value.place ?: return
+                viewModelScope.launch { updateRiseSetData(place) }
+            }
+            is MainContract.Event.DoChangeSkin -> TODO()
+            MainContract.Event.DoManualUpdate -> TODO()
+        }
     }
 
 }

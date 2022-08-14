@@ -46,7 +46,6 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
         }
     }
 
-
     SmallTopAppBar(
         modifier = modifier
             .statusBarsPadding()
@@ -76,7 +75,8 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
                         MainPlacePart(
                             modifier = Modifier
                                 .padding(end = 8.dp)
-                                .fillMaxWidth()
+                                .fillMaxWidth(),
+                            currentDateTime = currentDateTime
                         )
                     },
                     titleContent = {

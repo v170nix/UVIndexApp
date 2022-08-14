@@ -7,6 +7,7 @@ import uv.index.lib.data.UVIPlaceData
 import uv.index.lib.data.UVIndexData
 import uv.index.lib.data.UVSkinType
 import uv.index.lib.data.UVSummaryDayData
+import java.time.LocalTime
 
 @Immutable
 interface MainContract {
@@ -21,7 +22,9 @@ interface MainContract {
         val hoursData: List<UVIndexData>? = null,
         val isViewRetry: Boolean = false,
         val isViewLoadingData: Boolean = false,
-        val skinType: UVSkinType
+        val skinType: UVSkinType,
+        val riseTime: LocalTime? = null,
+        val setTime: LocalTime? = null
     ): UIState
 
     @Immutable

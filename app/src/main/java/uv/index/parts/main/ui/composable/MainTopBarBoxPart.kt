@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import uv.index.ui.theme.UVIndexAppTheme
+import java.time.ZonedDateTime
 
 @Stable
 interface MainTopBarTextStyles {
@@ -367,7 +368,8 @@ private fun Preview() {
                 minHeight = 64.dp,
                 placeContent = {
                     MainPlacePart(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        currentDateTime = ZonedDateTime.now()
                     )
                 },
                 titleContent = {

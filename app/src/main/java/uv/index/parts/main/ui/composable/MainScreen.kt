@@ -23,6 +23,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import uv.index.common.LifecycleTimer
 import uv.index.lib.data.UVIndexData
 import uv.index.lib.data.UVSummaryDayData
 import uv.index.parts.main.common.getUVIColor
@@ -47,6 +48,10 @@ fun MainScreen(viewModel: MainViewModel) {
 
     val state by viewModel.state.collectAsState()
 
+    LifecycleTimer(timeMillis = 60_000L) {
+        viewModel.doEvent(MainContract.Event.DoAutoUpdate)
+    }
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -62,10 +67,7 @@ fun MainScreen(viewModel: MainViewModel) {
         val currentZDT = rememberCurrentZonedDateTime(place = state.place)
         val currentIndexValue by rememberCurrentIndexValue(currentZDT, state)
 
-
         val lazyListState = rememberLazyListState()
-
-
         MainBackground(
             behaviorState = scrollBehavior.state,
             collapsedHeight = 64.dp,
@@ -140,7 +142,9 @@ private fun BoxWithConstraintsScope.DataPart(
                 MainSunRiseSetPart(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 0.dp)
+                        .padding(horizontal = 16.dp, vertical = 0.dp),
+                    riseTime = state.riseTime,
+                    setTime = state.setTime
                 )
             }
 

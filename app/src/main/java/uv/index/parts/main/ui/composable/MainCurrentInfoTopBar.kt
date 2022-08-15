@@ -60,6 +60,12 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
         }
     }
 
+    val currentIndexInt by remember(state.currentIndexValue) {
+        derivedStateOf {
+            state.currentIndexValue?.roundToInt() ?: Int.MIN_VALUE
+        }
+    }
+
     SmallTopAppBar(
         modifier = modifier
             .statusBarsPadding()
@@ -114,48 +120,57 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
 
-                            Icon(
-                                modifier = Modifier.size(48.dp),
-                                tint = Color.White,
-                                painter = painterResource(id = R.drawable.ic_glasses),
-                                contentDescription = ""
-                            )
+                            if (currentIndexInt > 2) {
+                                Icon(
+                                    modifier = Modifier.size(48.dp),
+                                    tint = Color.White,
+                                    painter = painterResource(id = R.drawable.ic_glasses),
+                                    contentDescription = ""
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
 
-                            Spacer(modifier = Modifier.width(8.dp))
+                            if (currentIndexInt > 2) {
+                                Icon(
+                                    modifier = Modifier.size(36.dp),
+                                    tint = Color.White,
+                                    painter = painterResource(id = R.drawable.ic_sunblock_alt),
+                                    contentDescription = ""
+                                )
 
-                            Icon(
-                                modifier = Modifier.size(36.dp),
-                                tint = Color.White,
-                                painter = painterResource(id = R.drawable.ic_sunblock_alt),
-                                contentDescription = ""
-                            )
+                                Spacer(modifier = Modifier.width(8.dp))
 
-                            Spacer(modifier = Modifier.width(8.dp))
+                                Icon(
+                                    modifier = Modifier.size(48.dp),
+                                    tint = Color.White,
+                                    painter = painterResource(id = R.drawable.ic_hat),
+                                    contentDescription = ""
+                                )
 
-                            Icon(
-                                modifier = Modifier.size(48.dp),
-                                tint = Color.White,
-                                painter = painterResource(id = R.drawable.ic_hat),
-                                contentDescription = ""
-                            )
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
 
-                            Spacer(modifier = Modifier.width(8.dp))
+                            if (currentIndexInt > 4) {
 
-                            Icon(
-                                modifier = Modifier.size(40.dp),
-                                tint = Color.White,
-                                painter = painterResource(id = R.drawable.ic_shirt),
-                                contentDescription = ""
-                            )
+                                Icon(
+                                    modifier = Modifier.size(40.dp),
+                                    tint = Color.White,
+                                    painter = painterResource(id = R.drawable.ic_shirt),
+                                    contentDescription = ""
+                                )
 
-                            Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
 
-                            Icon(
-                                modifier = Modifier.size(40.dp),
-                                tint = Color.White,
-                                painter = painterResource(id = R.drawable.beach_shadow),
-                                contentDescription = ""
-                            )
+                            }
+
+                            if (currentIndexInt > 6) {
+                                Icon(
+                                    modifier = Modifier.size(40.dp),
+                                    tint = Color.White,
+                                    painter = painterResource(id = R.drawable.beach_shadow),
+                                    contentDescription = ""
+                                )
+                            }
                         }
                     },
                     maxHourContent = {

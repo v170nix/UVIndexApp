@@ -123,7 +123,8 @@ private fun BoxWithConstraintsScope.DataPart(
                 MainTimeToEventPart(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 16.dp),
+                    timeToBurn = state.currentTimeToBurn
                 )
             }
             item {

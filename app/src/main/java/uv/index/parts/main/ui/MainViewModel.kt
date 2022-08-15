@@ -2,8 +2,10 @@ package uv.index.parts.main.ui
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
 import net.arwix.extension.ConflatedJob
 import net.arwix.mvi.SimpleViewModel
 import net.arwix.mvi.UISideEffect
@@ -29,10 +31,9 @@ class MainViewModel @Inject constructor(
     sunRiseSetUseCase: SunRiseSetUseCase
 ) : SimpleViewModel<MainContract.Event, MainContract.State, UISideEffect>(
     MainContract.State(
-        skinType = skinRepository.getSkinOrNull() ?: UVSkinType.Type3
+        skinType = UVSkinType.Type3
     )
 ) {
-
     private val remoteUpdateUseCase = UVIndexRemoteUpdateUseCase(dataRepository, viewModelScope)
     private val hoursUseCase = UVForecastHoursUseCase(dataRepository)
     private val updateJob = ConflatedJob()
@@ -42,7 +43,12 @@ class MainViewModel @Inject constructor(
     private val innerStateUpdater = InnerStateUpdater(sunRiseSetUseCase)
 
     private val placeAsFlow = flow {
-        emit(UVIPlaceData(ZoneId.systemDefault(), 60.1, 30.2))
+//        emit(UVIPlaceData(ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-5)), 29.7, -124.9))
+//
+//        delay(10000L)
+
+        emit(UVIPlaceData(ZoneId.systemDefault(), 60.0, 30.0))
+
     }
         .onEach(innerStateUpdater::setFirstPlaceLoadingComplete)
         .distinctUntilChanged()
@@ -218,6 +224,7 @@ class MainViewModel @Inject constructor(
     }
 
     private companion object {
+
         val formatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
 
         private class CurrentDateTimeReducer(
@@ -228,14 +235,8 @@ class MainViewModel @Inject constructor(
             scope = scope,
             compareAndSet = compareAndSet
         ) {
-            @Volatile
-            private var oldPlace: UVIPlaceData? = null
 
-            @Volatile
-            private var oldStartDate: LocalDate? = null
-
-            @Volatile
-            private var oldFirstHour: Int? = null
+            private val uiHourReducer = UIHourReducer()
 
             suspend fun reduce(
                 state: MainContract.State,
@@ -249,34 +250,52 @@ class MainViewModel @Inject constructor(
                 val atStartOfDayZdt = currentDate.atStartOfDay(place.zone)
                 updateStartOfDay(atStartOfDayZdt)
 
-                val isNewDataPlace =
-                    (place != oldPlace || atStartOfDayZdt.dayOfYear != oldStartDate?.dayOfYear)
+                val (riseTime, setTime) = sunRiseSetUseCase(place, atStartOfDayZdt)
 
-                if (isNewDataPlace) oldFirstHour = null
+                val currentHour = currentZdt.hour + currentZdt.minute / 60.0
 
-                val (riseTime, setTime) = if (isNewDataPlace) {
-                    sunRiseSetUseCase(place, atStartOfDayZdt)
-                } else {
-                    state.riseTime to state.setTime
+                val innerCurrentDayData = state.currentDayData?.let { list ->
+                    if (list.size == 24) return@let list
+                    (0..23).map {
+                        list.getOrNull(it) ?: UVIndexData(0L, 0, 0, 0.0)
+                    }
                 }
 
-                val currentIndex = state
-                    .currentDayData
-                    ?.getCurrentIndex(currentZdt.hour + currentZdt.minute / 60.0)
+                val currentIndex = innerCurrentDayData?.getCurrentIndex(currentHour)
 
-                val sunPosition =
-                    if (isNewDataPlace) {
-                        sunRiseSetUseCase.getPosition(place, currentZdt)
+                val sunPosition = sunRiseSetUseCase.getPosition(place, currentZdt)
+
+                val timeToBurn =
+                    if (innerCurrentDayData != null && sunPosition == SunPosition.Above) {
+                        val minTime = state.skinType.getIntegralMinTimeToBurnInMins(
+                            list = innerCurrentDayData,
+                            currentHour = currentHour
+                        )?.roundToInt()
+
+                        val maxTime = state.skinType.getIntegralMaxTimeToBurnInMins(
+                            list = innerCurrentDayData,
+                            currentHour = currentHour
+                        )?.roundToInt()
+                        if (minTime != null) {
+                            MainContract.TimeToBurn.Value(
+                                minTimeInMins = minTime,
+                                maxTimeInMins = maxTime
+                            )
+                        } else {
+                            MainContract.TimeToBurn.Infinity
+                        }
                     } else {
-                        state.currentSunPosition
+                        MainContract.TimeToBurn.Infinity
                     }
 
-                val uiHourData = getUIHourData(
-                    state,
+
+                val uiHourData = uiHourReducer.reduce(
+                    sunRiseSetUseCase,
                     place,
                     state.hoursForecast,
                     currentZdt
-                )
+                ) ?: state.currentUiHoursData
+
 
                 return state.copy(
                     currentZdt = currentZdt,
@@ -284,75 +303,88 @@ class MainViewModel @Inject constructor(
                     setTime = setTime,
                     currentIndexValue = currentIndex,
                     currentSunPosition = sunPosition,
-                    currentUiHoursData = uiHourData
-                ).also {
-                    oldPlace = place
-                    oldStartDate = currentDate
-                }
-            }
-
-
-            private suspend fun getUIHourData(
-                state: MainContract.State,
-                place: UVIPlaceData,
-                hoursList: List<UVIndexData>,
-                currentZdt: ZonedDateTime,
-            ): List<MainContract.UIHourData> {
-
-                if (hoursList.isEmpty()) return emptyList()
-
-                val firstTime = currentZdt.toEpochSecond() - 3600L
-                val firstZdt = Instant.ofEpochSecond(firstTime).atZone(place.zone)
-
-                if (oldFirstHour != null && firstZdt.hour == oldFirstHour) {
-                    return state.currentUiHoursData
-                }
-
-                return hoursList
-                    .asSequence()
-                    .filter { it.time > firstTime }
-                    .take(24)
-                    .flatMap {
-                        sequence {
-                            val zdt = Instant
-                                .ofEpochSecond(it.time)
-                                .atZone(currentZdt.zone)
-
-                            if (zdt.hour < 1) yield(MainContract.UIHourData.Divider)
-
-                            val index = (it.value * 10).roundToInt() / 10.0
-                            var iIndex = index.roundToInt()
-
-                            if (iIndex == 0) {
-                                iIndex = runBlocking {
-                                    sunRiseSetUseCase.getPosition(place, zdt)
-                                }.let {
-                                    when (it) {
-                                        SunPosition.Above -> 0
-                                        SunPosition.Twilight -> -1
-                                        SunPosition.Night -> -2
-                                    }
-                                }
-                            }
-
-                            val localTime = zdt.toLocalTime()
-
-                            yield(
-                                MainContract.UIHourData.Item(
-                                    sIndex = index.toString(),
-                                    iIndex = iIndex,
-                                    time = localTime.format(formatter),
-                                )
-                            )
-
-                            oldFirstHour = firstZdt.hour
-                        }
-                    }
-                    .toList()
+                    currentUiHoursData = uiHourData,
+                    currentTimeToBurn = timeToBurn
+                )
             }
         }
     }
 
+
+    private class UIHourReducer {
+
+        @Volatile
+        private var previousHash: Int? = null
+
+        private fun checkHash(
+            place: UVIPlaceData,
+            zdt: ZonedDateTime,
+            hoursList: List<UVIndexData>
+        ): Boolean {
+            val hash = place.hashCode() + zdt.dayOfYear * 10000 + zdt.hour * 100 + hoursList.size
+            return (hash == previousHash).also {
+                previousHash = hash
+            }
+        }
+
+        suspend fun reduce(
+            sunRiseSetUseCase: SunRiseSetUseCase,
+            place: UVIPlaceData,
+            hoursList: List<UVIndexData>,
+            currentZdt: ZonedDateTime,
+        ): List<MainContract.UIHourData>? {
+            if (hoursList.isEmpty()) return emptyList()
+
+            val firstTime = currentZdt.toEpochSecond() - 3600L
+            val firstZdt = Instant.ofEpochSecond(firstTime).atZone(place.zone)
+
+            if (checkHash(place, firstZdt, hoursList)) return null
+
+            return hoursList
+                .asSequence()
+                .filter { it.time > firstTime }
+                .take(24)
+                .flatMapIndexed { i: Int, data: UVIndexData ->
+                    sequence {
+                        val zdt = Instant
+                            .ofEpochSecond(data.time)
+                            .atZone(currentZdt.zone)
+
+                        if (zdt.hour < 1 && i > 0) yield(MainContract.UIHourData.Divider)
+
+                        val index = (data.value * 10).roundToInt() / 10.0
+                        var iIndex = index.roundToInt()
+
+                        if (iIndex == 0) {
+                            iIndex = runBlocking {
+                                sunRiseSetUseCase.getPosition(place, zdt)
+                            }.let {
+                                when (it) {
+                                    SunPosition.Above -> 0
+                                    SunPosition.Twilight -> -1
+                                    SunPosition.Night -> -2
+                                }
+                            }
+                        }
+
+                        val localTime = zdt.toLocalTime()
+
+                        yield(
+                            MainContract.UIHourData.Item(
+                                sIndex = index.toString(),
+                                iIndex = iIndex,
+                                time = localTime.format(formatter),
+                            )
+                        )
+                    }
+                }
+                .toList()
+        }
+    }
+
+
 }
+
+
 
 

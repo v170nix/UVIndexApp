@@ -32,7 +32,8 @@ interface MainContract {
         val setTime: LocalTime? = null,
         val currentZdt: ZonedDateTime? = null,
         val currentIndexValue: Double? = null,
-        val currentSunPosition: SunPosition? = null
+        val currentSunPosition: SunPosition? = null,
+        val currentTimeToBurn: TimeToBurn? = null
 
     ): UIState
 
@@ -42,6 +43,18 @@ interface MainContract {
         object DoDataManualUpdate: Event()
         object DoDataAutoUpdate: Event()
         object DoUpdateWithCurrentTime: Event()
+    }
+
+    @Immutable
+    sealed class TimeToBurn {
+
+        object Infinity: TimeToBurn()
+
+        @Immutable
+        data class Value(
+            val minTimeInMins: Int,
+            val maxTimeInMins: Int?
+        ): TimeToBurn()
     }
 
     @Immutable

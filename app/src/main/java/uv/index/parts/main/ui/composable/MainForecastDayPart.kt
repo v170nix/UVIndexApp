@@ -29,13 +29,6 @@ internal fun MainForecastDayPart(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-//        Text(
-//            text = "Прогноз",
-//            style = MaterialTheme.typography.displaySmall
-//        )
-//
-//        Spacer(modifier = Modifier.height(8.dp))
-
         AnimatedContent(targetState = data) { currentData ->
             ForecastItemsPart(currentData)
         }
@@ -50,7 +43,6 @@ private fun ForecastItemsPart(list: List<UVSummaryDayData>) {
         list.forEachIndexed { index, item ->
             ForecastContentItem(item)
             if (index < list.size - 1) {
-//                Divider(modifier = Modifier.fillMaxWidth(), color = Color.LightGray)
                 Spacer(Modifier.height(16.dp))
             }
         }

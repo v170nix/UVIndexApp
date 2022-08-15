@@ -21,8 +21,8 @@ interface MainContract {
         val isLoadingPlace: Boolean = true,
         val currentDayData: List<UVIndexData>? = null,
         val currentSummaryDayData: UVSummaryDayData? = null,
-        val forecastData: List<UVSummaryDayData>? = null,
-        val hoursData: List<UVIndexData> = listOf(),
+        val daysForecast: List<UVSummaryDayData>? = null,
+        val hoursForecast: List<UVIndexData> = listOf(),
         val isViewRetry: Boolean = false,
         val isViewLoadingData: Boolean = false,
         val skinType: UVSkinType,
@@ -41,7 +41,7 @@ interface MainContract {
         data class DoChangeSkin(val skin: UVSkinType): Event()
         object DoDataManualUpdate: Event()
         object DoDataAutoUpdate: Event()
-        object DoUpdateCurrentTime: Event()
+        object DoUpdateWithCurrentTime: Event()
     }
 
     @Immutable

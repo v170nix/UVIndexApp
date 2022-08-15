@@ -52,7 +52,7 @@ fun MainScreen(viewModel: MainViewModel) {
     }
 
     LifecycleTimer(timeMillis = 1_000L) {
-        viewModel.doEvent(MainContract.Event.DoUpdateCurrentTime)
+        viewModel.doEvent(MainContract.Event.DoUpdateWithCurrentTime)
     }
 
     BoxWithConstraints(

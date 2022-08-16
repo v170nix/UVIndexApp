@@ -4,6 +4,8 @@ plugins {
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
     kotlin("plugin.serialization") version "1.6.21"
+    id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 val composeVersion = "1.3.0-alpha03"
@@ -71,6 +73,8 @@ dependencies {
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
+    implementation(platform("com.google.firebase:firebase-bom:30.3.2"))
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
@@ -102,6 +106,22 @@ dependencies {
     implementation("com.google.accompanist:accompanist-insets:0.25.0")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.25.0")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.24.13-rc")
+
+    implementation("com.google.android.libraries.places:places:2.6.0")
+    implementation("com.google.maps.android:maps-ktx:3.4.0")
+    implementation("com.google.maps.android:maps-utils-ktx:3.4.0")
+    implementation("com.google.maps.android:maps-compose:1.0.0")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.gms:play-services-location:20.0.0")
+
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-config-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx")
+//    implementation("com.google.firebase:firebase-functions-ktx")
+//    implementation("com.google.firebase:firebase-crashlytics")
+//    implementation("com.google.android.gms:play-services-ads:21.1.0")
+
+    implementation("com.android.billingclient:billing-ktx:5.0.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 

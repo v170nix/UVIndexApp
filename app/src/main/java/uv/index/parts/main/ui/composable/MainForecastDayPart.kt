@@ -2,6 +2,7 @@ package uv.index.parts.main.ui.composable
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -11,9 +12,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import uv.index.R
 import uv.index.lib.data.UVSummaryDayData
+import uv.index.parts.main.common.getUVIColor
 import uv.index.parts.main.common.rememberPeriod
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -22,7 +27,7 @@ import java.time.format.FormatStyle
 @Composable
 internal fun MainForecastDayPart(
     modifier: Modifier = Modifier,
-    data: List<UVSummaryDayData>
+    data: List<UVSummaryDayData>?
 ) {
 
     Column(
@@ -30,7 +35,7 @@ internal fun MainForecastDayPart(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AnimatedContent(targetState = data) { currentData ->
-            ForecastItemsPart(currentData)
+            if (currentData != null) ForecastItemsPart(currentData)
         }
         Spacer(modifier = Modifier.height(8.dp))
     }
@@ -83,28 +88,31 @@ private fun ForecastContentItem(
                 null -> {
                     Text(
                         modifier = Modifier.weight(1f),
-                        text = "protection not required"
+                        text = stringResource(id =  R.string.uvindex_forecast_item_protection_not_required),
                     )
                 }
                 else -> {
                     Text(
                         modifier = Modifier.weight(1f),
-                        text = "item_protection_required"
+                        text = stringResource(
+                            id = R.string.uvindex_forecast_item_protection_required,
+                            it.first, it.second
+                        ),
                     )
                 }
             }
 
             Text(
                 modifier = Modifier
-//                    .background(
-//                        color = getUVIColor(index = item.maxIndex.getIntIndex()),
-//                        shape = MaterialTheme.shapes.small
-//                    )
+                    .background(
+                        color = getUVIColor(index = item.maxIndex.getIntIndex(), Color.White),
+                        shape = MaterialTheme.shapes.small
+                    )
                     .widthIn(min = 64.dp)
                     .padding(8.dp),
                 text = item.maxIndex.getIntIndex().toString(),
-//                color = WeatherTheme.colors.contentColorFor(getUVIColor(index = item.maxIndex.getIntIndex())),
                 textAlign = TextAlign.Center,
+                color = Color.White
             )
         }
     }

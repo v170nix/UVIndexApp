@@ -26,14 +26,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.common.LifecycleTimer
-import uv.index.lib.data.UVIndexData
-import uv.index.lib.data.UVSummaryDayData
 import uv.index.parts.main.common.getUVIColor
 import uv.index.parts.main.domain.SunPosition
 import uv.index.parts.main.ui.MainContract
 import uv.index.parts.main.ui.MainViewModel
-import java.time.LocalDate
-import java.time.LocalTime
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -181,26 +177,7 @@ private fun BoxWithConstraintsScope.DataPart(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                             .padding(top = 16.dp),
-                        data = listOf(
-                            UVSummaryDayData(
-                                day = LocalDate.now().plusDays(1),
-                                maxIndex = UVIndexData(0L, 0, 0, 4.3),
-                                timeProtectionBegin = LocalTime.now(),
-                                timeProtectionEnd = LocalTime.now()
-                            ),
-                            UVSummaryDayData(
-                                day = LocalDate.now().plusDays(2),
-                                maxIndex = UVIndexData(0L, 0, 0, 7.3),
-                                timeProtectionBegin = LocalTime.now(),
-                                timeProtectionEnd = LocalTime.now()
-                            ),
-                            UVSummaryDayData(
-                                day = LocalDate.now().plusDays(3),
-                                maxIndex = UVIndexData(0L, 0, 0, 9.8),
-                                timeProtectionBegin = LocalTime.now(),
-                                timeProtectionEnd = LocalTime.now()
-                            )
-                        )
+                        data = state.daysForecast
                     )
                 }
             }

@@ -50,10 +50,13 @@ private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80,
-    background = Color(0xFFFFFCF6),
-    onBackground = Color(0xFF4A6894),
-    onSurface = Color(0xFF4A6894),
-
+    background = Color(0xFF090909),
+    onBackground = Color(0xFFF7F7F7),
+    surface = Color(0xFF354A69),
+    onSurface = Color(0xFFF7F7F7),
+    surfaceVariant = Color(0xFF354A69),
+    onSurfaceVariant = Color(0xFFFFFFFF),
+    inverseOnSurface = Color.White,
     )
 
 private val LightColorScheme = lightColorScheme(
@@ -63,8 +66,9 @@ private val LightColorScheme = lightColorScheme(
     background = Color(0xFFF7F7F7),
     onBackground = Color(0xFF4A6894),
     onSurface = Color(0xFF354A69),
-    surfaceVariant = Color.White,
+    surfaceVariant = Color(0xFFFFFFFF),
     onSurfaceVariant = Color(0xFF354A69),
+    inverseOnSurface = Color.White,
 //    onTertiaryContainer = Color.White,
 //    onSecondary = Color.White,
 //    onPrimary = Color.White,
@@ -73,8 +77,6 @@ private val LightColorScheme = lightColorScheme(
 //    onPrimaryContainer = Color.Yellow,
 //    onSecondaryContainer = Color.Green,
 //    onSurfaceVariant = Color.Magenta,
-
-    inverseOnSurface = Color.White,
 
     onTertiary = Color.Magenta,
 
@@ -95,7 +97,7 @@ private val LightColorScheme = lightColorScheme(
 fun UVIndexAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -116,7 +118,7 @@ fun UVIndexAppTheme(
 //    }
 
     MaterialTheme(
-        colorScheme = LightColorScheme,
+        colorScheme = colorScheme,
         typography = Typography,
         content = content
     )

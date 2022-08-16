@@ -11,10 +11,16 @@
         <item>Extreme UV</item>
     </string-array>
 
+
+    <string name="uvindex_peak_time">Peak time</string>
+
     <string name="uvindex_sunburn_title">Time to sunburn</string>
     <string name="uvindex_sunburn_hour_part">h</string>
     <string name="uvindex_sunburn_min_part">min</string>
 
+    <string name="uvindex_vitamin_D_title">Vitamin D</string>
+
+    <string name="uvindex_forecast_title">Forecast</string>
     <string name="uvindex_forecast_title_recommendation">Recommendation</string>
     <string name="uvindex_forecast_title_max_index">Max index</string>
     <string name="uvindex_forecast_item_protection_not_required">Sun protection not required</string>

@@ -1,5 +1,6 @@
 package uv.index.parts.main.ui.composable
 
+import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -21,6 +23,9 @@ import uv.index.R
 import uv.index.parts.main.common.getUVITitle
 import uv.index.parts.main.domain.SunPosition
 import uv.index.parts.main.ui.MainContract
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,16 +43,21 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
         )
     )
 
-    val indexString by remember(state.currentIndexValue, state.currentSummaryDayData) {
+    val currentIndex by remember(state.currentIndexValue) {
         derivedStateOf {
-            val currentIndex = state.currentIndexValue?.roundToInt() ?: 0
-            val maxIndex = state.currentSummaryDayData?.maxIndex?.getIntIndex() ?: 0
-            "$currentIndex/$maxIndex"
+            state.currentIndexValue?.roundToInt() ?: 0
+        }
+    }
+
+    val maxIndex by remember(state.currentSummaryDayData) {
+        derivedStateOf {
+            state.currentSummaryDayData?.maxIndex?.getIntIndex() ?: 0
         }
     }
 
     val context = LocalContext.current
 
+    @Suppress("NAME_SHADOWING")
     val titleString by remember(
         state.currentIndexValue,
         state.currentSunPosition,
@@ -57,12 +67,6 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
             val currentIndex = state.currentIndexValue?.roundToInt() ?: Int.MIN_VALUE
             val array = context.resources.getStringArray(R.array.uvindex_status_info)
             getUVITitle(currentIndex, state.currentSunPosition ?: SunPosition.Above, array)
-        }
-    }
-
-    val currentIndexInt by remember(state.currentIndexValue) {
-        derivedStateOf {
-            state.currentIndexValue?.roundToInt() ?: Int.MIN_VALUE
         }
     }
 
@@ -106,80 +110,21 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
                         )
                     },
                     indexContent = {
-                        Text(
-                            modifier = Modifier,
-                            text = indexString,
-                        )
+                        IndexParts(currentIndex = currentIndex, maxIndex = maxIndex)
                     },
                     subTitleContent = {
-                        Row(
+                        IconsInfo(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(end = 16.dp, top = 16.dp),
-                            horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-
-                            if (currentIndexInt > 2) {
-                                Icon(
-                                    modifier = Modifier.size(48.dp),
-                                    tint = Color.White,
-                                    painter = painterResource(id = R.drawable.ic_glasses),
-                                    contentDescription = ""
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                            }
-
-                            if (currentIndexInt > 2) {
-                                Icon(
-                                    modifier = Modifier.size(36.dp),
-                                    tint = Color.White,
-                                    painter = painterResource(id = R.drawable.ic_sunblock_alt),
-                                    contentDescription = ""
-                                )
-
-                                Spacer(modifier = Modifier.width(8.dp))
-
-                                Icon(
-                                    modifier = Modifier.size(48.dp),
-                                    tint = Color.White,
-                                    painter = painterResource(id = R.drawable.ic_hat),
-                                    contentDescription = ""
-                                )
-
-                                Spacer(modifier = Modifier.width(8.dp))
-                            }
-
-                            if (currentIndexInt > 4) {
-
-                                Icon(
-                                    modifier = Modifier.size(40.dp),
-                                    tint = Color.White,
-                                    painter = painterResource(id = R.drawable.ic_shirt),
-                                    contentDescription = ""
-                                )
-
-                                Spacer(modifier = Modifier.width(8.dp))
-
-                            }
-
-                            if (currentIndexInt > 6) {
-                                Icon(
-                                    modifier = Modifier.size(40.dp),
-                                    tint = Color.White,
-                                    painter = painterResource(id = R.drawable.beach_shadow),
-                                    contentDescription = ""
-                                )
-                            }
-                        }
+                            currentIndexValue = state.currentIndexValue
+                        )
                     },
-                    maxHourContent = {
-                        Column(
-                            modifier = Modifier.padding(start = 8.dp, end = 16.dp)
-                        ) {
-                            Text(text = "пиковый час")
-                            Text(text = "14:00")
-                        }
+                    maxTimeContent = {
+                        PeakTime(
+                            modifier = Modifier.padding(start = 8.dp, end = 16.dp),
+                            maxTime = state.currentPeakTime
+                        )
                     }
                 )
             }
@@ -191,4 +136,145 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
         ),
         scrollBehavior = scrollBehavior
     )
+}
+
+@Composable
+private fun IconsInfo(
+    modifier: Modifier = Modifier,
+    currentIndexValue: Double?
+) {
+
+    val currentIndexInt by remember(currentIndexValue) {
+        derivedStateOf {
+            currentIndexValue?.roundToInt() ?: Int.MIN_VALUE
+        }
+    }
+
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        if (currentIndexInt > 2) {
+            Icon(
+                modifier = Modifier.size(48.dp),
+                tint = Color.White,
+                painter = painterResource(id = R.drawable.ic_glasses),
+                contentDescription = ""
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+        }
+
+        if (currentIndexInt > 2) {
+            Icon(
+                modifier = Modifier.size(36.dp),
+                tint = Color.White,
+                painter = painterResource(id = R.drawable.ic_sunblock_alt),
+                contentDescription = ""
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Icon(
+                modifier = Modifier.size(48.dp),
+                tint = Color.White,
+                painter = painterResource(id = R.drawable.ic_hat),
+                contentDescription = ""
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+        }
+
+        if (currentIndexInt > 4) {
+
+            Icon(
+                modifier = Modifier.size(40.dp),
+                tint = Color.White,
+                painter = painterResource(id = R.drawable.ic_shirt),
+                contentDescription = ""
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+        }
+
+        if (currentIndexInt > 6) {
+            Icon(
+                modifier = Modifier.size(40.dp),
+                tint = Color.White,
+                painter = painterResource(id = R.drawable.beach_shadow),
+                contentDescription = ""
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+private fun IndexParts(
+    modifier: Modifier = Modifier,
+    currentIndex: Int,
+    maxIndex: Int
+) {
+    Row(
+        modifier = modifier
+    ) {
+        AnimatedContent(
+            targetState = currentIndex,
+            transitionSpec = {
+                if (targetState > initialState) {
+                    slideInVertically { height -> height } + fadeIn() with
+                            slideOutVertically { height -> -height } + fadeOut()
+                } else {
+                    slideInVertically { height -> -height } + fadeIn() with
+                            slideOutVertically { height -> height } + fadeOut()
+                }.using(
+                    SizeTransform(clip = false)
+                )
+            }
+        ) { state ->
+
+            Text(
+                text = state.toString()
+            )
+
+        }
+        Text(
+            text = "/"
+        )
+        Crossfade(targetState = maxIndex) {
+            Text(
+                text = it.toString()
+            )
+        }
+    }
+}
+
+@Composable
+private fun PeakTime(
+    modifier: Modifier = Modifier,
+    maxTime: LocalTime?
+) {
+
+    val stringHour by remember(maxTime) {
+        derivedStateOf {
+            maxTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+        }
+    }
+
+    Crossfade(
+        modifier = modifier,
+        targetState = stringHour
+    ) { state ->
+        when (state) {
+            null -> {}
+            else -> {
+                Column {
+                    Text(text = stringResource(id = R.string.uvindex_peak_time))
+                    Text(text = state)
+                }
+            }
+        }
+    }
 }

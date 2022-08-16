@@ -33,7 +33,8 @@ interface MainContract {
         val currentZdt: ZonedDateTime? = null,
         val currentIndexValue: Double? = null,
         val currentSunPosition: SunPosition? = null,
-        val currentTimeToBurn: TimeToBurn? = null
+        val currentTimeToBurn: TimeToBurn? = null,
+        val currentPeakTime: LocalTime? = null
 
     ): UIState
 

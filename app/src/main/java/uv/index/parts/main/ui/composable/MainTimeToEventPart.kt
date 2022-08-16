@@ -13,8 +13,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import uv.index.R
 import uv.index.parts.main.ui.MainContract
 
 @Composable
@@ -34,7 +36,7 @@ internal fun MainTimeToEventPart(
                         timeToString(
                             context,
                             (timeToBurn.minTimeInMins + (timeToBurn.maxTimeInMins
-                                ?: (1.5 * timeToBurn.minTimeInMins)).toInt() ) / 2
+                                ?: (1.5 * timeToBurn.minTimeInMins)).toInt()) / 2
                         )
                     }
                 }
@@ -49,7 +51,7 @@ internal fun MainTimeToEventPart(
                 MainContract.TimeToBurn.Infinity -> "∞"
                 is MainContract.TimeToBurn.Value -> {
                     var time = (timeToBurn.minTimeInMins + (timeToBurn.maxTimeInMins
-                        ?: (1.5 * timeToBurn.minTimeInMins)).toInt() ) / 6
+                        ?: (1.5 * timeToBurn.minTimeInMins)).toInt()) / 6
                     time = (time / 5) * 5
                     buildString {
                         timeToString(context, time)
@@ -60,21 +62,22 @@ internal fun MainTimeToEventPart(
         }
     }
 
-
     Row(
-        modifier = modifier,
+        modifier = modifier.height(IntrinsicSize.Max),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         InnerCard(
             modifier = Modifier.weight(1f),
             info = timeToBurnString,
-            description = "Время до ожога"
+            description = stringResource(id = R.string.uvindex_sunburn_title)
         )
 
         InnerCard(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
             info = timeToVitaminD,
-            description = "Витамин Д"
+            description = stringResource(id = R.string.uvindex_vitamin_D_title)
         )
     }
 }
@@ -114,83 +117,30 @@ private fun InnerCard(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.Center
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-//            Icon(imageVector = Icons.Default.Person, contentDescription = null)
                 Text(
                     text = info,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleMedium
                 )
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             Text(
                 text = description,
                 style = MaterialTheme.typography.labelLarge,
-                color = LocalContentColor.current.copy(alpha = 0.6f)
+                color = LocalContentColor.current.copy(alpha = 0.6f),
+                textAlign = TextAlign.Center
             )
         }
-    }
-}
-
-@Composable
-private fun MainTimeToBurnPart(
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-//            Icon(imageVector = Icons.Default.Person, contentDescription = null)
-            Text(
-                text = "1 час 23 мин",
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
-        Text(
-            text = "Время до ожога",
-            style = MaterialTheme.typography.labelLarge,
-            color = LocalContentColor.current.copy(alpha = 0.6f)
-        )
-    }
-}
-
-@Composable
-fun MainVitaminDPart(
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-//            Icon(imageVector = Icons.Default.Person, contentDescription = null)
-            Text(
-                text = "20 min",
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
-
-        Text(
-            text = "Витамин Д",
-            style = MaterialTheme.typography.labelLarge,
-            color = LocalContentColor.current.copy(alpha = 0.6f)
-        )
     }
 }

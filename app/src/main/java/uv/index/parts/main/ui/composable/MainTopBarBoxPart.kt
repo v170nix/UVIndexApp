@@ -10,9 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.FirstBaseline
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -85,7 +83,7 @@ internal fun MainTopBarBoxPart(
     titleContent: @Composable (fraction: Float) -> Unit,
     subTitleContent: @Composable (fraction: Float) -> Unit,
     indexContent: @Composable (fraction: Float) -> Unit,
-    maxHourContent: @Composable (fraction: Float) -> Unit,
+    maxTimeContent: @Composable (fraction: Float) -> Unit,
 ) {
 
 
@@ -154,7 +152,7 @@ internal fun MainTopBarBoxPart(
                     .alpha(hourAlpha)
             ) {
                 ProvideTextStyle(value = hourStyle) {
-                    maxHourContent(fraction)
+                    maxTimeContent(fraction)
                 }
             }
         }
@@ -170,13 +168,19 @@ internal fun MainTopBarBoxPart(
         val subTitlePlaceable = measurables.first { it.layoutId == "subTitleContent" }
             .measure(constraints.copy(minWidth = constraints.maxWidth))
 
-        val indexPlaceable = measurables.first { it.layoutId == "indexContent" }
+        val indexPlaceable: Placeable = measurables.first { it.layoutId == "indexContent" }
             .measure(constraints)
 
         val peakHourPlaceable = measurables.first { it.layoutId == "peakHourContent" }
             .measure(constraints)
 
         val indexBaseline = indexPlaceable[FirstBaseline]
+        val lastBaseline = indexPlaceable[HorizontalAlignmentLine(merger = { old, new ->
+            kotlin.math.max(
+                old,
+                new
+            )
+        })]
 
         layout(constraints.maxWidth, constraints.maxHeight) {
 
@@ -194,7 +198,8 @@ internal fun MainTopBarBoxPart(
             val yIndexPosition = yIndexCollapsedPosition +
                     ((1f - collapsedFraction) * (yIndexExpandedPosition - yIndexCollapsedPosition)).toInt()
 
-            val yPeakHourPosition = yIndexPosition + indexBaseline - peakHourPlaceable.height
+            val yPeakHourPosition =
+                yIndexPosition + indexPlaceable.height * 0.83f - peakHourPlaceable.height
             val xPeakHourPosition = (constraints.maxWidth / 2)
                 .coerceAtLeast(indexPlaceable.width)
 
@@ -223,7 +228,7 @@ internal fun MainTopBarBoxPart(
             if (collapsedFraction < 0.4) {
                 peakHourPlaceable.placeRelative(
                     x = xPeakHourPosition,
-                    y = yPeakHourPosition
+                    y = yPeakHourPosition.toInt()
                 )
             }
         }
@@ -387,7 +392,7 @@ private fun Preview() {
                     )
                 },
                 subTitleContent = {},
-                maxHourContent = {}
+                maxTimeContent = {}
             )
         }
     }

@@ -21,8 +21,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import uv.index.R
 import uv.index.common.LifecycleTimer
 import uv.index.lib.data.UVIndexData
 import uv.index.lib.data.UVSummaryDayData
@@ -63,7 +65,7 @@ fun MainScreen(viewModel: MainViewModel) {
 
         val isDataLoaded by remember(state) {
             derivedStateOf {
-                state.currentDayData != null && state.place != null
+                state.currentDayData != null && state.place != null && state.currentIndexValue != null
             }
         }
 
@@ -104,98 +106,103 @@ private fun BoxWithConstraintsScope.DataPart(
         }
     ) {
 
-
-        LazyColumn(
-            modifier = Modifier.padding(it),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            state = lazyListState,
+        CompositionLocalProvider(
+            LocalContentColor provides contentColorFor(
+                MaterialTheme.colorScheme.surface
+            )
         ) {
 
-            mainBackgroundHeader(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(16.dp),
-                state = scrollBehavior.state
-            )
+            LazyColumn(
+                modifier = Modifier.padding(it),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                state = lazyListState,
+            ) {
 
-            item {
-                MainTimeToEventPart(
+                mainBackgroundHeader(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    timeToBurn = state.currentTimeToBurn
+                        .height(16.dp),
+                    state = scrollBehavior.state
                 )
-            }
-            item {
-                MainProtectionPart(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp, bottom = 0.dp),
-                    uvSummaryDayData = state.currentSummaryDayData
-                )
-            }
 
-            item {
-                MainSunRiseSetPart(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 0.dp),
-                    riseTime = state.riseTime,
-                    setTime = state.setTime
-                )
-            }
-
-            item {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Прогноз",
-                        style = MaterialTheme.typography.labelLarge
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    MainForecastHoursPart(
+                item {
+                    MainTimeToEventPart(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 0.dp),
-                        hoursList = state.currentUiHoursData
+                            .padding(horizontal = 16.dp),
+                        timeToBurn = state.currentTimeToBurn
                     )
                 }
-            }
+                item {
+                    MainProtectionPart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 24.dp, bottom = 0.dp),
+                        uvSummaryDayData = state.currentSummaryDayData
+                    )
+                }
 
-            item {
-                MainForecastDayPart(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 16.dp),
-                    data = listOf(
-                        UVSummaryDayData(
-                            day = LocalDate.now().plusDays(1),
-                            maxIndex = UVIndexData(0L, 0, 0, 4.3),
-                            timeProtectionBegin = LocalTime.now(),
-                            timeProtectionEnd = LocalTime.now()
-                        ),
-                        UVSummaryDayData(
-                            day = LocalDate.now().plusDays(2),
-                            maxIndex = UVIndexData(0L, 0, 0, 7.3),
-                            timeProtectionBegin = LocalTime.now(),
-                            timeProtectionEnd = LocalTime.now()
-                        ),
-                        UVSummaryDayData(
-                            day = LocalDate.now().plusDays(3),
-                            maxIndex = UVIndexData(0L, 0, 0, 9.8),
-                            timeProtectionBegin = LocalTime.now(),
-                            timeProtectionEnd = LocalTime.now()
+                item {
+                    MainSunRiseSetPart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 0.dp),
+                        riseTime = state.riseTime,
+                        setTime = state.setTime
+                    )
+                }
+
+                item {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.uvindex_forecast_title),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        MainForecastHoursPart(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 0.dp),
+                            hoursList = state.currentUiHoursData
+                        )
+                    }
+                }
+
+                item {
+                    MainForecastDayPart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 16.dp),
+                        data = listOf(
+                            UVSummaryDayData(
+                                day = LocalDate.now().plusDays(1),
+                                maxIndex = UVIndexData(0L, 0, 0, 4.3),
+                                timeProtectionBegin = LocalTime.now(),
+                                timeProtectionEnd = LocalTime.now()
+                            ),
+                            UVSummaryDayData(
+                                day = LocalDate.now().plusDays(2),
+                                maxIndex = UVIndexData(0L, 0, 0, 7.3),
+                                timeProtectionBegin = LocalTime.now(),
+                                timeProtectionEnd = LocalTime.now()
+                            ),
+                            UVSummaryDayData(
+                                day = LocalDate.now().plusDays(3),
+                                maxIndex = UVIndexData(0L, 0, 0, 9.8),
+                                timeProtectionBegin = LocalTime.now(),
+                                timeProtectionEnd = LocalTime.now()
+                            )
                         )
                     )
-                )
-
+                }
             }
         }
     }
@@ -293,20 +300,6 @@ private fun BoxWithConstraintsScope.MainBackground(
             )
     )
 }
-
-//internal fun Modifier.mainBackground(color: Color, center: Offset, radius: Float): Modifier {
-//    return background(
-//        Brush.radialGradient(
-//            colors = listOf(
-//                color,
-//                color.copy(alpha = 0xAA.toFloat() / 0xFF),
-//                currentBgColor
-//            ),
-//            center = Offset(xCenterOffset, 0f),
-//            radius = radius,
-//        )
-//    )
-//}
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 private fun LazyListScope.mainBackgroundHeader(

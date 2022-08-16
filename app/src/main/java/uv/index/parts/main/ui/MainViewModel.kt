@@ -6,7 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
-import net.arwix.extension.ConflatedJob
 import net.arwix.mvi.SimpleViewModel
 import net.arwix.mvi.UISideEffect
 import uv.index.lib.data.*
@@ -15,10 +14,7 @@ import uv.index.parts.main.common.ConflatedReducer
 import uv.index.parts.main.domain.SunPosition
 import uv.index.parts.main.domain.SunRiseSetUseCase
 import uv.index.parts.main.domain.UVForecastHoursUseCase
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import javax.inject.Inject
@@ -36,7 +32,6 @@ class MainViewModel @Inject constructor(
 ) {
     private val remoteUpdateUseCase = UVIndexRemoteUpdateUseCase(dataRepository, viewModelScope)
     private val hoursUseCase = UVForecastHoursUseCase(dataRepository)
-    private val updateJob = ConflatedJob()
 
     private val zdtAtStartDayAsFlow = MutableStateFlow<ZonedDateTime?>(null)
 
@@ -61,21 +56,13 @@ class MainViewModel @Inject constructor(
             placeAsFlow,
             zdtAtStartDayAsFlow.filterNotNull()
         ) { place: UVIPlaceData, zdtAtStartDay: ZonedDateTime ->
-            attachDataObserver(place, zdtAtStartDay)
-        }.launchIn(viewModelScope)
-
-        remoteUpdateUseCase.asFlow
-            .onEach(innerStateUpdater::remoteUpdateState)
-            .launchIn(viewModelScope)
-    }
-
-    private fun attachDataObserver(place: UVIPlaceData, zdtAtStartDay: ZonedDateTime) {
-        updateJob += dataRepository.getDataAsFlow(
-            place.longitude,
-            place.latitude,
-            zdtAtStartDay
-        )
-            .onEach { list: List<UVIndexData> ->
+            place to zdtAtStartDay
+        }.flatMapLatest { (place, zdtAtStartDay) ->
+            dataRepository.getDataAsFlow(
+                place.longitude,
+                place.latitude,
+                zdtAtStartDay
+            ).onEach { list: List<UVIndexData> ->
                 if (list.size < 23) return@onEach
 
                 innerStateUpdater.setCurrentDayData(place, list)
@@ -86,7 +73,6 @@ class MainViewModel @Inject constructor(
                     zdtAtStartDay.plusDays(1L)
                 )
 
-
                 val hoursList: List<UVIndexData> = hoursUseCase(
                     place.longitude,
                     place.latitude,
@@ -94,12 +80,20 @@ class MainViewModel @Inject constructor(
                 )
 
                 innerStateUpdater.setForecastData(forecastList, hoursList)
-            }
-            .onEach {
-                remoteUpdateUseCase.checkAndUpdate(state.value.place, state.value.currentDayData)
+
+            }.onEach {
+                remoteUpdateUseCase.checkAndUpdate(
+                    state.value.place,
+                    state.value.currentDayData
+                )
+
                 innerStateUpdater.updateStateWithCurrentTime()
-            }
-            .flowOn(Dispatchers.IO)
+
+            }.flowOn(Dispatchers.IO)
+        }.launchIn(viewModelScope)
+
+        remoteUpdateUseCase.asFlow
+            .onEach(innerStateUpdater::remoteUpdateState)
             .launchIn(viewModelScope)
     }
 
@@ -116,8 +110,12 @@ class MainViewModel @Inject constructor(
     }
 
     private fun notifyNewStartDay(place: UVIPlaceData) {
+        notifyNewStartDay(LocalDate.now(place.zone).atStartOfDay(place.zone))
+    }
+
+    private fun notifyNewStartDay(zdtAtStartDay: ZonedDateTime?) {
         zdtAtStartDayAsFlow.update {
-            LocalDate.now(place.zone).atStartOfDay(place.zone)
+            zdtAtStartDay
         }
     }
 
@@ -134,9 +132,7 @@ class MainViewModel @Inject constructor(
 
         fun updateStateWithCurrentTime() {
             currentDateTimeReducer.launchReduce(state) {
-                currentDateTimeReducer.reduce(it) { zdt ->
-                    zdtAtStartDayAsFlow.update { zdt }
-                }
+                currentDateTimeReducer.reduce(it, ::notifyNewStartDay)
             }
         }
 
@@ -289,21 +285,17 @@ class MainViewModel @Inject constructor(
                     }
 
 
-                val uiHourData = uiHourReducer.reduce(
-                    sunRiseSetUseCase,
-                    place,
-                    state.hoursForecast,
-                    currentZdt
-                ) ?: state.currentUiHoursData
+                val uiHourData = uiHourReducer.reduce(sunRiseSetUseCase, state, currentZdt)
 
 
                 return state.copy(
                     currentZdt = currentZdt,
                     riseTime = riseTime,
                     setTime = setTime,
+                    currentPeakTime = uiHourData.maxTime,
                     currentIndexValue = currentIndex,
                     currentSunPosition = sunPosition,
-                    currentUiHoursData = uiHourData,
+                    currentUiHoursData = uiHourData.list ?: state.currentUiHoursData,
                     currentTimeToBurn = timeToBurn
                 )
             }
@@ -312,6 +304,11 @@ class MainViewModel @Inject constructor(
 
 
     private class UIHourReducer {
+
+        data class Result(
+            val list: List<MainContract.UIHourData>? = listOf(),
+            val maxTime: LocalTime? = null
+        )
 
         @Volatile
         private var previousHash: Int? = null
@@ -329,18 +326,26 @@ class MainViewModel @Inject constructor(
 
         suspend fun reduce(
             sunRiseSetUseCase: SunRiseSetUseCase,
-            place: UVIPlaceData,
-            hoursList: List<UVIndexData>,
+            state: MainContract.State,
             currentZdt: ZonedDateTime,
-        ): List<MainContract.UIHourData>? {
-            if (hoursList.isEmpty()) return emptyList()
+        ): Result {
+            if (state.hoursForecast.isEmpty() || state.place == null) return Result()
 
             val firstTime = currentZdt.toEpochSecond() - 3600L
-            val firstZdt = Instant.ofEpochSecond(firstTime).atZone(place.zone)
+            val firstZdt = Instant.ofEpochSecond(firstTime).atZone(state.place.zone)
 
-            if (checkHash(place, firstZdt, hoursList)) return null
+            if (checkHash(state.place, firstZdt, state.hoursForecast)) return Result(
+                state.currentUiHoursData, state.currentPeakTime
+            )
 
-            return hoursList
+            val maxHour = state.hoursForecast.asSequence()
+                .take(24)
+                .maxByOrNull { it.value }
+                ?.let {
+                    Instant.ofEpochSecond(it.time).atZone(currentZdt.zone).toLocalTime()
+                }
+
+            val list = state.hoursForecast
                 .asSequence()
                 .filter { it.time > firstTime }
                 .take(24)
@@ -357,7 +362,7 @@ class MainViewModel @Inject constructor(
 
                         if (iIndex == 0) {
                             iIndex = runBlocking {
-                                sunRiseSetUseCase.getPosition(place, zdt)
+                                sunRiseSetUseCase.getPosition(state.place, zdt)
                             }.let {
                                 when (it) {
                                     SunPosition.Above -> 0
@@ -379,6 +384,8 @@ class MainViewModel @Inject constructor(
                     }
                 }
                 .toList()
+
+            return Result(list, maxHour)
         }
     }
 

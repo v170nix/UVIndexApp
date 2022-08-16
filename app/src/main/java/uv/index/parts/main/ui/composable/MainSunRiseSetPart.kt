@@ -3,8 +3,13 @@ package uv.index.parts.main.ui.composable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -25,7 +30,6 @@ internal fun MainSunRiseSetPart(
     riseTime: LocalTime?,
     setTime: LocalTime?
 ) {
-
     val riseString by remember(riseTime) {
         derivedStateOf {
             riseTime?.format(formatter) ?: "--:--"
@@ -38,48 +42,41 @@ internal fun MainSunRiseSetPart(
         }
     }
 
-
-    CompositionLocalProvider(
-        LocalContentColor provides contentColorFor(
-            MaterialTheme.colorScheme.surface
-        )
+    Row(
+        modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
-            modifier,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
 
-                Icon(
-                    modifier = Modifier.size(32.dp),
-                    painter = painterResource(id = R.drawable.ic_sunrise),
-                    contentDescription = ""
-                )
+            Icon(
+                modifier = Modifier.size(32.dp),
+                painter = painterResource(id = R.drawable.ic_sunrise),
+                contentDescription = ""
+            )
 
-                Text(
-                    text = riseString,
-                    textAlign = TextAlign.Start,
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    text = setString,
-                    textAlign = TextAlign.End,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Icon(
-                    modifier = Modifier.size(32.dp),
-                    painter = painterResource(id = R.drawable.ic_sunset),
-                    contentDescription = ""
-                )
-            }
+            Text(
+                text = riseString,
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+        Row(
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = setString,
+                textAlign = TextAlign.End,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Icon(
+                modifier = Modifier.size(32.dp),
+                painter = painterResource(id = R.drawable.ic_sunset),
+                contentDescription = ""
+            )
         }
     }
 }

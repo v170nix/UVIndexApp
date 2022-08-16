@@ -216,7 +216,7 @@ private fun IndexParts(
     modifier: Modifier = Modifier,
     currentIndex: Int,
     maxIndex: Int
-) { //
+) {
     Row(
         modifier = modifier
     ) {

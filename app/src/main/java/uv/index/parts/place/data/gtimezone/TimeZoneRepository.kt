@@ -14,7 +14,9 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.regex.Pattern
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class TimeZoneRepository @Inject constructor(@ApplicationContext private val applicationContext: Context) {
     private val listTimeZones: List<ZoneId>
 

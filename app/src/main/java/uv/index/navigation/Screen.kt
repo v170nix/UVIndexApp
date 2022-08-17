@@ -29,12 +29,13 @@ abstract class Screen<T : NavigationActions>(
     open val nestedItems: NestedScreens<T>? = null
 ) {
     abstract val route: String
-    abstract val content: @Composable (backStackEntry: NavBackStackEntry) -> Unit
+    abstract val content: @Composable T.(backStackEntry: NavBackStackEntry) -> Unit
 }
 
 @OptIn(ExperimentalAnimationApi::class)
 fun <T : NavigationActions> NavGraphBuilder.contentGraph(
-    list: List<Screen<T>>
+    list: List<Screen<T>>,
+    actions: T
 ) {
     list.forEach { screen ->
         composable(
@@ -46,19 +47,20 @@ fun <T : NavigationActions> NavGraphBuilder.contentGraph(
             popEnterTransition = screen.popEnterTransition,
             popExitTransition = screen.popExitTransition
         ) { entry: NavBackStackEntry ->
-            screen.content(entry)
+            screen.content(actions, entry)
         }
 
         screen.nestedItems?.run {
-            nestedGraph(this)
+            nestedGraph(this, actions)
         }
     }
 }
 
 fun <T : NavigationActions> NavGraphBuilder.nestedGraph(
-    nestedScreens: NestedScreens<T>
+    nestedScreens: NestedScreens<T>,
+    actions: T
 ) {
     navigation(nestedScreens.startDestination, nestedScreens.route) {
-        contentGraph(nestedScreens.screens)
+        contentGraph(nestedScreens.screens, actions)
     }
 }

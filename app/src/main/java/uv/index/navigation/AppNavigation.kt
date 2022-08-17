@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import uv.index.LocalAppState
 import uv.index.parts.main.ui.MainViewModel
 import uv.index.parts.main.ui.composable.MainScreen
+import uv.index.parts.place.ui.composable.PlaceListScreen
 
 fun NavBackStackEntry.lifecycleIsResumed() =
     lifecycle.currentState == Lifecycle.State.RESUMED
@@ -24,6 +25,12 @@ fun NavBackStackEntry.lifecycleIsResumed() =
 class AppNavigationActions(navController: NavController) : NavigationActions(navController) {
     val popBack = { from: NavBackStackEntry ->
         if (from.lifecycleIsResumed()) navController.popBackStack()
+    }
+
+    val nestedNavigateToPlace = { from: NavBackStackEntry ->
+        if (from.lifecycleIsResumed()) navController.navigate(
+            AppScreen.Place.List.route
+        )
     }
 }
 
@@ -38,14 +45,37 @@ sealed class AppScreen(
 
     object Main : AppScreen(route = "main") {
         @OptIn(ExperimentalFoundationApi::class)
-        override val content: @Composable (backStackEntry: NavBackStackEntry) -> Unit =
-            { _ ->
+        override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit =
+            { entry ->
                 UIEffect(isDarkSystemIcons = isDarkSystemIcons)
                 val viewModel: MainViewModel = hiltViewModel()
                 CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-                    MainScreen(viewModel)
+                    MainScreen(
+                        viewModel = viewModel,
+                        onChangePlace = { nestedNavigateToPlace(entry) }
+                    )
                 }
             }
+    }
+
+    object Place {
+        val nestedItems = NestedScreens(
+            startDestination = "place/list",
+            route = "place",
+            screens = listOf(List)
+        )
+
+        object List : AppScreen(
+            route = "place/list",
+            isDarkSystemIcons = true
+        ) {
+            override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit
+                get() = {
+                    UIEffect(isDarkSystemIcons = isDarkSystemIcons)
+                    PlaceListScreen()
+                }
+
+        }
     }
 }
 

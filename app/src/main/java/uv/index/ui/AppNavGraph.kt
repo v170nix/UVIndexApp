@@ -7,6 +7,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import uv.index.LocalAppState
 import uv.index.navigation.AppScreen
 import uv.index.navigation.contentGraph
+import uv.index.navigation.nestedGraph
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -14,11 +15,11 @@ fun AppNavGraph(
     startDestination: String
 ) {
     val navController = LocalAppState.current.navController as NavHostController
+    val actions = LocalAppState.current.actions
 
     AnimatedNavHost(navController = navController, startDestination = startDestination) {
-        contentGraph(
-            listOf(AppScreen.Main)
-        )
+        contentGraph(listOf(AppScreen.Main), actions)
+        nestedGraph(AppScreen.Place.nestedItems, actions)
     }
 
 }

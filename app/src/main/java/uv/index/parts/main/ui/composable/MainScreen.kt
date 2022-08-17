@@ -27,7 +27,10 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
+fun MainScreen(
+    viewModel: MainViewModel,
+    onChangePlace: () -> Unit
+) {
 
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior: TopAppBarScrollBehavior =
@@ -55,9 +58,8 @@ fun MainScreen(viewModel: MainViewModel) {
         if (state.place == null) {
             if (!state.isLoadingPlace) {
                 EmptyPlaceSection(
-                    modifier = Modifier.padding(16.dp),
-                    onAddPlaceScreen = {
-                    }
+                    modifier = Modifier.fillMaxSize(),
+                    onAddPlaceScreen = onChangePlace
                 )
             }
         } else {

@@ -14,7 +14,11 @@ import uv.index.parts.main.common.ConflatedReducer
 import uv.index.parts.main.domain.SunPosition
 import uv.index.parts.main.domain.SunRiseSetUseCase
 import uv.index.parts.main.domain.UVForecastHoursUseCase
-import java.time.*
+import uv.index.parts.place.data.room.PlaceDao
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import javax.inject.Inject
@@ -22,6 +26,7 @@ import kotlin.math.roundToInt
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    private val placeDao: PlaceDao,
     private val dataRepository: UVIndexRepository,
     private val skinRepository: UVSkinRepository,
     sunRiseSetUseCase: SunRiseSetUseCase
@@ -37,21 +42,28 @@ class MainViewModel @Inject constructor(
 
     private val innerStateUpdater = InnerStateUpdater(sunRiseSetUseCase)
 
-    private val placeAsFlow = flow {
-//        emit(UVIPlaceData(ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-5)), 29.7, -124.9))
+    private val placeAsFlow =
+
+//        flow {
+////        emit(UVIPlaceData(ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-5)), 29.7, -124.9))
+////
+////        delay(10000L)
 //
-//        delay(10000L)
-
-        emit(UVIPlaceData(ZoneId.systemDefault(), 60.0, 30.0))
-
-    }
-        .onEach(innerStateUpdater::setFirstPlaceLoadingComplete)
-        .distinctUntilChanged()
-        .onEach(innerStateUpdater::newPlace)
-        .filterNotNull()
-        .onEach(::notifyNewStartDay)
+//        emit(UVIPlaceData(ZoneId.systemDefault(), 60.0, 30.0))
+//
+//    }
+        placeDao.getSelectedItemAsFlow()
+            .map { placeData ->
+                placeData?.let { UVIPlaceData(it.zone, it.latLng.latitude, it.latLng.longitude) }
+            }
+            .onEach(innerStateUpdater::setFirstPlaceLoadingComplete)
+            .distinctUntilChanged()
+            .filterNotNull()
+            .onEach(innerStateUpdater::newPlace)
+            .onEach(::notifyNewStartDay)
 
     init {
+
         combine(
             placeAsFlow,
             zdtAtStartDayAsFlow.filterNotNull()

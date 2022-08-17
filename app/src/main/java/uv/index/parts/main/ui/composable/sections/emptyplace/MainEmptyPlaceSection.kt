@@ -1,14 +1,11 @@
 package uv.index.parts.main.ui.composable.sections.emptyplace
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
@@ -22,39 +19,38 @@ internal fun EmptyPlaceSection(
     modifier: Modifier = Modifier,
     onAddPlaceScreen: () -> Unit
 ) {
-    Column(
+    Surface(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            modifier = Modifier
-                .width(148.dp)
-                .height(148.dp),
-            painter = painterResource(id = R.drawable.ic_empty_place),
-//            tint = MaterialTheme.colors.secondary,
-            contentDescription = null
-        )
-//        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                modifier = Modifier
+                    .alpha(0.5f)
+                    .width(148.dp)
+                    .height(148.dp),
+                painter = painterResource(id = R.drawable.ic_empty_place),
+                tint = MaterialTheme.colorScheme.onBackground,
+                contentDescription = null
+            )
             Text(
                 text = stringResource(id = R.string.place_empty_title),
-//                style = MaterialTheme.typography.h5
+                style = MaterialTheme.typography.headlineSmall
             )
-//        }
-//        Spacer(modifier = androidx.compose.ui.Modifier.height(Dimens.grid_2))
-//        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(id = R.string.place_empty_text),
-//                style = MaterialTheme.typography.body2,
+                style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center
             )
-//        }
-//        Spacer(modifier = androidx.compose.ui.Modifier.height(Dimens.grid_2))
-        Button(onClick = onAddPlaceScreen) {
-            Text(
-                text = stringResource(id = R.string.place_empty_button)
-                    .toUpperCase(Locale.current),
-//                style = MaterialTheme.typography.button
-            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = onAddPlaceScreen) {
+                Text(
+                    text = stringResource(id = R.string.place_empty_button).toUpperCase(Locale.current),
+                )
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     kotlin("kapt")
+//    id("com.google.devtools.ksp") version "1.7.10-1.0.6"
     id("dagger.hilt.android.plugin")
     kotlin("plugin.serialization") version "1.6.21"
     id("com.google.gms.google-services")
@@ -69,7 +70,7 @@ kapt {
 
 dependencies {
 
-    val room_version = "2.4.3"
+    val room_version = "2.5.0-alpha02"
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
@@ -92,7 +93,6 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
 
     implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
 

@@ -9,11 +9,13 @@ import androidx.navigation.NavController
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import uv.index.navigation.AppNavigationActions
 
 @Stable
 class AppState(
     val navController: NavController,
-    val uiController: SystemUiController
+    val uiController: SystemUiController,
+    val actions: AppNavigationActions,
 )
 
 val LocalAppState = compositionLocalOf<AppState> { error("No App State") }
@@ -22,9 +24,10 @@ val LocalAppState = compositionLocalOf<AppState> { error("No App State") }
 @Composable
 fun rememberAppState(
     navController: NavController = rememberAnimatedNavController(),
-    uiController: SystemUiController = rememberSystemUiController()
+    uiController: SystemUiController = rememberSystemUiController(),
+    actions: AppNavigationActions = remember(navController) { AppNavigationActions(navController) },
 ): AppState = remember {
     AppState(
-        navController, uiController
+        navController, uiController, actions
     )
 }

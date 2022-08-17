@@ -8,10 +8,11 @@ import kotlinx.coroutines.flow.update
 import uv.index.parts.place.data.room.PlaceDao
 import uv.index.parts.place.data.room.PlaceData
 import java.time.ZoneId
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PlaceEditInnerRepository(
-    private val dao: PlaceDao
-)
+@Singleton
+class PlaceEditInnerRepository @Inject constructor(private val dao: PlaceDao)
 {
     private val _state = MutableStateFlow<PlaceEditInnerData?>(null)
     val data = _state.asStateFlow()

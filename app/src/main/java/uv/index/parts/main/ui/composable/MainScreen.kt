@@ -3,33 +3,26 @@ package uv.index.parts.main.ui.composable
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import uv.index.R
 import uv.index.common.LifecycleTimer
 import uv.index.parts.main.common.getUVIColor
 import uv.index.parts.main.domain.SunPosition
 import uv.index.parts.main.ui.MainContract
 import uv.index.parts.main.ui.MainViewModel
+import uv.index.parts.main.ui.composable.sections.dataview.MainDataSection
+import uv.index.parts.main.ui.composable.sections.emptyplace.EmptyPlaceSection
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,23 +52,16 @@ fun MainScreen(viewModel: MainViewModel) {
             .background(MaterialTheme.colorScheme.background)
     ) {
 
-        val isDataLoaded by remember(state) {
-            derivedStateOf {
-                state.currentDayData != null && state.place != null && state.currentIndexValue != null
+        if (state.place == null) {
+            if (!state.isLoadingPlace) {
+                EmptyPlaceSection(
+                    modifier = Modifier.padding(16.dp),
+                    onAddPlaceScreen = {
+                    }
+                )
             }
-        }
-
-        val lazyListState = rememberLazyListState()
-        MainBackground(
-            behaviorState = scrollBehavior.state,
-            state = state,
-            collapsedHeight = 64.dp,
-            backgroundColor = MaterialTheme.colorScheme.background
-        )
-
-        if (isDataLoaded) {
+        } else {
             DataPart(
-                lazyListState = lazyListState,
                 scrollBehavior = scrollBehavior,
                 state = state
             )
@@ -86,102 +72,29 @@ fun MainScreen(viewModel: MainViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BoxWithConstraintsScope.DataPart(
-    lazyListState: LazyListState,
     scrollBehavior: TopAppBarScrollBehavior,
     state: MainContract.State
 ) {
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            MainCurrentInfoTopBar(
-                scrollBehavior = scrollBehavior,
-                state = state
-            )
+    val isDataLoaded by remember(state) {
+        derivedStateOf {
+            state.currentDayData != null && state.place != null && state.currentIndexValue != null
         }
-    ) {
+    }
 
-        CompositionLocalProvider(
-            LocalContentColor provides contentColorFor(
-                MaterialTheme.colorScheme.surface
-            )
-        ) {
+    if (isDataLoaded) {
+        MainBackground(
+            behaviorState = scrollBehavior.state,
+            state = state,
+            collapsedHeight = 64.dp,
+            backgroundColor = MaterialTheme.colorScheme.background
+        )
 
-            LazyColumn(
-                modifier = Modifier.padding(it),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                state = lazyListState,
-            ) {
-
-                mainBackgroundHeader(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(16.dp),
-                    state = scrollBehavior.state
-                )
-
-                item {
-                    MainTimeToEventPart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        timeToBurn = state.currentTimeToBurn
-                    )
-                }
-                item {
-                    MainProtectionPart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 24.dp, bottom = 0.dp),
-                        uvSummaryDayData = state.currentSummaryDayData
-                    )
-                }
-
-                item {
-                    MainSunRiseSetPart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 0.dp),
-                        riseTime = state.riseTime,
-                        setTime = state.setTime
-                    )
-                }
-
-                item {
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.uvindex_forecast_title),
-                            style = MaterialTheme.typography.labelLarge
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MainForecastHoursPart(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 0.dp),
-                            hoursList = state.currentUiHoursData
-                        )
-                    }
-                }
-
-                item {
-                    MainForecastDayPart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(top = 16.dp),
-                        data = state.daysForecast
-                    )
-                }
-            }
-        }
+        MainDataSection(
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            scrollBehavior,
+            state
+        )
     }
 }
 
@@ -276,37 +189,4 @@ private fun BoxWithConstraintsScope.MainBackground(
                 )
             )
     )
-}
-
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
-private fun LazyListScope.mainBackgroundHeader(
-    modifier: Modifier = Modifier,
-    state: TopAppBarState,
-) {
-    stickyHeader {
-        Box(modifier = modifier) {
-
-            val alpha by remember(state.collapsedFraction) {
-                derivedStateOf {
-                    ((state.collapsedFraction - 0.9)
-                        .coerceAtLeast(0.0) * 10.0)
-                        .coerceIn(0.01, 1.0)
-                        .toFloat()
-                }
-            }
-            Spacer(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .alpha(alpha)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.background,
-                                Color.Transparent
-                            ),
-                        )
-                    )
-            )
-        }
-    }
 }

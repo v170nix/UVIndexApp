@@ -1,4 +1,4 @@
-package uv.index.parts.main.ui.composable
+package uv.index.parts.main.ui.composable.sections.dataview.components
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
@@ -30,7 +30,7 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
+fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
     collapsedHeight: Dp = 64.dp,
@@ -80,7 +80,7 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBar(
                 val inverseSurface = contentColorFor(MaterialTheme.colorScheme.inverseSurface)
                 val surface = contentColorFor(MaterialTheme.colorScheme.surface)
 
-                MainTopBarBoxPart(
+                MainCurrentInfoTopBarInnerPart(
                     minHeight = collapsedHeight,
                     collapsedFraction = scrollBehavior.state.collapsedFraction,
                     textStyles = MainTopBarDefaults.mainTopBarTextStyles(

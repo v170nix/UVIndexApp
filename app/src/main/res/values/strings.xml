@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">UVIndexApp</string>
 
+    <string name="place_empty_title">Your Places</string>
+    <string name="place_empty_text">Please add a location to use this feature</string>
+    <string name="place_empty_button">Continue</string>
+
     <string-array name="uvindex_status_info">
         <item>Night</item>
         <item>Twilight</item>
@@ -10,7 +14,6 @@
         <item>Very High UV</item>
         <item>Extreme UV</item>
     </string-array>
-
 
     <string name="uvindex_peak_time">Peak time</string>
 

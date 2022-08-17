@@ -1,4 +1,4 @@
-package uv.index.parts.main.ui.composable
+package uv.index.parts.main.ui.composable.sections.dataview.components
 
 import android.content.Context
 import androidx.compose.foundation.layout.*

@@ -1,4 +1,4 @@
-package uv.index.parts.main.ui.composable
+package uv.index.parts.main.ui.composable.sections.dataview.components
 
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.Box
@@ -74,7 +74,7 @@ object MainTopBarDefaults {
 }
 
 @Composable
-internal fun MainTopBarBoxPart(
+internal fun MainCurrentInfoTopBarInnerPart(
     modifier: Modifier = Modifier,
     collapsedFraction: Float,
     minHeight: Dp,
@@ -358,7 +358,7 @@ private fun Preview() {
 
     UVIndexAppTheme {
         Surface {
-            MainTopBarBoxPart(
+            MainCurrentInfoTopBarInnerPart(
                 collapsedFraction = scrollBehavior.state.collapsedFraction,
                 textStyles = MainTopBarDefaults.mainTopBarTextStyles(
                     placeExpandedStyle = MaterialTheme.typography.labelLarge,

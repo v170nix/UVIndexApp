@@ -1,6 +1,7 @@
 package uv.index.parts.place.parts.list.ui
 
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -12,8 +13,10 @@ import uv.index.parts.place.parts.list.domain.PlaceListUseCase
 import uv.index.parts.place.parts.list.ui.PlaceListContract.Effect
 import uv.index.parts.place.parts.list.ui.PlaceListContract.Event
 import uv.index.parts.place.parts.list.ui.PlaceListContract.State
+import javax.inject.Inject
 
-class PlaceListViewModel(
+@HiltViewModel
+class PlaceListViewModel @Inject constructor(
     private val placeListUseCase: PlaceListUseCase,
     private val placeEditInnerRepository: PlaceEditInnerRepository
 ) : SimpleViewModel<Event, State, Effect>(

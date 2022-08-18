@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="place_location_header_list">List</string>
+    <string name="place_location_header_auto">Auto detect</string>
+    <string name="place_location_latitude">Latitude</string>
+    <string name="place_location_longitude">Longitude</string>
+    <string name="place_location_update">Update</string>
+    <string name="place_location_edit">Edit</string>
+    <string name="place_location_get_location">Get Location</string>
+
+    <string name="place_location_error_range">The value is out of the range [%1$d, %2$d]</string>
+    <string name="place_location_error_time_zone_auto_find">No time zone data found</string>
+    <string name="place_location_premium_info">Available only for premium users</string>
+    <string name="place_location_premium_button">Get premium</string>
+    <string name="place_location_permission_info">For automatically determination of coordinates, permission is needed</string>
+    <string name="place_location_permission_button">Give permission</string>
+    <string name="place_location_undo_delete_message">Location is deleted</string>
+    <string name="place_location_undo_delete_button">Undo</string>
+    <string name="place_navigation_bottom_bar_back">Back</string>
+    <string name="place_navigation_bottom_bar_next">Next</string>
+    <string name="place_navigation_bottom_bar_finish">Finish</string>
+
+    <string name="place_screen_title_list">Places</string>
+    <string name="place_screen_title_select_location">Select Location</string>
+    <string name="place_screen_title_select_time_zone">Select time zone</string>
+
+    <string name="place_location_north">N</string>
+    <string name="place_location_east">E</string>
+    <string name="place_location_south">S</string>
+    <string name="place_location_west">W</string>
+</resources>

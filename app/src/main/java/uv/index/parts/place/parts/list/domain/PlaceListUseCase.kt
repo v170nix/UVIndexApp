@@ -3,10 +3,8 @@ package uv.index.parts.place.parts.list.domain
 import android.content.Context
 import android.location.Location
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeoutOrNull
 import net.arwix.extension.ConflatedJob
 import uv.index.parts.place.common.getLocation
 import uv.index.parts.place.common.locationCheckPermission
@@ -14,6 +12,7 @@ import uv.index.parts.place.data.GeocoderRepository
 import uv.index.parts.place.data.room.PlaceDao
 import uv.index.parts.place.data.room.PlaceData
 import uv.index.parts.place.parts.list.data.PlaceListItem
+import java.time.ZoneId
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -56,19 +55,19 @@ class PlaceListUseCase @Inject constructor(
     }
 
     suspend fun deleteItem(id: Int) {
-//        dao.deleteById(id)
+        dao.deleteById(id)
     }
 
     suspend fun undoDeleteItem(item: PlaceListItem.Custom) {
-//        dao.insert(item.place)
+        dao.insert(item.place)
     }
 
     suspend fun selectAutoItem() {
-//        dao.selectAutoItem()
+        dao.selectAutoItem()
     }
 
     suspend fun selectCustomItem(place: PlaceData) {
-//        dao.selectCustomItem(place.copy(isSelected = true))
+        dao.selectCustomItem(place.copy(isSelected = true))
     }
 
     suspend fun requestUpdateAutoLocation(isForceUpdateLocation: Boolean = false) {
@@ -107,14 +106,14 @@ class PlaceListUseCase @Inject constructor(
     }
 
     private suspend fun saveCurrentLocation(location: Location) {
-//        dao.updateAutoItem(location, ZoneId.systemDefault())
-//        geolocationJob += sideScope.launch(Dispatchers.IO, CoroutineStart.LAZY) geo@{
-//            val address =
-//                geocoder.getAddressOrNull(location.latitude, location.longitude) ?: return@geo
-//            ensureActive()
-//            dao.updateAutoItem(address)
-//        }
-//        geolocationJob.start()
+        dao.updateAutoItem(location, ZoneId.systemDefault())
+        geolocationJob += sideScope.launch(Dispatchers.IO, CoroutineStart.LAZY) geo@{
+            val address =
+                geocoder.getAddressOrNull(location.latitude, location.longitude) ?: return@geo
+            ensureActive()
+            dao.updateAutoItem(address)
+        }
+        geolocationJob.start()
     }
 
     private companion object {

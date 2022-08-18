@@ -1,5 +1,6 @@
 package uv.index.parts.main.ui.composable.sections.emptyplace
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,7 +21,7 @@ internal fun EmptyPlaceSection(
     onAddPlaceScreen: () -> Unit
 ) {
     Surface(
-        modifier = modifier,
+        modifier = modifier.background(MaterialTheme.colorScheme.background),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

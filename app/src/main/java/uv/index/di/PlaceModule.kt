@@ -7,8 +7,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import uv.index.parts.place.data.room.PlaceDao
-import uv.index.parts.place.data.room.PlaceDatabase
+import uv.index.features.place.data.room.PlaceDao
+import uv.index.features.place.data.room.PlaceDatabase
 
 @Module
 @InstallIn(SingletonComponent::class)

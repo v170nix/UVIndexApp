@@ -15,11 +15,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import uv.index.LocalAppState
-import uv.index.parts.main.ui.MainViewModel
-import uv.index.parts.main.ui.composable.MainScreen
-import uv.index.parts.place.parts.list.ui.PlaceListViewModel
-import uv.index.parts.place.ui.composable.PlaceListScreen
-import uv.index.parts.place.ui.composable.PlaceLocationScreen
+import uv.index.features.main.ui.MainViewModel
+import uv.index.features.main.ui.composable.MainScreen
+import uv.index.features.place.parts.list.ui.PlaceListViewModel
+import uv.index.features.place.ui.composable.PlaceListScreen
+import uv.index.features.place.ui.composable.PlaceLocationScreen
 
 fun NavBackStackEntry.lifecycleIsResumed() =
     lifecycle.currentState == Lifecycle.State.RESUMED

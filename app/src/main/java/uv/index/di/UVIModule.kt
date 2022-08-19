@@ -15,12 +15,14 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import uv.index.lib.data.*
 import uv.index.lib.net.CertOkHttpClient
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object UVIModule {
 
     @Provides
+    @Singleton
     fun provideDb(@ApplicationContext context: Context): UVIndexDatabase {
         return Room.databaseBuilder(
             context,
@@ -29,16 +31,19 @@ object UVIModule {
     }
 
     @Provides
+    @Singleton
     fun provideIndexDao(indexDb: UVIndexDatabase): UVIndexDao {
         return indexDb.getUVIndexDao()
     }
 
     @Provides
+    @Singleton
     fun provideIndexMetaDao(indexDb: UVIndexDatabase): UVMetaDao {
         return indexDb.getUVMetaDao()
     }
 
     @Provides
+    @Singleton
     fun provideHttpClient(): CertOkHttpClient {
         return CertOkHttpClient(
             HttpClientConfig<OkHttpConfig>().apply {
@@ -54,6 +59,7 @@ object UVIModule {
     }
 
     @Provides
+    @Singleton
     fun provideUVIndexApi(client: CertOkHttpClient): UVIndexAPI {
         return UVIndexAPI(
             client = client,
@@ -64,6 +70,7 @@ object UVIModule {
     }
 
     @Provides
+    @Singleton
     fun provideUVIndexRepository(
         api: UVIndexAPI,
         indexDao: UVIndexDao,
@@ -77,6 +84,7 @@ object UVIModule {
     }
 
     @Provides
+    @Singleton
     fun provideSkinRepository(preferences: SharedPreferences): UVSkinRepository {
         return UVSkinRepository(
             preferences = preferences

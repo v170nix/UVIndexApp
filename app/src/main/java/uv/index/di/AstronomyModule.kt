@@ -7,6 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import net.arwix.urania.core.ephemeris.Ephemeris
 import uv.index.features.astronomy.data.ephemeris.SunGeocentricEquatorialApparentEphemeris
 import javax.inject.Qualifier
+import javax.inject.Singleton
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -18,6 +19,7 @@ object AstronomyModule {
 
     @SunEphemeris
     @Provides
+    @Singleton
     fun provideSunEphemeris(): Ephemeris = SunGeocentricEquatorialApparentEphemeris()
 
 }

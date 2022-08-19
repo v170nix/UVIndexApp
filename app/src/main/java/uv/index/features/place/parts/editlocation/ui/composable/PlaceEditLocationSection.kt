@@ -5,12 +5,14 @@ import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 import androidx.core.view.children
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
@@ -30,14 +32,19 @@ import kotlinx.coroutines.plus
 import net.arwix.mvi.EventHandler
 import net.arwix.mvi.SimpleViewModel
 import uv.index.R
+import uv.index.common.TextFieldState
 import uv.index.features.place.common.except
+import uv.index.features.place.data.PlaceAutocompleteResult
 import uv.index.features.place.parts.editlocation.ui.PlaceLocationContract
+import uv.index.features.place.parts.editlocation.ui.composable.components.InputLocationBoxPart
+import uv.index.ui.theme.Dimens
 import java.util.concurrent.CancellationException
+import kotlin.math.abs
 import kotlin.random.Random
 
 
 @Composable
-fun PlaceEditPositionComponent(
+fun PlaceEditPositionSection(
     modifier: Modifier = Modifier,
     logoOffset: DpOffset,
     state: PlaceLocationContract.State,
@@ -51,7 +58,11 @@ fun PlaceEditPositionComponent(
     }
 
     LaunchedEffect(cameraPositionState.position) {
-        eventHandler.doEvent(PlaceLocationContract.Event.NotifyUpdateCameraPosition(cameraPositionState.position))
+        eventHandler.doEvent(
+            PlaceLocationContract.Event.NotifyUpdateCameraPosition(
+                cameraPositionState.position
+            )
+        )
     }
 
     val markerPosition: LatLng? by remember(state.inputState) {
@@ -75,17 +86,21 @@ fun PlaceEditPositionComponent(
                     } else cameraPositionState.position.zoom
 
                     val newPosition = CameraPosition.builder().apply {
-                            effect.cameraPosition?.run {
-                                bearing(bearing)
-                                zoom(newZoom)
-                                tilt(tilt)
-                            } ?: zoom(newZoom)
-                        }
+                        effect.cameraPosition?.run {
+                            bearing(bearing)
+                            zoom(newZoom)
+                            tilt(tilt)
+                        } ?: zoom(newZoom)
+                    }
                         .target(effect.latLng)
                         .build()
 
                     cameraPositionState.move(CameraUpdateFactory.newCameraPosition(newPosition))
-                    eventHandler.doEvent(PlaceLocationContract.Event.NotifyUpdateCameraPosition(newPosition))
+                    eventHandler.doEvent(
+                        PlaceLocationContract.Event.NotifyUpdateCameraPosition(
+                            newPosition
+                        )
+                    )
 
                 }
                 is PlaceLocationContract.Effect.ChangeCenterMapToLatLng -> {
@@ -113,12 +128,18 @@ fun PlaceEditPositionComponent(
         ),
         onMapClick = { latLng ->
             eventHandler.doEvent(
-                PlaceLocationContract.Event.SelectLocationFromMap(latLng, cameraPositionState.position)
+                PlaceLocationContract.Event.SelectLocationFromMap(
+                    latLng,
+                    cameraPositionState.position
+                )
             )
         },
         onPOIClick = { point: PointOfInterest ->
             eventHandler.doEvent(
-                PlaceLocationContract.Event.SelectLocationFromPOI(point, cameraPositionState.position)
+                PlaceLocationContract.Event.SelectLocationFromPOI(
+                    point,
+                    cameraPositionState.position
+                )
             )
         },
     ) {
@@ -171,23 +192,23 @@ fun InputLocationBoxComponent(
 
     val latState by remember(state.latitude, eventHandler) {
         derivedStateOf {
-//            TextFieldState(
-//                state.latitude,
-//                onValueChange = { eventHandler.doEvent(PlaceLocationContract.Event.ChangeLatitudeFromInput(it)) },
-//                isError = isLatitudeError(state.latitude),
-//                textError = latTextError
-//            )
+            TextFieldState(
+                state.latitude,
+                onValueChange = { eventHandler.doEvent(PlaceLocationContract.Event.ChangeLatitudeFromInput(it)) },
+                isError = isLatitudeError(state.latitude),
+                textError = latTextError
+            )
         }
     }
 
     val lngState by remember(state.longitude, eventHandler) {
         derivedStateOf {
-//            TextFieldState(
-//                state.longitude,
-//                onValueChange = { eventHandler.doEvent(PlaceLocationContract.Event.ChangeLongitudeFromInput(it)) },
-//                isError = isLongitudeError(state.longitude),
-//                textError = lngTextError
-//            )
+            TextFieldState(
+                state.longitude,
+                onValueChange = { eventHandler.doEvent(PlaceLocationContract.Event.ChangeLongitudeFromInput(it)) },
+                isError = isLongitudeError(state.longitude),
+                textError = lngTextError
+            )
         }
     }
 
@@ -205,20 +226,31 @@ fun InputLocationBoxComponent(
         modifier = modifier,
         contentAlignment = Alignment.BottomEnd
     ) {
-//        InputLocationBoxComponent(
-//            Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp),
-//            state.name,
-//            state.subName,
-//            latState,
-//            lngState,
-//            onSearchClick = {
-//            },
-//            onSearchResult = { placeResult: PlaceAutocompleteResult ->
-//                searchResultTime = SystemClock.elapsedRealtime()
-//                eventHandler.doEvent(PlaceLocationContract.Event.ChangeLocationFromPlace(placeResult))
-//            }
-//        )
-//        }
+        InputLocationBoxPart(
+            Modifier.padding(start = Dimens.grid_2, top = 0.dp, end = Dimens.grid_2),
+            state.name,
+            state.subName,
+            latState,
+            lngState,
+            onSearchClick = {
+            },
+            onSearchResult = { placeResult: PlaceAutocompleteResult ->
+                searchResultTime = SystemClock.elapsedRealtime()
+                eventHandler.doEvent(PlaceLocationContract.Event.ChangeLocationFromPlace(placeResult))
+            }
+        )
     }
+}
+
+private fun isLatitudeError(latitude: String): Boolean {
+    if (latitude.isBlank()) return false
+    val dLatitude = latitude.toDoubleOrNull() ?: return true
+    return abs(dLatitude) > 90
+}
+
+private fun isLongitudeError(longitude: String): Boolean {
+    if (longitude.isBlank()) return false
+    val dLongitude = longitude.toDoubleOrNull() ?: return true
+    return abs(dLongitude) > 180
 }
 

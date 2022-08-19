@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.features.place.parts.editlocation.ui.PlaceEditLocationViewModel
 import uv.index.features.place.parts.editlocation.ui.composable.InputLocationBoxComponent
-import uv.index.features.place.parts.editlocation.ui.composable.PlaceEditPositionComponent
+import uv.index.features.place.parts.editlocation.ui.composable.PlaceEditPositionSection
 import uv.index.ui.theme.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +49,7 @@ fun PlaceLocationScreen(
                 )
             }
         ) { paddingValues ->
-            PlaceEditPositionComponent(
+            PlaceEditPositionSection(
                 modifier = Modifier.fillMaxSize(),
                 logoOffset = DpOffset(
                     Dimens.grid_2 + paddingValues.calculateLeftPadding(LocalLayoutDirection.current),

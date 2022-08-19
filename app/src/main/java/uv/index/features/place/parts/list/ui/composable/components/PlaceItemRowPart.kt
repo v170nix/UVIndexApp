@@ -38,7 +38,7 @@ internal fun ItemRow(
             role = Role.Button
         )
         .fillMaxWidth(),
-//        colors = CardDefaults.elevatedCardColors(containerColor = backgroundColor),
+//        colors = CardDefaults.cardColors (containerColor = backgroundColor),
 //        backgroundColor = backgroundColor
 
     ) {

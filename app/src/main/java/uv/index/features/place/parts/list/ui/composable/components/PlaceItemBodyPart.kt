@@ -1,5 +1,6 @@
 package uv.index.features.place.parts.list.ui.composable.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -20,19 +21,19 @@ import java.time.ZoneId
 
 @Composable
 internal fun BodyPart(
+    modifier: Modifier = Modifier,
     title: String?,
     subTitle: String?,
     latLng: LatLng,
     zoneId: ZoneId
 ) {
     Column(
-        Modifier.padding(
-            start = Dimens.grid_1,
-            end = Dimens.grid_1_5
-        )
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(Dimens.grid_0_25)
     ) {
         LocationPart(latLng = latLng)
         TitlePart(
+            verticalArrangement = Arrangement.spacedBy(Dimens.grid_0_25),
             title = title ?: "",
             subTitle = subTitle ?: ""
         )
@@ -69,27 +70,24 @@ private fun LocationPart(
 @Composable
 private fun TitlePart(
     modifier: Modifier = Modifier,
+    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     title: String?,
     subTitle: String?
 ) {
     if (title.isNullOrBlank() && subTitle.isNullOrBlank()) return
-    Column(modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = verticalArrangement
+    ) {
         if (!title.isNullOrBlank() || !subTitle.isNullOrBlank())
             Text(
-                modifier = Modifier
-//                    .firstBaselineToTop(32.dp)
-//                    .alpha(ContentAlpha.high)
-                ,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.headlineLarge,
                 text = title ?: subTitle!!
             )
         if (!subTitle.isNullOrBlank() && !title.isNullOrBlank())
-//            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
-                style = MaterialTheme.typography.bodyLarge,
                 text = subTitle
             )
-//            }
     }
 }
 

@@ -34,7 +34,8 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
     collapsedHeight: Dp = 64.dp,
-    state: MainContract.State
+    state: MainContract.State,
+    onEditPlace: () -> Unit
 ) {
     val statusHeight: Dp by animateDpAsState(
         targetValue = max(
@@ -100,7 +101,8 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
                             modifier = Modifier
                                 .padding(end = 8.dp)
                                 .fillMaxWidth(),
-                            currentDateTime = state.currentZdt
+                            currentDateTime = state.currentZdt,
+                            onEditPlace = onEditPlace
                         )
                     },
                     titleContent = {

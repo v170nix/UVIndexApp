@@ -374,7 +374,8 @@ private fun Preview() {
                 placeContent = {
                     MainPlacePart(
                         modifier = Modifier.fillMaxWidth(),
-                        currentDateTime = ZonedDateTime.now()
+                        currentDateTime = ZonedDateTime.now(),
+                        onEditPlace = {}
                     )
                 },
                 titleContent = {

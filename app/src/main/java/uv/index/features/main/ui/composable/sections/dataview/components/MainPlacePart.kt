@@ -23,6 +23,7 @@ import java.time.format.FormatStyle
 internal fun MainPlacePart(
     modifier: Modifier = Modifier,
     currentDateTime: ZonedDateTime?,
+    onEditPlace: () -> Unit
 ) {
 
     val stringZDT by remember(currentDateTime) {
@@ -59,7 +60,7 @@ internal fun MainPlacePart(
             colors = ButtonDefaults.textButtonColors(
                 contentColor = LocalContentColor.current
             ),
-            onClick = { /*TODO*/ }
+            onClick = onEditPlace
         ) {
             Row(
                 modifier = Modifier,

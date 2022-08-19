@@ -65,7 +65,8 @@ fun MainScreen(
         } else {
             DataPart(
                 scrollBehavior = scrollBehavior,
-                state = state
+                state = state,
+                onChangePlace = onChangePlace
             )
         }
     }
@@ -75,7 +76,8 @@ fun MainScreen(
 @Composable
 private fun BoxWithConstraintsScope.DataPart(
     scrollBehavior: TopAppBarScrollBehavior,
-    state: MainContract.State
+    state: MainContract.State,
+    onChangePlace: () -> Unit
 ) {
 
     val isDataLoaded by remember(state) {
@@ -95,7 +97,8 @@ private fun BoxWithConstraintsScope.DataPart(
         MainDataSection(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             scrollBehavior,
-            state
+            state,
+            onEditPlace = onChangePlace
         )
     }
 }

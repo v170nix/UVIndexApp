@@ -38,12 +38,11 @@ internal fun EmptyPlaceSection(
             )
             Text(
                 text = stringResource(id = R.string.place_empty_title),
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineLarge
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(id = R.string.place_empty_text),
-                style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))

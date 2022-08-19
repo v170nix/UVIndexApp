@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import com.google.android.gms.common.api.ApiException
@@ -57,38 +58,25 @@ internal fun AutoAllowRow(
         }
     )
 
-    Column(
-        Modifier.padding(
-            top = Dimens.grid_2,
-            bottom = Dimens.grid_1,
-            start = Dimens.grid_1,
-            end = Dimens.grid_0_5,
-        )
-    ) {
-        AutoOverlineTextPart()
+    AutoContainer {
         BodyPart(
             title = title ?: "",
             subTitle = subTitle ?: "",
             latLng = latLng,
             zoneId = zoneId
         )
-        Spacer(modifier = Modifier.height(Dimens.grid_1))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = Dimens.grid_1),
-                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.labelLarge,
                 text = zoneId.getGmtOffsetText()
             )
             OutlinedButton(
-                modifier = Modifier
-                    .padding(end = Dimens.grid_0_5)
-                    .semantics { Role.Button },
+                modifier = Modifier.semantics { Role.Button },
                 onClick = createOnUpdateLocationClick(
                     requestPermissionLauncher,
                     onUpdateLocation
@@ -106,15 +94,13 @@ internal fun AutoAllowRow(
 internal fun AutoAllowButNotDataRow(
     onAutoUpdate: () -> Unit
 ) {
-    Column(Modifier.padding(Dimens.grid_2)) {
-        AutoOverlineTextPart()
+    AutoContainer {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
                 modifier = Modifier
-                    .padding(top = Dimens.grid_2)
                     .semantics { Role.Button },
                 onClick = { onAutoUpdate() }) {
                 Text(
@@ -140,15 +126,10 @@ internal fun AutoDeniedRow(
         }
     )
 
-    Column(
-        modifier = Modifier.padding(Dimens.grid_2),
-        verticalArrangement = Arrangement.spacedBy(Dimens.grid_1)
-    ) {
-        AutoOverlineTextPart()
+    AutoContainer {
         Text(
-            text = stringResource(R.string.place_location_permission_info)
+            text = stringResource(R.string.place_location_permission_info),
         )
-        Spacer(modifier = Modifier.height(Dimens.grid_1))
         Button(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             onClick = {
@@ -170,11 +151,21 @@ internal fun AutoDeniedRow(
 }
 
 @Composable
-private fun AutoOverlineTextPart() {
-    Text(
-        text = stringResource(R.string.place_location_header_auto),
-        style = MaterialTheme.typography.titleLarge
-    )
+private fun AutoContainer(
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(Dimens.grid_2),
+        verticalArrangement = Arrangement.spacedBy(Dimens.grid_1_5)
+    ) {
+        Text(
+            text = stringResource(R.string.place_location_header_auto).uppercase(),
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontWeight = FontWeight.ExtraBold
+            )
+        )
+        content()
+    }
 }
 
 @Composable

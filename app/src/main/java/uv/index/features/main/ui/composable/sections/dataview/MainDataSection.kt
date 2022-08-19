@@ -24,7 +24,8 @@ import uv.index.features.main.ui.composable.sections.dataview.components.*
 internal fun BoxWithConstraintsScope.MainDataSection(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
-    state: MainContract.State
+    state: MainContract.State,
+    onEditPlace: () -> Unit
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -35,7 +36,8 @@ internal fun BoxWithConstraintsScope.MainDataSection(
         topBar = {
             MainCurrentInfoTopBarPart(
                 scrollBehavior = scrollBehavior,
-                state = state
+                state = state,
+                onEditPlace = onEditPlace
             )
         }
     ) {

@@ -70,6 +70,7 @@ kapt {
 
 dependencies {
 
+    implementation("androidx.appcompat:appcompat:1.5.0")
     val room_version = "2.5.0-alpha02"
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")

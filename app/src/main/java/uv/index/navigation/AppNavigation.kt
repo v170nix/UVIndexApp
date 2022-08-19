@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import uv.index.LocalAppState
 import uv.index.features.main.ui.MainViewModel
 import uv.index.features.main.ui.composable.MainScreen
+import uv.index.features.place.parts.editlocation.ui.PlaceEditLocationViewModel
 import uv.index.features.place.parts.list.ui.PlaceListViewModel
 import uv.index.features.place.ui.composable.PlaceListScreen
 import uv.index.features.place.ui.composable.PlaceLocationScreen
@@ -80,6 +81,7 @@ sealed class AppScreen(
         override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit =
             { entry ->
                 UIEffect(isDarkSystemIcons = isDarkSystemIcons)
+
                 val viewModel: MainViewModel = hiltViewModel()
                 CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
                     MainScreen(
@@ -122,9 +124,18 @@ sealed class AppScreen(
             isDarkSystemIcons = true
         ) {
             override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit
-                get() = {
+                get() = { entry ->
                     UIEffect(isDarkSystemIcons = isDarkSystemIcons)
-                    PlaceLocationScreen()
+                    val viewModel: PlaceEditLocationViewModel = hiltViewModel()
+                    PlaceLocationScreen(
+                        viewModel = viewModel,
+                        onNavigateBackStack = {
+                            popBack(entry)
+                        },
+                        onNextScreen = {
+//                            placeActions.wizardNavigateToTimeZone(entry)
+                        }
+                    )
                 }
         }
     }

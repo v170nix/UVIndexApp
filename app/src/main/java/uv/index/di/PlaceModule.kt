@@ -1,7 +1,6 @@
 package uv.index.di
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -28,17 +27,13 @@ object PlaceModule {
         return Room.databaseBuilder(
             context,
             PlaceDatabase::class.java, "place-db"
-        ).fallbackToDestructiveMigration().build().also {
-            Log.e("provideDb", "1")
-        }
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides
     @Singleton
     fun provideDao(db: PlaceDatabase): PlaceDao {
-        return db.getPlaceDao().also {
-            Log.e("provideIndexDao", "1")
-        }
+        return db.getPlaceDao()
     }
 
     @PlaceKey

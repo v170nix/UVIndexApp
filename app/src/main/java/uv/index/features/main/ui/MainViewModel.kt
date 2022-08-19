@@ -3,7 +3,6 @@ package uv.index.features.main.ui
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 import net.arwix.mvi.SimpleViewModel
@@ -101,7 +100,8 @@ class MainViewModel @Inject constructor(
 
                 innerStateUpdater.updateStateWithCurrentTime()
 
-            }.flowOn(Dispatchers.IO)
+            }
+//                .flowOn(Dispatchers.IO)
         }.launchIn(viewModelScope)
 
         remoteUpdateUseCase.asFlow

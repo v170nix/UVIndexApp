@@ -21,7 +21,7 @@ abstract class PlaceDao {
     abstract suspend fun getAutoItem(): PlaceData?
 
     @Query("SELECT * FROM location_tz_table WHERE isAutoLocation = 1 LIMIT 1")
-    abstract fun getAutoItemAsFlow(): Flow<PlaceData>
+    abstract fun getAutoItemAsFlow(): Flow<PlaceData?>
 
     @Query("SELECT * FROM location_tz_table WHERE isSelected = 1 LIMIT 1")
     abstract suspend fun getSelectedItem(): PlaceData?

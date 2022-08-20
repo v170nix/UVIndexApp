@@ -17,6 +17,7 @@
     <string name="place_location_undo_delete_message">Location is deleted</string>
     <string name="place_location_undo_delete_button">Undo</string>
     <string name="place_navigation_bottom_bar_back">Back</string>
+    <string name="place_navigation_bottom_bar_add">Add</string>
     <string name="place_navigation_bottom_bar_next">Next</string>
     <string name="place_navigation_bottom_bar_finish">Finish</string>
 

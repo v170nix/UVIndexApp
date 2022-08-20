@@ -5,7 +5,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -14,8 +13,10 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.features.place.parts.editlocation.ui.PlaceEditLocationViewModel
+import uv.index.features.place.parts.editlocation.ui.PlaceLocationContract
 import uv.index.features.place.parts.editlocation.ui.composable.InputLocationBoxComponent
 import uv.index.features.place.parts.editlocation.ui.composable.PlaceEditPositionSection
+import uv.index.features.place.ui.composable.components.PlaceWizardBottomBarComponent
 import uv.index.ui.theme.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,6 +47,21 @@ fun PlaceLocationScreen(
                     colors = TopAppBarDefaults.smallTopAppBarColors(
                         containerColor = Color.Transparent
                     )
+                )
+            },
+            bottomBar = {
+                PlaceWizardBottomBarComponent(
+                    isEnableNextStep = state.nextStepIsAvailable,
+                    isShowNextStep = true,
+                    previousName = stringResource(R.string.place_navigation_bottom_bar_back),
+                    nextName = stringResource(R.string.place_navigation_bottom_bar_next),
+                    onPreviousClick = {
+                        viewModel.doEvent(PlaceLocationContract.Event.ClearData)
+                        onNavigateBackStack()
+                    },
+                    onNextClick = {
+                        viewModel.doEvent(PlaceLocationContract.Event.Submit)
+                    }
                 )
             }
         ) { paddingValues ->
@@ -81,6 +97,8 @@ fun PlaceLocationScreen(
                 )
             }
 
+
+
 //            PlaceWizardBottomBarComponent(
 //                Modifier
 //                    .align(Alignment.BottomCenter)
@@ -100,48 +118,48 @@ fun PlaceLocationScreen(
 //            )
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .navigationBarsPadding()
-        ) {
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 32.dp)
-            ) {
-
-                ExtendedFloatingActionButton(
-                    modifier = Modifier.weight(1f),
-                    content = {
-                        Text(
-                            text = "Back"
-                        )
-                    },
-                    onClick = onNavigateBackStack
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Row(
-                    modifier = Modifier
-                        .weight(1f),
-                    horizontalArrangement = Arrangement.End
-                ) {
-
-                    PlaceListAddButton(
-                        isLockAddPlace = false,
-                        onAddPlace = {
-//                            viewModel.doEvent(PlaceListContract.Event.AddPlace)
-                        }
-                    )
-                }
-
-            }
-
-        }
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(horizontal = 16.dp)
+//                .navigationBarsPadding()
+//        ) {
+//
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .align(Alignment.BottomCenter)
+//                    .padding(bottom = 32.dp)
+//            ) {
+//
+//                ExtendedFloatingActionButton(
+//                    modifier = Modifier.weight(1f),
+//                    content = {
+//                        Text(
+//                            text = "Back"
+//                        )
+//                    },
+//                    onClick = onNavigateBackStack
+//                )
+//
+//                Spacer(modifier = Modifier.width(16.dp))
+//
+//                Row(
+//                    modifier = Modifier
+//                        .weight(1f),
+//                    horizontalArrangement = Arrangement.End
+//                ) {
+//
+//                    PlaceListAddButton(
+//                        isLockAddPlace = false,
+//                        onAddPlace = {
+////                            viewModel.doEvent(PlaceListContract.Event.AddPlace)
+//                        }
+//                    )
+//                }
+//
+//            }
+//
+//        }
 //    }
 }

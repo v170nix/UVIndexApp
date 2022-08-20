@@ -72,7 +72,7 @@ internal fun AutoAllowRow(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 text = zoneId.getGmtOffsetText()
             )
             OutlinedButton(

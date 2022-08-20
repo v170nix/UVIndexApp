@@ -29,7 +29,6 @@ internal fun BodyPart(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(Dimens.grid_0_25)
     ) {
         LocationPart(latLng = latLng)
         TitlePart(
@@ -81,11 +80,12 @@ private fun TitlePart(
     ) {
         if (!title.isNullOrBlank() || !subTitle.isNullOrBlank())
             Text(
-                style = MaterialTheme.typography.headlineLarge,
+                style = MaterialTheme.typography.headlineMedium,
                 text = title ?: subTitle!!
             )
         if (!subTitle.isNullOrBlank() && !title.isNullOrBlank())
             Text(
+                style = MaterialTheme.typography.bodyMedium,
                 text = subTitle
             )
     }
@@ -98,11 +98,9 @@ private fun TimeZonePart(
 ) {
     val longName = zoneId.getLongName(Instant.now()).ifEmpty { zoneId.getName() }
     Column(modifier) {
-//        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyMedium,
             text = longName
         )
-//        }
     }
 }

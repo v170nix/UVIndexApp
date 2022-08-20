@@ -7,7 +7,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -20,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import com.google.android.gms.common.api.ApiException
@@ -35,7 +37,6 @@ import uv.index.features.place.common.await
 import uv.index.features.place.common.except
 import uv.index.features.place.common.getGmtOffsetText
 import uv.index.features.place.data.room.PlaceData
-import uv.index.ui.theme.Dimens
 import java.time.ZoneId
 
 @Composable
@@ -154,15 +155,10 @@ internal fun AutoDeniedRow(
 private fun AutoContainer(
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Column(
-        modifier = Modifier.padding(Dimens.grid_2),
-        verticalArrangement = Arrangement.spacedBy(Dimens.grid_1_5)
-    ) {
+    ItemContainer {
         Text(
             text = stringResource(R.string.place_location_header_auto).uppercase(),
-            style = MaterialTheme.typography.labelLarge.copy(
-                fontWeight = FontWeight.ExtraBold
-            )
+            style = MaterialTheme.typography.labelLarge
         )
         content()
     }

@@ -1,5 +1,6 @@
 package uv.index.features.place.parts.list.ui.composable.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import net.arwix.mvi.EventHandler
 import uv.index.features.place.parts.list.data.PlaceListItem
 import uv.index.features.place.parts.list.ui.PlaceListContract
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlaceListComponent(
     modifier: Modifier = Modifier,
@@ -26,8 +28,12 @@ fun PlaceListComponent(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = contentPadding
     ) {
-        items(state.list) { item ->
+        items(
+            items = state.list,
+            key = { item -> item.getKey() }
+        ) { item ->
             ItemRow(
+                modifier = Modifier.animateItemPlacement(),
                 item = item,
                 onLocationPermission = onLocationPermission,
                 onAutoUpdate = onLocationUpdate,

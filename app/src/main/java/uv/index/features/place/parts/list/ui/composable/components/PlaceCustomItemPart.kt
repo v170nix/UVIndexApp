@@ -11,9 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import uv.index.features.place.common.getGmtOffsetText
 import uv.index.features.place.data.room.PlaceData
+import uv.index.ui.theme.Dimens
 
 @Composable
 internal fun CustomRow(
@@ -21,30 +21,20 @@ internal fun CustomRow(
     onEditItem: () -> Unit,
     onDeleteItem: () -> Unit
 ) {
-    Column(
-        Modifier.padding(
-            top = 16.dp,
-            bottom = 8.dp,
-            start = 8.dp,
-            end = 4.dp,
-        )
-    ) {
+    ItemContainer {
         BodyPart(
             title = data.name ?: "",
             subTitle = data.subName ?: "",
             latLng = data.latLng,
             zoneId = data.zone
         )
-        Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 8.dp),
+                modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.bodyMedium,
                 text = data.zone.getGmtOffsetText()
             )
@@ -55,5 +45,17 @@ internal fun CustomRow(
                 Icon(Icons.Filled.Delete, "delete")
             }
         }
+    }
+}
+
+@Composable
+internal fun ItemContainer(
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(Dimens.grid_2),
+        verticalArrangement = Arrangement.spacedBy(Dimens.grid_1_5)
+    ) {
+        content()
     }
 }

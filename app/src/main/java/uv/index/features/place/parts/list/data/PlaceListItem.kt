@@ -20,6 +20,12 @@ sealed class PlaceListItem(val isSelected: Boolean, val isSelectable: Boolean) {
 
     data class Custom(val place: PlaceData) : PlaceListItem(place.isSelected, true)
 
+    fun getKey(): Int {
+        return when (this) {
+            is Auto -> -1
+            is Custom -> place.id ?: Int.MAX_VALUE
+        }
+    }
 
 }
 

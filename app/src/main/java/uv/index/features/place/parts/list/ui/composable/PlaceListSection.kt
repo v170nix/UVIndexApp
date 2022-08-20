@@ -1,46 +1,31 @@
 package uv.index.features.place.parts.list.ui.composable
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import net.arwix.mvi.EventHandler
 import uv.index.R
 import uv.index.features.place.parts.list.ui.PlaceListContract
-import uv.index.features.place.parts.list.ui.PlaceListViewModel
 import uv.index.features.place.parts.list.ui.composable.components.PlaceListComponent
-import uv.index.ui.theme.Dimens
 
 @Composable
 internal fun PlaceListSection(
     modifier: Modifier = Modifier,
-    model: PlaceListViewModel,
-//    scaffoldState: ScaffoldState
+    state: PlaceListContract.State,
+    eventHandler: EventHandler<PlaceListContract.Event>,
+    listContentPadding: PaddingValues,
+    snackbarHostState: SnackbarHostState
 ) {
-    val state by model.state.collectAsState()
+//    val state by model.state.collectAsState()
     val coroutineScope = rememberCoroutineScope()
-
-    val navigationBars = WindowInsets.navigationBars.asPaddingValues()
-    val dimens = Dimens
-    val density = LocalDensity.current
-
-
-    val listPaddingValues by remember(navigationBars, dimens) {
-        derivedStateOf {
-            PaddingValues(
-                start = dimens.grid_2,
-                top = dimens.grid_1,
-                end = dimens.grid_2,
-                bottom = dimens.grid_2 + 96.0.dp +
-                        navigationBars.calculateBottomPadding() -
-                        navigationBars.calculateTopPadding()
-            )
-        }
-
-    }
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -52,28 +37,28 @@ internal fun PlaceListSection(
 
         PlaceListComponent(
             Modifier.fillMaxSize(),
-            contentPadding = listPaddingValues,
+            contentPadding = listContentPadding,
             state = state,
-            eventHandler = model,
+            eventHandler = eventHandler,
             onLocationPermission = { isGrained ->
-                model.doEvent(PlaceListContract.Event.UpdateLocationPermission(isGrained))
+                eventHandler.doEvent(PlaceListContract.Event.UpdateLocationPermission(isGrained))
             },
             onLocationUpdate = {
-                model.doEvent(PlaceListContract.Event.UpdateLocation)
+                eventHandler.doEvent(PlaceListContract.Event.UpdateLocation)
             },
             onShowUndoSnackbar = { item ->
                 coroutineScope.launch {
-//                    val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
-//                        message = undoMessage,
-//                        actionLabel = undoString
-//                    )
-//                    when (snackbarResult) {
-//                        SnackbarResult.Dismissed -> {
-//                        }
-//                        SnackbarResult.ActionPerformed -> {
-//                            model.doEvent(PlaceListContract.Event.UndoDeleteItem(item))
-//                        }
-//                    }
+                    val snackbarResult = snackbarHostState.showSnackbar(
+                        message = undoMessage,
+                        actionLabel = undoString
+                    )
+                    when (snackbarResult) {
+                        SnackbarResult.Dismissed -> {
+                        }
+                        SnackbarResult.ActionPerformed -> {
+                            eventHandler.doEvent(PlaceListContract.Event.UndoDeleteItem(item))
+                        }
+                    }
                 }
             }
         )

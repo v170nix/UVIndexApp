@@ -1,13 +1,11 @@
 package uv.index.features.place.ui.composable
 
-import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -20,6 +18,7 @@ import uv.index.R
 import uv.index.features.place.parts.editzone.ui.PlaceEditTimeZoneContract
 import uv.index.features.place.parts.editzone.ui.PlaceEditTimeZoneViewModel
 import uv.index.features.place.parts.editzone.ui.composable.PlaceEditTimeZoneSection
+import uv.index.features.place.ui.composable.components.BottomNavigationSpacer
 import uv.index.features.place.ui.composable.components.PlaceWizardBottomBarComponent
 import uv.index.ui.theme.Dimens
 
@@ -31,10 +30,8 @@ fun PlaceTimeZoneScreen(
     onFinish: () -> Unit
 ) {
 
-    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior: TopAppBarScrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            decayAnimationSpec,
+        TopAppBarDefaults.enterAlwaysScrollBehavior(
             rememberTopAppBarState()
         )
 
@@ -56,7 +53,9 @@ fun PlaceTimeZoneScreen(
     ) {
 
         Scaffold(
-            modifier = Modifier.statusBarsPadding().nestedScroll(scrollBehavior.nestedScrollConnection),
+            modifier = Modifier
+                .statusBarsPadding()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 SmallTopAppBar(
                     title = {
@@ -113,27 +112,15 @@ fun PlaceTimeZoneScreen(
                 }
             }
 
-            Column(
-                modifier = Modifier.padding(paddingExceptTopBar)
-            ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    PlaceEditTimeZoneSection(
-                        state = state,
-                        eventHandler = viewModel,
-                        contentListPadding = paddingExceptBottomBar
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.BottomCenter)
-                            .height(
-                                WindowInsets.navigationBars
-                                    .asPaddingValues()
-                                    .calculateBottomPadding()
-                            )
-                            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.8f))
-                    )
-                }
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingExceptTopBar)) {
+                PlaceEditTimeZoneSection(
+                    state = state,
+                    eventHandler = viewModel,
+                    contentListPadding = paddingExceptBottomBar
+                )
+                BottomNavigationSpacer()
             }
         }
     }

@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -143,6 +144,10 @@ fun PlaceEditPositionSection(
                 )
             )
         },
+        googleMapOptionsFactory = {
+            GoogleMapOptions()
+                .mapId(context.resources.getString(R.string.MAP_ID))
+        }
     ) {
         markerPosition?.run {
             Marker(position = this)
@@ -152,7 +157,7 @@ fun PlaceEditPositionSection(
     LaunchedEffect(Unit) {
         runCatching {
             val activity = context as ComponentActivity
-            val view: ViewGroup = activity.findViewById<ViewGroup>(android.R.id.content)
+            val view: ViewGroup = activity.findViewById(android.R.id.content)
             val mapView = view.getViewsByType(MapView::class.java).firstOrNull()
             if (mapView != null) {
                 setLogoPadding(activity, logoOffset, mapView)

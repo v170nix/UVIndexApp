@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,7 +30,6 @@ fun PlaceLocationScreen(
     onNavigateBackStack: () -> Unit,
     onNextScreen: () -> Unit
 ) {
-
     val state by viewModel.state.collectAsState()
     Scaffold(
         topBar = {
@@ -38,6 +39,11 @@ fun PlaceLocationScreen(
                     Text(
                         stringResource(id = R.string.place_screen_title_select_location)
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBackStack) {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back")
+                    }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = Color.Transparent

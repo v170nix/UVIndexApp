@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">UVIndexApp</string>
+    <string name="MAP_ID" translatable="false">5ee5e9bf8069b68a</string>
 
     <string name="place_empty_title">Your Places</string>
     <string name="place_empty_text">Please add a location to use this app</string>

@@ -2,6 +2,7 @@ package uv.index.features.place.ui.composable.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,13 +40,22 @@ fun PlaceWizardBottomBarComponent(
         ) {
 
             Button(
-                modifier = Modifier.weight(1f).semantics { role = Role.Button },
+                modifier = Modifier
+                    .weight(1f)
+                    .semantics { role = Role.Button },
                 content = {
                     Text(
                         text = previousName.toUpperCase(Locale.current),
                     )
                 },
-                onClick = onPreviousClick
+                onClick = onPreviousClick,
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 6.dp,
+                    pressedElevation = 6.dp,
+                    focusedElevation = 6.dp,
+                    hoveredElevation = 8.dp,
+                    disabledElevation = 0.dp
+                )
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -58,14 +68,23 @@ fun PlaceWizardBottomBarComponent(
                     horizontalArrangement = Arrangement.End
                 ) {
                     Button(
-                        modifier = Modifier.fillMaxWidth().semantics { role = Role.Button },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .semantics { role = Role.Button },
                         content = {
                             Text(
                                 text = nextName.toUpperCase(Locale.current),
                             )
                         },
                         onClick = onNextClick,
-                        enabled = isEnableNextStep
+                        enabled = isEnableNextStep,
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 6.dp,
+                            pressedElevation = 6.dp,
+                            focusedElevation = 6.dp,
+                            hoveredElevation = 8.dp,
+                            disabledElevation = 0.dp
+                        )
                     )
                 }
             }

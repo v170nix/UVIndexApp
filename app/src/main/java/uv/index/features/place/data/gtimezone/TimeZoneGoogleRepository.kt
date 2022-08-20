@@ -12,10 +12,16 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import uv.index.di.TimeZoneKey
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class TimeZoneGoogleRepository(private val key: String) {
+@Singleton
+class TimeZoneGoogleRepository @Inject constructor(
+    @TimeZoneKey private val key: String
+) {
 
     @Throws
     suspend fun getZoneId(latLng: LatLng): ZoneId = withContext(Dispatchers.IO) {

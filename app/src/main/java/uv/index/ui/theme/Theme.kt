@@ -61,14 +61,18 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF4A6894),
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
+    secondary = Color.Red,
+    tertiary = Color(0xFFC8E6C9),
+    onTertiary = Color(0xFF4A6894),
     background = Color(0xFFF7F7F7),
     onBackground = Color(0xFF4A6894),
+    surface = Color(0xFFFFFFFF),
     onSurface = Color(0xFF354A69),
     surfaceVariant = Color(0xFFFFFFFF),
     onSurfaceVariant = Color(0xFF354A69),
     inverseOnSurface = Color.White,
+//    surfaceTint = Color.Red,
+    scrim = Color.Green,
 //    onTertiaryContainer = Color.White,
 //    onSecondary = Color.White,
 //    onPrimary = Color.White,
@@ -78,7 +82,6 @@ private val LightColorScheme = lightColorScheme(
 //    onSecondaryContainer = Color.Green,
 //    onSurfaceVariant = Color.Magenta,
 
-    onTertiary = Color.Magenta,
 
 
 

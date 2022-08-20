@@ -18,9 +18,11 @@ import uv.index.LocalAppState
 import uv.index.features.main.ui.MainViewModel
 import uv.index.features.main.ui.composable.MainScreen
 import uv.index.features.place.parts.editlocation.ui.PlaceEditLocationViewModel
+import uv.index.features.place.parts.editzone.ui.PlaceEditTimeZoneViewModel
 import uv.index.features.place.parts.list.ui.PlaceListViewModel
 import uv.index.features.place.ui.composable.PlaceListScreen
 import uv.index.features.place.ui.composable.PlaceLocationScreen
+import uv.index.features.place.ui.composable.PlaceTimeZoneScreen
 
 fun NavBackStackEntry.lifecycleIsResumed() =
     lifecycle.currentState == Lifecycle.State.RESUMED
@@ -29,17 +31,17 @@ class PlaceNavigationActions(
     navController: NavController,
     listRoute: String,
     locationRoute: String,
-//    timeZoneRoute: String
+    timeZoneRoute: String
 ) : NavigationActions(navController) {
     val wizardNavigateToLocationPlace = { from: NavBackStackEntry ->
         if (from.lifecycleIsResumed())
             navController.navigate(locationRoute)
     }
 
-    //    val wizardNavigateToTimeZone = { from: NavBackStackEntry ->
-//        if (from.lifecycleIsResumed())
-//            navController.navigate(timeZoneRoute)
-//    }
+    val wizardNavigateToTimeZone = { from: NavBackStackEntry ->
+        if (from.lifecycleIsResumed())
+            navController.navigate(timeZoneRoute)
+    }
     val wizardReturnToList = { from: NavBackStackEntry ->
         if (from.lifecycleIsResumed()) navController.popBackStack(
             listRoute,
@@ -63,7 +65,7 @@ class AppNavigationActions(navController: NavController) : NavigationActions(nav
         navController,
         listRoute = AppScreen.Place.List.route,
         locationRoute = AppScreen.Place.Location.route,
-//        timeZoneRoute = AppScreen.Place.TimeZone.route
+        timeZoneRoute = AppScreen.Place.TimeZone.route
     )
 }
 
@@ -96,7 +98,7 @@ sealed class AppScreen(
         val nestedItems = NestedScreens(
             startDestination = "place/list",
             route = "place",
-            screens = listOf(List, Location)
+            screens = listOf(List, Location, TimeZone)
         )
 
         object List : AppScreen(
@@ -119,7 +121,7 @@ sealed class AppScreen(
                 }
         }
 
-        object Location: AppScreen(
+        object Location : AppScreen(
             route = "place/location",
             isDarkSystemIcons = true
         ) {
@@ -133,7 +135,27 @@ sealed class AppScreen(
                             popBack(entry)
                         },
                         onNextScreen = {
-//                            placeActions.wizardNavigateToTimeZone(entry)
+                            placeActions.wizardNavigateToTimeZone(entry)
+                        }
+                    )
+                }
+        }
+
+        object TimeZone : AppScreen(
+            route = "place/timezone",
+            isDarkSystemIcons = true
+        ) {
+            override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit
+                get() = { entry ->
+                    UIEffect(isDarkSystemIcons = isDarkSystemIcons)
+                    val viewModel: PlaceEditTimeZoneViewModel = hiltViewModel()
+                    PlaceTimeZoneScreen(
+                        viewModel = viewModel,
+                        onNavigateBackStack = {
+                            popBack(entry)
+                        },
+                        onFinish = {
+                            placeActions.wizardReturnToList(entry)
                         }
                     )
                 }

@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,7 +39,7 @@ internal fun ItemRow(
             role = Role.Button
         )
         .fillMaxWidth(),
-//        colors = CardDefaults.cardColors (containerColor = backgroundColor),
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
 //        backgroundColor = backgroundColor
 
     ) {

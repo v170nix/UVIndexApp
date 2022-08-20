@@ -70,7 +70,7 @@ fun PlaceLocationScreen(
             eventHandler = viewModel,
             state = state,
             effectFlow = viewModel.effect,
-            onTimeZonePart = {}
+            onTimeZonePart = onNextScreen
         )
 
         Column(

@@ -17,6 +17,10 @@ import javax.inject.Singleton
 @Retention(AnnotationRetention.BINARY)
 annotation class PlaceKey
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TimeZoneKey
+
 @Module
 @InstallIn(SingletonComponent::class)
 object PlaceModule {
@@ -41,6 +45,13 @@ object PlaceModule {
     @Singleton
     fun providePlaceKey(): String {
         return BuildConfig.PLACE_API_KEY
+    }
+
+    @TimeZoneKey
+    @Provides
+    @Singleton
+    fun provideTimeZoneKey(): String {
+        return BuildConfig.TIME_ZONE_API_KEY
     }
 
 

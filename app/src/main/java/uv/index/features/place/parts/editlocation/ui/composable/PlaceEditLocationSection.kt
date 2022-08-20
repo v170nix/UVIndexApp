@@ -13,7 +13,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.core.view.children
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.CameraPosition
@@ -33,6 +32,8 @@ import net.arwix.mvi.EventHandler
 import net.arwix.mvi.SimpleViewModel
 import uv.index.R
 import uv.index.common.TextFieldState
+import uv.index.common.getViewsByType
+import uv.index.common.setLogoPadding
 import uv.index.features.place.common.except
 import uv.index.features.place.data.PlaceAutocompleteResult
 import uv.index.features.place.parts.editlocation.ui.PlaceLocationContract
@@ -151,32 +152,16 @@ fun PlaceEditPositionSection(
     LaunchedEffect(Unit) {
         runCatching {
             val activity = context as ComponentActivity
-            val view = activity.findViewById<ViewGroup>(android.R.id.content)
-            val mapView = view.children.firstOrNull { it is MapView }
+            val view: ViewGroup = activity.findViewById<ViewGroup>(android.R.id.content)
+            val mapView = view.getViewsByType(MapView::class.java).firstOrNull()
             if (mapView != null) {
-//                setLogoPadding(activity, logoOffset, mapView)
+                setLogoPadding(activity, logoOffset, mapView)
             }
         }
     }
 
 
 }
-
-//@Composable
-//fun PlaceEditPositionComponent(
-//    logoOffset: DpOffset,
-//    placeEditPositionViewMapBridger: PlaceEditPositionViewMapBridger
-//) {
-//    MapViewComponent(
-//        onInitializeMap = placeEditPositionViewMapBridger::onInitializeMap,
-//        options = GoogleMapOptions().apply {
-//            compassEnabled(false)
-//            mapToolbarEnabled(false)
-//            zoomControlsEnabled(false)
-//        },
-//        logoOffset = logoOffset
-//    )
-//}
 
 @Composable
 fun InputLocationBoxComponent(

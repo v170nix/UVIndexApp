@@ -30,6 +30,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
@@ -97,30 +98,27 @@ private fun InputTitlePart(
 
     val context = LocalContext.current
 
-//    val placeKey: String = getKoin().get(named(AppQualifier.PlaceKey))
-
-    val s by rememberUpdatedState {
-//        if (!Places.isInitialized()) {
-//            Places.initialize(context.applicationContext, placeKey)
-//        }
-        requestAutocompleteLauncher.launch(
-            Autocomplete
-                .IntentBuilder(AutocompleteActivityMode.OVERLAY, placeFields)
-                .build(context)
-        )
-        onSearchClick()
+    val onPlaceSearchClick by rememberUpdatedState {
+        if (Places.isInitialized()) {
+            requestAutocompleteLauncher.launch(
+                Autocomplete
+                    .IntentBuilder(AutocompleteActivityMode.OVERLAY, placeFields)
+                    .build(context)
+            )
+            onSearchClick()
+        }
     }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        PlaceLocationSearch(onClick = s)
+        PlaceLocationSearch(onClick = onPlaceSearchClick)
         Text(
             modifier = Modifier
                 .semantics { role = Role.Button }
                 .weight(1f)
-                .clickable(onClick = s)
+                .clickable(onClick = onPlaceSearchClick)
                 .padding(horizontal = Dimens.grid_1),
             maxLines = 1,
             style = MaterialTheme.typography.titleLarge,
@@ -207,7 +205,6 @@ private fun InputTextFieldsPart(
                 .focusRequester(latitudeFocusRequester)
                 .focusProperties { next },
             labelId = R.string.place_location_latitude,
-            placeholderId = R.string.place_location_latitude,
             textFieldState = latitudeFieldState,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
@@ -224,7 +221,6 @@ private fun InputTextFieldsPart(
                 .focusRequester(longitudeFocusRequester)
                 .focusProperties { down },
             labelId = R.string.place_location_longitude,
-            placeholderId = R.string.place_location_longitude,
             textFieldState = longitudeFieldState,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,

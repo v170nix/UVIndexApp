@@ -89,17 +89,18 @@ class PlaceEditLocationViewModel @Inject constructor(
                 }
             }
             is SelectLocationFromPOI -> {
+                val name = event.point.name.takeWhile { it != "\n".toCharArray().first() }
                 reduceState {
                     copy(
                         nextStepIsAvailable = true,
                         inputState = State.InputState(
-                            name = event.point.name,
+                            name = name,
                             latitude = event.point.latLng.latitude.toString(),
                             longitude = event.point.latLng.longitude.toString()
                         )
                     )
                 }
-                requestNames(event.point.latLng, event.point.name)
+                requestNames(event.point.latLng, name)
                 applyEffect {
                     Effect.ChangeCenterMapToLatLng(event.point.latLng)
                 }

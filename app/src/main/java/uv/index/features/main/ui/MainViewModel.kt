@@ -25,7 +25,7 @@ import kotlin.math.roundToInt
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val placeDao: PlaceDao,
+    placeDao: PlaceDao,
     private val dataRepository: UVIndexRepository,
     private val skinRepository: UVSkinRepository,
     sunRiseSetUseCase: SunRiseSetUseCase
@@ -43,14 +43,6 @@ class MainViewModel @Inject constructor(
 
     private val placeAsFlow =
 
-//        flow {
-////        emit(UVIPlaceData(ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-5)), 29.7, -124.9))
-////
-////        delay(10000L)
-//
-//        emit(UVIPlaceData(ZoneId.systemDefault(), 60.0, 30.0))
-//
-//    }
         placeDao.getSelectedItemAsFlow()
             .map { placeData ->
                 placeData?.let { UVIPlaceData(it.zone, it.latLng.latitude, it.latLng.longitude) }
@@ -89,7 +81,6 @@ class MainViewModel @Inject constructor(
                     place.latitude,
                     zdtAtStartDay
                 )
-
                 innerStateUpdater.setForecastData(forecastList, hoursList)
 
             }.onEach {
@@ -299,7 +290,6 @@ class MainViewModel @Inject constructor(
 
                 val uiHourData = uiHourReducer.reduce(sunRiseSetUseCase, state, currentZdt)
 
-
                 return state.copy(
                     currentZdt = currentZdt,
                     riseTime = riseTime,
@@ -325,14 +315,25 @@ class MainViewModel @Inject constructor(
         @Volatile
         private var previousHash: Int? = null
 
+        @Volatile
+        private var previousUiHourListHash: Int = -1
+
         private fun checkHash(
             place: UVIPlaceData,
             zdt: ZonedDateTime,
-            hoursList: List<UVIndexData>
+            valueList: List<UVIndexData>,
+            uiList: List<MainContract.UIHourData>
         ): Boolean {
-            val hash = place.hashCode() + zdt.dayOfYear * 10000 + zdt.hour * 100 + hoursList.size
-            return (hash == previousHash).also {
+            val hash = place.hashCode() +
+                    zdt.dayOfYear * 100000 +
+                    zdt.hour * 1000 +
+                    valueList.size * 10
+
+            val uiHash = uiList.size
+
+            return (hash == previousHash && uiHash == previousUiHourListHash).also {
                 previousHash = hash
+                previousUiHourListHash = uiHash
             }
         }
 
@@ -346,7 +347,13 @@ class MainViewModel @Inject constructor(
             val firstTime = currentZdt.toEpochSecond() - 3600L
             val firstZdt = Instant.ofEpochSecond(firstTime).atZone(state.place.zone)
 
-            if (checkHash(state.place, firstZdt, state.hoursForecast)) return Result(
+            if (checkHash(
+                    state.place,
+                    firstZdt,
+                    state.hoursForecast,
+                    state.currentUiHoursData
+                )
+            ) return Result(
                 state.currentUiHoursData, state.currentPeakTime
             )
 

@@ -31,7 +31,7 @@ class PlaceEditTimeZoneViewModel @Inject constructor(
     private val googleTzRepository: TimeZoneGoogleRepository,
     private val editInnerRepository: PlaceEditInnerRepository,
 ) : SimpleViewModel<Event, State, UISideEffect>(
-    State(autoTimeZoneEntry = AutoTimeZoneEntry.Denied)
+    State(autoTimeZoneEntry = null)
 ) {
 
     private val autoLocationJob = ConflatedJob()

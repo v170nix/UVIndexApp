@@ -49,8 +49,9 @@ class MainViewModel @Inject constructor(
             }
             .onEach(innerStateUpdater::setFirstPlaceLoadingComplete)
             .distinctUntilChanged()
-            .filterNotNull()
+//            .filterNotNull()
             .onEach(innerStateUpdater::newPlace)
+            .filterNotNull()
             .onEach(::notifyNewStartDay)
 
     init {
@@ -146,7 +147,7 @@ class MainViewModel @Inject constructor(
             }
         }
 
-        fun newPlace(place: UVIPlaceData) {
+        fun newPlace(place: UVIPlaceData?) {
             reduceState {
                 copy(
                     place = place,

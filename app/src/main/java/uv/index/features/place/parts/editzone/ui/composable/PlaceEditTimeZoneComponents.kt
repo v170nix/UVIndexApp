@@ -244,6 +244,7 @@ private fun CustomItemRow(
         supportingText = {
             Text(
                 text = item.displayLongName,
+                style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2
             )
         },

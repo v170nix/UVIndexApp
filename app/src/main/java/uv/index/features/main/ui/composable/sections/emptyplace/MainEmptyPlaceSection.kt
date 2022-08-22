@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import uv.index.R
+import uv.index.ui.theme.Dimens
 
 @Composable
 internal fun EmptyPlaceSection(
@@ -40,12 +41,13 @@ internal fun EmptyPlaceSection(
                 text = stringResource(id = R.string.place_empty_title),
                 style = MaterialTheme.typography.headlineLarge
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Dimens.grid_1))
             Text(
+                modifier = Modifier.padding(horizontal = Dimens.grid_2),
                 text = stringResource(id = R.string.place_empty_text),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Dimens.grid_2))
             Button(onClick = onAddPlaceScreen) {
                 Text(
                     text = stringResource(id = R.string.place_empty_button).toUpperCase(Locale.current),

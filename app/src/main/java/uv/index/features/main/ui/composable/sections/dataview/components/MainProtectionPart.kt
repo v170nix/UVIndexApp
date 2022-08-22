@@ -29,7 +29,7 @@ internal fun MainProtectionPart(
             null -> {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.uvindex_current_protection_not_required).uppercase(),
+                    text = stringResource(id = R.string.uvindex_current_protection_not_required),
                     style = MaterialTheme.typography.labelLarge,
                     textAlign = TextAlign.Center
                 )

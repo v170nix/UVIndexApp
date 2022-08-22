@@ -54,8 +54,8 @@ class PlaceListUseCase @Inject constructor(
         sideScope = scope
     }
 
-    suspend fun deleteItem(id: Int) {
-        dao.deleteById(id)
+    suspend fun deleteItem(id: Int?) {
+        if (id != null) dao.deleteById(id)
     }
 
     suspend fun undoDeleteItem(item: PlaceListItem.Custom) {

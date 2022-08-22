@@ -71,7 +71,7 @@ class PlaceListViewModel @Inject constructor(
             }
             is Event.DeleteItem -> {
                 viewModelScope.launch {
-                    placeListUseCase.deleteItem(event.item.place.id!!)
+                    placeListUseCase.deleteItem(event.item.place.id)
                 }
             }
             is Event.UndoDeleteItem -> {

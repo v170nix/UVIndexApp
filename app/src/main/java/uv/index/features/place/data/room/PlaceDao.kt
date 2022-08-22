@@ -11,7 +11,7 @@ import java.time.ZoneId
 
 @Dao
 abstract class PlaceDao {
-    @Query("SELECT * FROM location_tz_table")
+    @Query("SELECT * FROM location_tz_table ORDER BY (id = 1) DESC, id DESC")
     abstract fun getAll(): Flow<List<PlaceData>>
 
     @Query("SELECT * FROM location_tz_table WHERE id = :id LIMIT 1")

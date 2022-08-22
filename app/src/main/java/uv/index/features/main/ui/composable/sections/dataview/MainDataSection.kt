@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.features.main.ui.MainContract
 import uv.index.features.main.ui.composable.sections.dataview.components.*
+import uv.index.ui.theme.Dimens
+import java.time.ZonedDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,6 +31,12 @@ internal fun BoxWithConstraintsScope.MainDataSection(
 ) {
 
     val lazyListState = rememberLazyListState()
+
+    val isShowCurrentZdt by remember(state.currentZdt) {
+        derivedStateOf {
+            ZonedDateTime.now().offset.totalSeconds != state.currentZdt?.offset?.totalSeconds
+        }
+    }
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -70,11 +78,21 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                         timeToBurn = state.currentTimeToBurn
                     )
                 }
+
+                if (isShowCurrentZdt) {
+                    item {
+                        MainCurrentTimePart(
+                            modifier = Modifier.padding(top = Dimens.grid_3),
+                            currentZdt = state.currentZdt
+                        )
+                    }
+                }
+
                 item {
                     MainProtectionPart(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 24.dp, bottom = 0.dp),
+                            .padding(top = if (isShowCurrentZdt) 24.dp else 8.dp, bottom = 0.dp),
                         uvSummaryDayData = state.currentSummaryDayData
                     )
                 }

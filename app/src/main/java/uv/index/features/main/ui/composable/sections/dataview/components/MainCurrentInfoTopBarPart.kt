@@ -101,7 +101,6 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
                             modifier = Modifier
                                 .padding(end = 8.dp)
                                 .fillMaxWidth(),
-                            currentDateTime = state.currentZdt,
                             onEditPlace = onEditPlace
                         )
                     },

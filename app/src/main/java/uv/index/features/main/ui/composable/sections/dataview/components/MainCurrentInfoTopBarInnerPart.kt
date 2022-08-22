@@ -10,13 +10,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.*
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import uv.index.ui.theme.UVIndexAppTheme
-import java.time.ZonedDateTime
 
 @Stable
 interface MainTopBarTextStyles {
@@ -174,13 +175,13 @@ internal fun MainCurrentInfoTopBarInnerPart(
         val peakHourPlaceable = measurables.first { it.layoutId == "peakHourContent" }
             .measure(constraints)
 
-        val indexBaseline = indexPlaceable[FirstBaseline]
-        val lastBaseline = indexPlaceable[HorizontalAlignmentLine(merger = { old, new ->
-            kotlin.math.max(
-                old,
-                new
-            )
-        })]
+//        val indexBaseline = indexPlaceable[FirstBaseline]
+//        val lastBaseline = indexPlaceable[HorizontalAlignmentLine(merger = { old, new ->
+//            kotlin.math.max(
+//                old,
+//                new
+//            )
+//        })]
 
         layout(constraints.maxWidth, constraints.maxHeight) {
 
@@ -374,7 +375,6 @@ private fun Preview() {
                 placeContent = {
                     MainPlacePart(
                         modifier = Modifier.fillMaxWidth(),
-                        currentDateTime = ZonedDateTime.now(),
                         onEditPlace = {}
                     )
                 },

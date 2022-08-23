@@ -44,14 +44,9 @@ class MainViewModel @Inject constructor(
     private val innerStateUpdater = InnerStateUpdater(sunRiseSetUseCase)
 
     private val placeAsFlow =
-
         placeDao.getSelectedItemAsFlow()
-//            .map { placeData ->
-//                placeData?.let { UVIPlaceData(it.zone, it.latLng.latitude, it.latLng.longitude) }
-//            }
             .onEach(innerStateUpdater::setFirstPlaceLoadingComplete)
             .distinctUntilChanged()
-//            .filterNotNull()
             .onEach(innerStateUpdater::newPlace)
             .filterNotNull()
             .onEach(::notifyNewStartDay)
@@ -95,7 +90,6 @@ class MainViewModel @Inject constructor(
                 innerStateUpdater.updateStateWithCurrentTime()
 
             }
-//                .flowOn(Dispatchers.IO)
         }.launchIn(viewModelScope)
 
         remoteUpdateUseCase.asFlow

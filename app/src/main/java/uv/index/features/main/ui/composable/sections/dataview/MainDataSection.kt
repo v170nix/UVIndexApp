@@ -92,7 +92,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                     MainProtectionPart(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = if (isShowCurrentZdt) 24.dp else 8.dp, bottom = 0.dp),
+                            .padding(top = if (!isShowCurrentZdt) 24.dp else 8.dp, bottom = 0.dp),
                         uvSummaryDayData = state.currentSummaryDayData
                     )
                 }

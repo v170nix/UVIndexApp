@@ -8,7 +8,7 @@ import uv.index.features.astronomy.data.SunRepository
 import uv.index.features.astronomy.data.context.ASTRONOMY_EVENT_RISE
 import uv.index.features.astronomy.data.context.ASTRONOMY_EVENT_SET
 import uv.index.features.astronomy.data.context.SunPositionContext
-import uv.index.lib.data.UVIPlaceData
+import uv.index.features.place.data.room.PlaceData
 import java.time.LocalTime
 import java.time.ZonedDateTime
 import javax.inject.Inject
@@ -16,14 +16,14 @@ import javax.inject.Inject
 class SunRiseSetUseCase @Inject constructor(private val sunRepository: SunRepository) {
 
     suspend operator fun invoke(
-        place: UVIPlaceData,
+        place: PlaceData,
         zdt: ZonedDateTime
     ): Pair<LocalTime?, LocalTime?> {
         val rsEvents = sunRepository.getRiseSetEvents(
             observer = Observer(
                 position = Observer.Position(
-                    longitude = place.longitude.deg.toRad(),
-                    latitude = place.latitude.deg.toRad(),
+                    longitude = place.latLng.longitude.deg.toRad(),
+                    latitude = place.latLng.latitude.deg.toRad(),
                     altitude = 0.0
                 )
             ),
@@ -37,12 +37,12 @@ class SunRiseSetUseCase @Inject constructor(private val sunRepository: SunReposi
     }
 
 
-    suspend fun getPosition(place: UVIPlaceData, zdt: ZonedDateTime): SunPosition {
+    suspend fun getPosition(place: PlaceData, zdt: ZonedDateTime): SunPosition {
         val azimuth = sunRepository.getSunAzimuth(
             observer = Observer(
                 position = Observer.Position(
-                    longitude = place.longitude.deg.toRad(),
-                    latitude = place.latitude.deg.toRad(),
+                    longitude = place.latLng.longitude.deg.toRad(),
+                    latitude = place.latLng.latitude.deg.toRad(),
                     altitude = 0.0
                 )
             ),

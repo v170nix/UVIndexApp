@@ -375,7 +375,8 @@ private fun Preview() {
                 placeContent = {
                     MainPlacePart(
                         modifier = Modifier.fillMaxWidth(),
-                        onEditPlace = {}
+                        onEditPlace = {},
+                        place = null
                     )
                 },
                 titleContent = {

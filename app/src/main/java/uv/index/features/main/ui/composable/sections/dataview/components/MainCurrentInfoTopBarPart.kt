@@ -101,7 +101,8 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
                             modifier = Modifier
                                 .padding(end = 8.dp)
                                 .fillMaxWidth(),
-                            onEditPlace = onEditPlace
+                            onEditPlace = onEditPlace,
+                            place = state.place
                         )
                     },
                     titleContent = {

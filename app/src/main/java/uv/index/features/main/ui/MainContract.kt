@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import net.arwix.mvi.UIEvent
 import net.arwix.mvi.UIState
 import uv.index.features.main.domain.SunPosition
-import uv.index.lib.data.UVIPlaceData
+import uv.index.features.place.data.room.PlaceData
 import uv.index.lib.data.UVIndexData
 import uv.index.lib.data.UVSkinType
 import uv.index.lib.data.UVSummaryDayData
@@ -16,7 +16,7 @@ interface MainContract {
 
     @Immutable
     data class State(
-        val place: UVIPlaceData? = null,
+        val place: PlaceData? = null,
 
         val isLoadingPlace: Boolean = true,
         val currentDayData: List<UVIndexData>? = null,

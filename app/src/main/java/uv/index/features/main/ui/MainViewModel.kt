@@ -8,10 +8,12 @@ import kotlinx.coroutines.runBlocking
 import net.arwix.mvi.SimpleViewModel
 import net.arwix.mvi.UISideEffect
 import uv.index.features.main.common.ConflatedReducer
+import uv.index.features.main.data.toUVIPlaceData
 import uv.index.features.main.domain.SunPosition
 import uv.index.features.main.domain.SunRiseSetUseCase
 import uv.index.features.main.domain.UVForecastHoursUseCase
 import uv.index.features.place.data.room.PlaceDao
+import uv.index.features.place.data.room.PlaceData
 import uv.index.lib.data.*
 import uv.index.lib.domain.UVIndexRemoteUpdateUseCase
 import java.time.Instant
@@ -44,9 +46,9 @@ class MainViewModel @Inject constructor(
     private val placeAsFlow =
 
         placeDao.getSelectedItemAsFlow()
-            .map { placeData ->
-                placeData?.let { UVIPlaceData(it.zone, it.latLng.latitude, it.latLng.longitude) }
-            }
+//            .map { placeData ->
+//                placeData?.let { UVIPlaceData(it.zone, it.latLng.latitude, it.latLng.longitude) }
+//            }
             .onEach(innerStateUpdater::setFirstPlaceLoadingComplete)
             .distinctUntilChanged()
 //            .filterNotNull()
@@ -59,12 +61,12 @@ class MainViewModel @Inject constructor(
         combine(
             placeAsFlow,
             zdtAtStartDayAsFlow.filterNotNull()
-        ) { place: UVIPlaceData, zdtAtStartDay: ZonedDateTime ->
+        ) { place: PlaceData, zdtAtStartDay: ZonedDateTime ->
             place to zdtAtStartDay
         }.flatMapLatest { (place, zdtAtStartDay) ->
             dataRepository.getDataAsFlow(
-                place.longitude,
-                place.latitude,
+                longitude = place.latLng.longitude,
+                latitude = place.latLng.latitude,
                 zdtAtStartDay
             ).onEach { list: List<UVIndexData> ->
                 if (list.size < 23) return@onEach
@@ -72,21 +74,21 @@ class MainViewModel @Inject constructor(
                 innerStateUpdater.setCurrentDayData(place, list)
 
                 val forecastList: List<UVSummaryDayData> = dataRepository.getForecastData(
-                    place.longitude,
-                    place.latitude,
+                    longitude = place.latLng.longitude,
+                    latitude = place.latLng.latitude,
                     zdtAtStartDay.plusDays(1L)
                 )
 
                 val hoursList: List<UVIndexData> = hoursUseCase(
-                    place.longitude,
-                    place.latitude,
+                    longitude = place.latLng.longitude,
+                    latitude = place.latLng.latitude,
                     zdtAtStartDay
                 )
                 innerStateUpdater.setForecastData(forecastList, hoursList)
 
             }.onEach {
                 remoteUpdateUseCase.checkAndUpdate(
-                    state.value.place,
+                    state.value.place?.toUVIPlaceData(),
                     state.value.currentDayData
                 )
 
@@ -104,7 +106,9 @@ class MainViewModel @Inject constructor(
     override fun handleEvents(event: MainContract.Event) {
         when (event) {
             MainContract.Event.DoDataAutoUpdate -> {
-                remoteUpdateUseCase.checkAndUpdate(state.value.place, state.value.currentDayData)
+                remoteUpdateUseCase.checkAndUpdate(
+                    state.value.place?.toUVIPlaceData(),
+                    state.value.currentDayData)
             }
             is MainContract.Event.DoChangeSkin -> TODO()
             MainContract.Event.DoDataManualUpdate -> TODO()
@@ -113,7 +117,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun notifyNewStartDay(place: UVIPlaceData) {
+    private fun notifyNewStartDay(place: PlaceData) {
         notifyNewStartDay(LocalDate.now(place.zone).atStartOfDay(place.zone))
     }
 
@@ -141,13 +145,13 @@ class MainViewModel @Inject constructor(
         }
 
         @Suppress("UNUSED_PARAMETER")
-        fun setFirstPlaceLoadingComplete(place: UVIPlaceData?) {
+        fun setFirstPlaceLoadingComplete(place: PlaceData?) {
             reduceState {
                 copy(isLoadingPlace = false)
             }
         }
 
-        fun newPlace(place: UVIPlaceData?) {
+        fun newPlace(place: PlaceData?) {
             reduceState {
                 copy(
                     place = place,
@@ -197,7 +201,7 @@ class MainViewModel @Inject constructor(
             }
         }
 
-        fun setCurrentDayData(place: UVIPlaceData, list: List<UVIndexData>) {
+        fun setCurrentDayData(place: PlaceData, list: List<UVIndexData>) {
             reduceState {
                 copy(
                     currentDayData = list,
@@ -320,7 +324,7 @@ class MainViewModel @Inject constructor(
         private var previousUiHourListHash: Int = -1
 
         private fun checkHash(
-            place: UVIPlaceData,
+            place: PlaceData,
             zdt: ZonedDateTime,
             valueList: List<UVIndexData>,
             uiList: List<MainContract.UIHourData>

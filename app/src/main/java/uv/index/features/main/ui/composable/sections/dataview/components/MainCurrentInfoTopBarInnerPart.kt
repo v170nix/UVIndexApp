@@ -1,6 +1,5 @@
 package uv.index.features.main.ui.composable.sections.dataview.components
 
-import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -350,10 +349,8 @@ private class AnimatingMainTopBarTextStyles(
 @Composable
 private fun Preview() {
 
-    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior: TopAppBarScrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            decayAnimationSpec,
             rememberTopAppBarState()
         )
 

@@ -3,7 +3,6 @@ package uv.index.features.place.ui.composable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -34,7 +33,7 @@ fun PlaceLocationScreen(
     Scaffold(
         topBar = {
             SmallTopAppBar(
-                modifier = Modifier.statusBarsPadding(),
+//                modifier = Modifier.statusBarsPadding(),
                 title = {
                     Text(
                         stringResource(id = R.string.place_screen_title_select_location)

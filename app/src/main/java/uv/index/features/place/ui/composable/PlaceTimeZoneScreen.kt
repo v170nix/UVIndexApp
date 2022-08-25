@@ -53,9 +53,7 @@ fun PlaceTimeZoneScreen(
     ) {
 
         Scaffold(
-            modifier = Modifier
-                .statusBarsPadding()
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 SmallTopAppBar(
                     title = {

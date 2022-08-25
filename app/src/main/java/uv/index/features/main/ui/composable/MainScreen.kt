@@ -2,7 +2,6 @@ package uv.index.features.main.ui.composable
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -32,10 +31,8 @@ fun MainScreen(
     onChangePlace: () -> Unit
 ) {
 
-    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior: TopAppBarScrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            decayAnimationSpec,
             rememberTopAppBarState()
         )
 

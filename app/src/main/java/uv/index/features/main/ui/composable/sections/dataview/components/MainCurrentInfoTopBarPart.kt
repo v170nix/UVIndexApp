@@ -23,12 +23,13 @@ import uv.index.R
 import uv.index.features.main.common.getUVITitle
 import uv.index.features.main.domain.SunPosition
 import uv.index.features.main.ui.MainContract
+import uv.index.ui.theme.Dimens
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
     modifier: Modifier = Modifier,
@@ -74,63 +75,9 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
     SmallTopAppBar(
         modifier = modifier
             .statusBarsPadding()
-            .height(statusHeight),
-        title = {
-            Column(Modifier.statusBarsPadding()) {
-
-                val inverseSurface = contentColorFor(MaterialTheme.colorScheme.inverseSurface)
-                val surface = contentColorFor(MaterialTheme.colorScheme.surface)
-
-                MainCurrentInfoTopBarInnerPart(
-                    minHeight = collapsedHeight,
-                    collapsedFraction = scrollBehavior.state.collapsedFraction,
-                    textStyles = MainTopBarDefaults.mainTopBarTextStyles(
-                        placeExpandedStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
-                        placeCollapsedStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
-                        titleExpandedStyle = MaterialTheme.typography.displaySmall.copy(color = inverseSurface),
-                        titleCollapsedStyle = MaterialTheme.typography.titleLarge.copy(color = surface),
-                        riseSetTextStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
-                        indexExpandedStyle = MaterialTheme.typography.displayLarge
-                            .copy(fontWeight = FontWeight.SemiBold, fontSize = 72.sp)
-                            .copy(color = surface),
-                        indexCollapsedStyle = MaterialTheme.typography.titleLarge.copy(color = surface),
-                        peakHourStyle = MaterialTheme.typography.labelLarge.copy(color = surface),
-                    ),
-                    placeContent = {
-                        MainPlacePart(
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .fillMaxWidth(),
-                            onEditPlace = onEditPlace,
-                            place = state.place
-                        )
-                    },
-                    titleContent = {
-                        Text(
-                            modifier = Modifier.padding(end = 16.dp),
-                            text = titleString,
-                        )
-                    },
-                    indexContent = {
-                        IndexParts(currentIndex = currentIndex, maxIndex = maxIndex)
-                    },
-                    subTitleContent = {
-                        IconsInfo(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(end = 16.dp, top = 16.dp),
-                            currentIndexValue = state.currentIndexValue
-                        )
-                    },
-                    maxTimeContent = {
-                        PeakTime(
-                            modifier = Modifier.padding(start = 8.dp, end = 16.dp),
-                            maxTime = state.currentPeakTime
-                        )
-                    }
-                )
-            }
-        },
+            .height(statusHeight)
+        ,
+        title = {},
         colors = TopAppBarDefaults.smallTopAppBarColors(
             containerColor = Color.Transparent,
             scrolledContainerColor = Color.Transparent,
@@ -138,6 +85,65 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
         ),
         scrollBehavior = scrollBehavior
     )
+
+    Column(Modifier
+        .statusBarsPadding()
+        .height(statusHeight)) {
+
+        val inverseSurface = contentColorFor(MaterialTheme.colorScheme.inverseSurface)
+        val surface = contentColorFor(MaterialTheme.colorScheme.surface)
+
+        MainCurrentInfoTopBarInnerPart(
+            minHeight = collapsedHeight,
+            collapsedFraction = scrollBehavior.state.collapsedFraction,
+            textStyles = MainTopBarDefaults.mainTopBarTextStyles(
+                placeExpandedStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
+                placeCollapsedStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
+                titleExpandedStyle = MaterialTheme.typography.displaySmall.copy(color = inverseSurface),
+                titleCollapsedStyle = MaterialTheme.typography.titleLarge.copy(color = surface),
+                riseSetTextStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
+                indexExpandedStyle = MaterialTheme.typography.displayLarge
+                    .copy(fontWeight = FontWeight.SemiBold, fontSize = 72.sp)
+                    .copy(color = surface),
+                indexCollapsedStyle = MaterialTheme.typography.titleLarge.copy(color = surface),
+                peakHourStyle = MaterialTheme.typography.labelLarge.copy(color = surface),
+            ),
+            placeContent = {
+                MainPlacePart(
+                    modifier = Modifier
+                        .padding(horizontal = Dimens.grid_1)
+                        .fillMaxWidth(),
+                    onEditPlace = onEditPlace,
+                    place = state.place
+                )
+            },
+            titleContent = {
+                Text(
+                    modifier = Modifier.padding(horizontal = Dimens.grid_2),
+                    text = titleString,
+                )
+            },
+            indexContent = {
+                IndexParts(
+                    modifier = Modifier.padding(horizontal = Dimens.grid_2),
+                    currentIndex = currentIndex, maxIndex = maxIndex)
+            },
+            subTitleContent = {
+                IconsInfo(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = Dimens.grid_2, top = Dimens.grid_2),
+                    currentIndexValue = state.currentIndexValue
+                )
+            },
+            maxTimeContent = {
+                PeakTime(
+                    modifier = Modifier.padding(start = 0.dp, end = Dimens.grid_2),
+                    maxTime = state.currentPeakTime
+                )
+            }
+        )
+    }
 }
 
 @Composable

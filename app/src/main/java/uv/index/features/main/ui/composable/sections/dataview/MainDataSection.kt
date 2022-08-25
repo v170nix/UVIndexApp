@@ -75,7 +75,8 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        timeToBurn = state.currentTimeToBurn
+                        timeToBurn = state.currentTimeToBurn,
+                        timeToVitaminD = state.currentTimeToVitaminD
                     )
                 }
 

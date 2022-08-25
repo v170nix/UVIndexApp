@@ -22,7 +22,8 @@ import uv.index.features.main.ui.MainContract
 @Composable
 internal fun MainTimeToEventPart(
     modifier: Modifier = Modifier,
-    timeToBurn: MainContract.TimeToBurn?
+    timeToBurn: MainContract.TimeToEvent?,
+    timeToVitaminD: MainContract.TimeToEvent?
 ) {
 
     val context = LocalContext.current
@@ -30,8 +31,8 @@ internal fun MainTimeToEventPart(
     val timeToBurnString by remember(timeToBurn, context) {
         derivedStateOf {
             when (timeToBurn) {
-                MainContract.TimeToBurn.Infinity -> "∞"
-                is MainContract.TimeToBurn.Value -> {
+                MainContract.TimeToEvent.Infinity -> "∞"
+                is MainContract.TimeToEvent.Value -> {
                     buildString {
                         timeToString(
                             context,
@@ -45,14 +46,15 @@ internal fun MainTimeToEventPart(
         }
     }
 
-    val timeToVitaminD by remember(timeToBurn, context) {
+    val timeToVitaminDString by remember(timeToVitaminD, context) {
         derivedStateOf {
-            when (timeToBurn) {
-                MainContract.TimeToBurn.Infinity -> "∞"
-                is MainContract.TimeToBurn.Value -> {
-                    var time = (timeToBurn.minTimeInMins + (timeToBurn.maxTimeInMins
-                        ?: (1.5 * timeToBurn.minTimeInMins)).toInt()) / 6
+            when (timeToVitaminD) {
+                MainContract.TimeToEvent.Infinity -> "∞"
+                is MainContract.TimeToEvent.Value -> {
+                    var time = (timeToVitaminD.minTimeInMins + (timeToVitaminD.maxTimeInMins
+                        ?: (1.5 * timeToVitaminD.minTimeInMins)).toInt()) / 2
                     time = (time / 5) * 5
+                    if (time < 5) time = 5
                     buildString {
                         timeToString(context, time)
                     }
@@ -61,6 +63,23 @@ internal fun MainTimeToEventPart(
             }
         }
     }
+
+//    val timeToVitaminD by remember(timeToBurn, context) {
+//        derivedStateOf {
+//            when (timeToBurn) {
+//                MainContract.TimeToEvent.Infinity -> "∞"
+//                is MainContract.TimeToEvent.Value -> {
+//                    var time = (timeToBurn.minTimeInMins + (timeToBurn.maxTimeInMins
+//                        ?: (1.5 * timeToBurn.minTimeInMins)).toInt()) / 6
+//                    time = (time / 5) * 5
+//                    buildString {
+//                        timeToString(context, time)
+//                    }
+//                }
+//                else -> ""
+//            }
+//        }
+//    }
 
     Row(
         modifier = modifier.height(IntrinsicSize.Max),
@@ -76,7 +95,7 @@ internal fun MainTimeToEventPart(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight(),
-            info = timeToVitaminD,
+            info = timeToVitaminDString,
             description = stringResource(id = R.string.uvindex_vitamin_D_title)
         )
     }

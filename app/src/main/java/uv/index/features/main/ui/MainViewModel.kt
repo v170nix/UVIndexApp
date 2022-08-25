@@ -275,15 +275,38 @@ class MainViewModel @Inject constructor(
                             currentHour = currentHour
                         )?.roundToInt()
                         if (minTime != null) {
-                            MainContract.TimeToBurn.Value(
+                            MainContract.TimeToEvent.Value(
                                 minTimeInMins = minTime,
                                 maxTimeInMins = maxTime
                             )
                         } else {
-                            MainContract.TimeToBurn.Infinity
+                            MainContract.TimeToEvent.Infinity
                         }
                     } else {
-                        MainContract.TimeToBurn.Infinity
+                        MainContract.TimeToEvent.Infinity
+                    }
+
+                val timeToVitaminD =
+                    if (innerCurrentDayData != null && sunPosition == SunPosition.Above) {
+                        val minTime = state.skinType.getIntegralMinTimeToVitaminDInMins(
+                            list = innerCurrentDayData,
+                            currentHour = currentHour
+                        )?.roundToInt()
+
+                        val maxTime = state.skinType.getIntegralMaxTimeToVitaminDInMins(
+                            list = innerCurrentDayData,
+                            currentHour = currentHour
+                        )?.roundToInt()
+                        if (minTime != null) {
+                            MainContract.TimeToEvent.Value(
+                                minTimeInMins = minTime,
+                                maxTimeInMins = maxTime
+                            )
+                        } else {
+                            MainContract.TimeToEvent.Infinity
+                        }
+                    } else {
+                        MainContract.TimeToEvent.Infinity
                     }
 
 
@@ -297,7 +320,8 @@ class MainViewModel @Inject constructor(
                     currentIndexValue = currentIndex,
                     currentSunPosition = sunPosition,
                     currentUiHoursData = uiHourData.list ?: state.currentUiHoursData,
-                    currentTimeToBurn = timeToBurn
+                    currentTimeToBurn = timeToBurn,
+                    currentTimeToVitaminD = timeToVitaminD
                 )
             }
         }

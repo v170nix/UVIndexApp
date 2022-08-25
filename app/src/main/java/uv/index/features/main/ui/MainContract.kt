@@ -33,7 +33,8 @@ interface MainContract {
         val currentZdt: ZonedDateTime? = null,
         val currentIndexValue: Double? = null,
         val currentSunPosition: SunPosition? = null,
-        val currentTimeToBurn: TimeToBurn? = null,
+        val currentTimeToBurn: TimeToEvent? = null,
+        val currentTimeToVitaminD: TimeToEvent? = null,
         val currentPeakTime: LocalTime? = null
 
     ): UIState
@@ -47,15 +48,15 @@ interface MainContract {
     }
 
     @Immutable
-    sealed class TimeToBurn {
+    sealed class TimeToEvent {
 
-        object Infinity: TimeToBurn()
+        object Infinity: TimeToEvent()
 
         @Immutable
         data class Value(
             val minTimeInMins: Int,
             val maxTimeInMins: Int?
-        ): TimeToBurn()
+        ): TimeToEvent()
     }
 
     @Immutable

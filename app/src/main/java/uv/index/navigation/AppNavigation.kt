@@ -104,7 +104,10 @@ sealed class AppScreen(
             }
     }
 
-    object SkinType: AppScreen(route = "skin") {
+    object SkinType: AppScreen(
+        route = "skin",
+        isDarkSystemIcons = true
+    ) {
         override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit
             get() = { entry: NavBackStackEntry ->
                 UIEffect(isDarkSystemIcons = isDarkSystemIcons)

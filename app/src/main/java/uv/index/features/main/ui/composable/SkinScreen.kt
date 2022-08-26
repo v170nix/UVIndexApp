@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,7 +36,13 @@ fun SkinScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    val scrollBehavior: TopAppBarScrollBehavior =
+        TopAppBarDefaults.enterAlwaysScrollBehavior(
+            rememberTopAppBarState()
+        )
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = Color.Transparent,
         topBar = {
             SmallTopAppBar(
@@ -49,6 +56,7 @@ fun SkinScreen(
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back")
                     }
                 },
+                scrollBehavior = scrollBehavior
             )
         },
         bottomBar = {
@@ -57,7 +65,7 @@ fun SkinScreen(
     ) {
 
         LazyColumn(
-            modifier = Modifier.padding(it)
+            modifier = Modifier.padding(it),
 //            state = lazyListState,
         ) {
             items(UVSkinType.values()) { item ->
@@ -68,6 +76,11 @@ fun SkinScreen(
                         viewModel.doEvent(MainContract.Event.DoChangeSkin(skin))
                     }
                 )
+                if (item != UVSkinType.Type6) {
+                    Divider(
+                        modifier = Modifier.padding(horizontal = Dimens.grid_2)
+                    )
+                }
             }
         }
     }
@@ -98,7 +111,7 @@ private fun SkinItem(
                     onClick(skin)
                 })
             .background(backgroundColor)
-            .padding(vertical = Dimens.grid_2)
+            .padding(vertical = Dimens.grid_2),
     ) {
         Row(
             modifier = Modifier

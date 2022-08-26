@@ -1,6 +1,5 @@
 package uv.index.features.main.ui
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -53,8 +52,6 @@ class MainViewModel @Inject constructor(
             .onEach(::notifyNewStartDay)
 
     init {
-
-        Log.e("init", "1")
 
         combine(
             placeAsFlow,

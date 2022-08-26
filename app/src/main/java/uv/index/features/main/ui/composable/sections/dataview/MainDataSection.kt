@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.features.main.ui.MainContract
 import uv.index.features.main.ui.composable.sections.dataview.components.*
+import uv.index.navigation.AppNavigationBar
 import uv.index.ui.theme.Dimens
 import java.time.ZonedDateTime
 
@@ -47,6 +48,9 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                 state = state,
                 onEditPlace = onEditPlace
             )
+        },
+        bottomBar = {
+            AppNavigationBar()
         }
     ) {
 

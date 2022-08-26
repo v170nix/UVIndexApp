@@ -1,5 +1,6 @@
 package uv.index.features.main.ui
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +34,7 @@ class MainViewModel @Inject constructor(
     sunRiseSetUseCase: SunRiseSetUseCase
 ) : SimpleViewModel<MainContract.Event, MainContract.State, UISideEffect>(
     MainContract.State(
-        skinType = UVSkinType.Type3
+        skinType = skinRepository.getSkinOrNull() ?: UVSkinType.Type3
     )
 ) {
     private val remoteUpdateUseCase = UVIndexRemoteUpdateUseCase(dataRepository, viewModelScope)
@@ -52,6 +53,8 @@ class MainViewModel @Inject constructor(
             .onEach(::notifyNewStartDay)
 
     init {
+
+        Log.e("init", "1")
 
         combine(
             placeAsFlow,
@@ -104,7 +107,13 @@ class MainViewModel @Inject constructor(
                     state.value.place?.toUVIPlaceData(),
                     state.value.currentDayData)
             }
-            is MainContract.Event.DoChangeSkin -> TODO()
+            is MainContract.Event.DoChangeSkin -> {
+                if (state.value.skinType == event.skin) return
+                skinRepository.setSkin(event.skin)
+                reduceState {
+                    copy(skinType = skinRepository.getSkinOrNull() ?: UVSkinType.Type3)
+                }
+            }
             MainContract.Event.DoDataManualUpdate -> TODO()
             MainContract.Event.DoUpdateWithCurrentTime ->
                 innerStateUpdater.updateStateWithCurrentTime()

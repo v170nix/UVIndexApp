@@ -9,10 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,13 +33,16 @@ fun PlaceEditTimeZoneSection(
     state: State,
     eventHandler: EventHandler<PlaceEditTimeZoneContract.Event>,
     contentListPadding: PaddingValues = PaddingValues(0.dp),
-    selectedColor: Color = MaterialTheme.colorScheme.tertiary,
+    selectedContainerColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
+    selectedContentColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     headerBackgroundColor: Color = MaterialTheme.colorScheme.background,
 ) {
     Column(modifier.fillMaxSize()) {
         LocationZoneList(
-            modifier = Modifier.weight(1f).background(backgroundColor),
+            modifier = Modifier
+                .weight(1f)
+                .background(backgroundColor),
             places = state.listZones,
             autoTimeZoneEntry = state.autoTimeZoneEntry,
             selectedItem = state.selectedItem,
@@ -54,7 +54,8 @@ fun PlaceEditTimeZoneSection(
                 )
             },
             contentListPadding = contentListPadding,
-            selectedColor = selectedColor,
+            selectedContainerColor = selectedContainerColor,
+            selectedContentColor = selectedContentColor,
             backgroundColor = backgroundColor,
             headerBackgroundColor = headerBackgroundColor
         )
@@ -69,7 +70,8 @@ private fun LocationZoneList(
     selectedItem: State.SelectedItem?,
     onSelect: (State.SelectedItem) -> Unit,
     contentListPadding: PaddingValues,
-    selectedColor: Color,
+    selectedContainerColor: Color,
+    selectedContentColor: Color,
     backgroundColor: Color,
     headerBackgroundColor: Color,
 ) {
@@ -83,7 +85,11 @@ private fun LocationZoneList(
     }
 
     val autoItemBgColor by animateColorAsState(
-        if (autoItemIsSelected) selectedColor else backgroundColor
+        if (autoItemIsSelected) selectedContainerColor else backgroundColor
+    )
+
+    val autoContentColor by animateColorAsState(
+        if (autoItemIsSelected) selectedContentColor else LocalContentColor.current
     )
 
     val autoPlaceModifier by remember(autoTimeZoneEntry, selectedItem) {
@@ -122,7 +128,9 @@ private fun LocationZoneList(
         }
 
         item {
-            AutoDetectRow(autoPlaceModifier, autoTimeZoneEntry)
+            CompositionLocalProvider(LocalContentColor provides autoContentColor) {
+                AutoDetectRow(autoPlaceModifier, autoTimeZoneEntry)
+            }
         }
 
         item {
@@ -135,20 +143,25 @@ private fun LocationZoneList(
         items(places) { item ->
             val isSelectedItem = item.isSelectedItem(selectedItem)
             val bgColor by animateColorAsState(
-                if (isSelectedItem) selectedColor else backgroundColor
+                if (isSelectedItem) selectedContainerColor else backgroundColor
+            )
+            val contentColor by animateColorAsState(
+                if (isSelectedItem) selectedContentColor else LocalContentColor.current
             )
 
-            CustomItemRow(
-                Modifier
-                    .fillMaxWidth()
-                    .selectable(
-                        selected = isSelectedItem,
-                        onClick = { onSelect(State.SelectedItem.FromList(item)) },
-                        role = Role.Button
-                    )
-                    .background(bgColor),
-                item
-            )
+            CompositionLocalProvider(LocalContentColor provides contentColor) {
+                CustomItemRow(
+                    Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = isSelectedItem,
+                            onClick = { onSelect(State.SelectedItem.FromList(item)) },
+                            role = Role.Button
+                        )
+                        .background(bgColor),
+                    item
+                )
+            }
         }
     }
 
@@ -237,7 +250,8 @@ private fun LoadingItemRow() {
 @Composable
 private fun CustomItemRow(
     modifier: Modifier = Modifier,
-    item: TimeZoneDisplayEntry
+    item: TimeZoneDisplayEntry,
+    textColor: Color = LocalContentColor.current
 ) {
     ListItem(
         modifier = modifier,
@@ -245,19 +259,22 @@ private fun CustomItemRow(
             Text(
                 text = item.displayLongName,
                 style = MaterialTheme.typography.bodyMedium,
-                maxLines = 2
+                maxLines = 2,
+                color = textColor
             )
         },
         trailingContent = {
             Text(
                 text = item.gmtOffsetString,
-                maxLines = 1
+                maxLines = 1,
+                color = textColor
             )
         },
         headlineText = {
             Text(
                 text = item.displayName,
-                maxLines = 1
+                maxLines = 1,
+                color = textColor
             )
         },
         colors = ListItemDefaults.colors(containerColor = Color.Transparent)

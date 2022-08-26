@@ -4,9 +4,42 @@ import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+
+class UVSkinColors(
+    val typeI: Color,
+    val typeII: Color,
+    val typeIII: Color,
+    val typeIV: Color,
+    val typeV: Color,
+    val typeVI: Color
+) {
+    fun getColor(position: Int): Color {
+        return when (position) {
+            0 -> typeI
+            1 -> typeII
+            2 -> typeIII
+            3 -> typeIV
+            4 -> typeV
+            5 -> typeVI
+            else -> throw IllegalArgumentException()
+        }
+    }
+}
+
+private val standardUVSkinColors = UVSkinColors(
+    typeI = Color(0xFFF1D1B1),
+    typeII = Color(0xFFE4B590),
+    typeIII = Color(0xFFCF9F7D),
+    typeIV = Color(0xFFB67851),
+    typeV = Color(0xFFA15E2D),
+    typeVI = Color(0xFF513938)
+)
+
+private val LocalAppUVSkinColors = staticCompositionLocalOf { standardUVSkinColors }
 
 class UVIColors(
     val night: Color,
@@ -44,6 +77,19 @@ object UVITheme {
     val colors: UVIColors
         @Composable
         get() = LocalUVIColors.current
+
+    val skinColors: UVSkinColors
+        @Composable
+        get() = LocalAppUVSkinColors.current
+}
+
+@Composable
+@ReadOnlyComposable
+fun UVSkinColors.contentColorFor(backgroundColor: Color): Color {
+    return when (backgroundColor) {
+        typeI, typeII, typeIII, typeIV -> Color.Black.copy(alpha = 0.9f)
+        else -> Color.White
+    }
 }
 
 private val DarkColorScheme = darkColorScheme(
@@ -62,8 +108,12 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF4A6894),
     secondary = Color.Red,
-    tertiary = Color(0xFFC8E6C9),
-    onTertiary = Color(0xFF4A6894),
+    tertiaryContainer = Color(red = 222, green = 235, blue = 248, alpha = 255),
+    onTertiaryContainer = Color(red = 29, green = 25, blue = 43),
+
+//    tertiaryContainer = Color(0xFFC8E6C9),
+//    onTertiaryContainer = Color(0xFF4A6894),
+
     background = Color(0xFFF7F7F7),
     onBackground = Color(0xFF4A6894),
     surface = Color(0xFFFFFFFF),
@@ -71,16 +121,18 @@ private val LightColorScheme = lightColorScheme(
     surfaceVariant = Color(0xFFFFFFFF),
     onSurfaceVariant = Color(0xFF354A69),
     inverseOnSurface = Color.White,
+
+    secondaryContainer = Color(red = 232, green = 222, blue = 248),
+    onSecondaryContainer = Color(red = 29, green = 25, blue = 43)
+
 //    surfaceTint = Color.Red,
-    scrim = Color.Green,
-//    onTertiaryContainer = Color.White,
+//    scrim = Color.Green,
 //    onSecondary = Color.White,
 //    onPrimary = Color.White,
 //    onError = Color.Red,
 //    onErrorContainer = Color.Red,
 //    onPrimaryContainer = Color.Yellow,
 //    onSecondaryContainer = Color.Green,
-//    onSurfaceVariant = Color.Magenta,
 
 
 

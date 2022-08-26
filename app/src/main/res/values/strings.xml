@@ -33,5 +33,29 @@
     <string name="uvindex_current_protection_required_first_part">Sun protection recommended</string>
     <string name="uvindex_current_protection_required_second_part">from %s to %s</string>
 
+    <string name="uvindex_skin_type_select_title">Choose your skin type</string>
+
+    <string name="uvindex_skin_typical_features_title">Typical features</string>
+
+    <string-array name="uvindex_skin_typical_features">
+        <item>Very fair skin, white; red or blond hair; light-colored eyes; freckles likely</item>
+        <item>Fair skin, white; light eyes; light hair</item>
+        <item>Fair skin, cream white; any eye or hair color (very common skin type)</item>
+        <item>Olive skin, typical Mediterranean Caucasian skin; dark brown hair; medium to heavy pigmentation</item>
+        <item>Brown skin, typical Middle Eastern skin; dark hair; rarely sun sensitive</item>
+        <item>Black skin; rarely sun sensitive</item>
+    </string-array>
+
+    <string name="uvindex_skin_tanning_ability_title">Tanning Ability</string>
+
+    <string-array name="uvindex_skin_tanning_ability">
+        <item>Always burns, does not tan</item>
+        <item>Burns easily, tans poorly</item>
+        <item>Tans after initial burn</item>
+        <item>Burns minimally, tans easily</item>
+        <item>Rarely burns, tans darkly easily</item>
+        <item>Never burns, always tans darkly</item>
+    </string-array>
+
 
 </resources>

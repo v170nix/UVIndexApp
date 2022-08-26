@@ -19,27 +19,36 @@ internal fun ItemRow(
     item: PlaceListItem,
     onLocationPermission: (isGrained: Boolean) -> Unit,
     onAutoUpdate: () -> Unit,
-    selectedColor: Color = MaterialTheme.colorScheme.tertiary,
+    selectedContainerColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
+    selectedContentColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
     onSelect: (PlaceListItem) -> Unit,
     onEdit: (PlaceListItem) -> Unit,
     onDelete: (PlaceListItem) -> Unit
 ) {
 
     val backgroundColor by animateColorAsState(
-        if (item.isSelected) selectedColor else MaterialTheme.colorScheme.surface
+        if (item.isSelected) selectedContainerColor else MaterialTheme.colorScheme.surface
     )
 
-    Card(modifier = modifier
-        .selectable(
-            enabled = item.isSelectable,
-            selected = item.isSelected,
-            onClick = {
-                onSelect(item)
-            },
-            role = Role.Button
-        )
-        .fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor),
+    val textColor by animateColorAsState(
+        if (item.isSelected) selectedContentColor else MaterialTheme.colorScheme.onSurface
+    )
+
+    Card(
+        modifier = modifier
+            .selectable(
+                enabled = item.isSelectable,
+                selected = item.isSelected,
+                onClick = {
+                    onSelect(item)
+                },
+                role = Role.Button
+            )
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor,
+            contentColor = textColor
+        ),
 //        backgroundColor = backgroundColor
 
     ) {

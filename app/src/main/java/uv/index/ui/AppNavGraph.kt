@@ -18,7 +18,7 @@ fun AppNavGraph(
     val actions = LocalAppState.current.actions
 
     AnimatedNavHost(navController = navController, startDestination = startDestination) {
-        contentGraph(listOf(AppScreen.Main), actions)
+        contentGraph(listOf(AppScreen.Main, AppScreen.SkinType, AppScreen.Preference), actions)
         nestedGraph(AppScreen.Place.nestedItems, actions)
     }
 

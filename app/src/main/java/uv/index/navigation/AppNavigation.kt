@@ -92,7 +92,10 @@ sealed class AppScreen(
         @OptIn(ExperimentalFoundationApi::class)
         override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit =
             { entry ->
-                UIEffect(isDarkSystemIcons = isDarkSystemIcons)
+                UIEffect(
+                    isDarkStatusIcons = isDarkSystemIcons,
+                    isDarkNavigationIcons = !isDarkSystemIcons
+                )
 
                 val viewModel: MainViewModel = hiltViewModel()
                 CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
@@ -211,6 +214,25 @@ private fun UIEffect(
         uiController.setSystemBarsColor(
             color = color,
             darkIcons = isDarkSystemIcons
+        )
+    }
+}
+
+@Composable
+private fun UIEffect(
+    isDarkStatusIcons: Boolean,
+    isDarkNavigationIcons: Boolean,
+    color: Color = Color.Transparent
+) {
+    val uiController = LocalAppState.current.uiController
+    SideEffect {
+        uiController.setStatusBarColor(
+            color = color,
+            darkIcons = isDarkStatusIcons
+        )
+        uiController.setNavigationBarColor(
+            color = color,
+            darkIcons = isDarkNavigationIcons
         )
     }
 }

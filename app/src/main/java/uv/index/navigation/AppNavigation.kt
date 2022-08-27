@@ -1,5 +1,6 @@
 package uv.index.navigation
 
+import androidx.annotation.ArrayRes
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -12,17 +13,20 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import uv.index.LocalAppState
 import uv.index.features.main.ui.MainViewModel
 import uv.index.features.main.ui.composable.MainScreen
 import uv.index.features.main.ui.composable.SkinScreen
+import uv.index.features.more.parts.ui.MorePartScreen
+import uv.index.features.more.ui.MoreScreen
 import uv.index.features.place.parts.editlocation.ui.PlaceEditLocationViewModel
 import uv.index.features.place.parts.editzone.ui.PlaceEditTimeZoneViewModel
 import uv.index.features.place.parts.list.ui.PlaceListViewModel
 import uv.index.features.place.ui.composable.PlaceListScreen
 import uv.index.features.place.ui.composable.PlaceLocationScreen
 import uv.index.features.place.ui.composable.PlaceTimeZoneScreen
-import uv.index.features.preference.ui.PreferenceScreen
 
 fun NavBackStackEntry.lifecycleIsResumed() =
     lifecycle.currentState == Lifecycle.State.RESUMED
@@ -107,7 +111,7 @@ sealed class AppScreen(
             }
     }
 
-    object SkinType: AppScreen(
+    object SkinType : AppScreen(
         route = "skin",
         isDarkSystemIcons = true
     ) {
@@ -126,12 +130,62 @@ sealed class AppScreen(
             }
     }
 
-    object Preference: AppScreen(route = "preference") {
+    object More : AppScreen(
+        route = "more",
+        isDarkSystemIcons = true
+    ) {
+
         override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit
-            get() = {
+            get() = { entry: NavBackStackEntry ->
                 UIEffect(isDarkSystemIcons = isDarkSystemIcons)
-                PreferenceScreen()
+                MoreScreen(
+                    onDetailInfo = {
+                        navController.navigate("more/${it}")
+                    },
+                    onNavigateUp = {
+                        popBack(entry)
+                    }
+                )
             }
+
+        object Parts : AppScreen(
+            route = "more/{screenId}",
+            isDarkSystemIcons = true
+        ) {
+
+            enum class Item(@ArrayRes val infoId: Int) {
+                UVInfo(uv.index.R.array.info_uv_index),
+                PrivacyInfo(uv.index.R.array.privacy_policy_info);
+
+                companion object {
+                    fun of(screenId: String?, defaultItem: Item) = runCatching {
+                        if (screenId == null) return@runCatching defaultItem
+                        valueOf(screenId)
+                    }.getOrDefault(defaultItem)
+                }
+            }
+
+            override var arguments = listOf(
+                navArgument("screenId") {
+                    type = NavType.StringType
+                }
+            )
+
+            override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit
+                get() = { entry: NavBackStackEntry ->
+                    UIEffect(isDarkSystemIcons = isDarkSystemIcons)
+
+                    val part =
+                        Item.of(entry.arguments?.getString("screenId"), Item.UVInfo)
+
+                    MorePartScreen(
+                        infoId = part.infoId,
+                        onNavigateUp = {
+                            popBack(entry)
+                        }
+                    )
+                }
+        }
 
     }
 

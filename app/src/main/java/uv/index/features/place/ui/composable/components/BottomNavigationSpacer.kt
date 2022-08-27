@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun BoxScope.BottomNavigationSpacer() {
+internal fun BoxScope.BottomNavigationSpacer() {
     Spacer(
         modifier = Modifier
             .fillMaxWidth()

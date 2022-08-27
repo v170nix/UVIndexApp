@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="info_uv_index">
+        <item>UV index</item>
+        <item>
+The ultraviolet index is an international standard measurement of the strength
+of the sunburn-producing ultraviolet (UV) radiation.\n\n
+
+* UVR is involved in tanning, accelerated skin ageing, ocular damage, and the development of skin cancer.\n\n
+* UVR also has beneficial effects due to the production of vitamin D in the skin and its immune-modulating effects on inflammatory skin diseases.\n\n
+* UVR is often confused with infrared radiation. The temperature, however, does not affect UV radiation levels. UV radiation can be just as high on a cool or even cold day as it is on a hot one, especially if skies are clear.\n\n
+
+UVR is categorised according to wavelength, which ranges from 100–400 nm:\n\n
+
+* Ultraviolet A (UV-A) = 320–400nm\n\n
+* Ultraviolet B (UV-B) = 290–320nm\n\n
+* Ultraviolet C (UV-C) = 100–290nm\n\n
+
+UV-C radiation is filtered out or absorbed in the outer atmosphere so does not pose a problem to humans. UV-A and UV-B radiation are the primary causes of sunburn.\n\n
+
+###### Who is at risk of sunburn?\n\n
+
+Skin phototyping categorises people into one of six groups based on baseline skin colour and the tendency to tan and burn when exposed to UV radiation.\n\n
+
+Other factors that increase the incidence of sunburn include:\n\n
+
+* Regions situated closer to the equator\n\n
+* Areas at high altitude – UV radiation increases 4% for every 300m increase in elevation\n\n
+* Skin exposure between 10 am, and 2 pm – 65% of UV radiation reaches the earth between these times\n\n
+* Clear skies: clouds and environmental pollution reduce UV radiation\n\n
+* Environmental reflection – UV radiation is 80% reflected by snow and ice\n\n
+
+            Public health organizations recommend that people protect themselves (for example, by applying sunscreen to the skin and wearing a hat and sunglasses) if they spend substantial time outdoors when the UV index is 3 or higher\n\n
+
+            ###### Details \n\n
+
+The UV index is a number linearly related to the intensity of sunburn-producing UV radiation at a given point on the Earth\'s surface.\n\n
+
+For example, if a light-skinned individual (without sunscreen) begins to sunburn in 30 minutes at UV index 6, then that individual should expect to sunburn in about 15 minutes at UV index 12 – twice the UV, twice as fast.\n\n
+
+The erythemally weighted downwelling UV fluxes are determined using the Tropospheric Ultraviolet Radiation Model (TUV). The fluxes is altered by the effects of:\n\n
+
+
+* sun-earth distance\n\n
+* solar zenith angle\n\n
+* total ozone amount\n\n
+* tropospheric aerosol optical depth\n\n
+* elevation\n\n
+* snow/ice reflectivity\n\n
+* cloud transmission\n\n
+
+
+        </item>
+    </string-array>
+</resources>

@@ -76,5 +76,5 @@ private val items = listOf(
     NavigationItems.Screen(AppScreen.Main, Icons.Filled.Home, "В начало"),
     NavigationItems.Screen(AppScreen.SkinType, Icons.Filled.Person, "Тип кожи"),
     NavigationItems.Notification(false, Icons.Filled.Notifications, "Извещения"),
-    NavigationItems.Screen(AppScreen.Preference, Icons.Filled.Menu, "Далее")
+    NavigationItems.Screen(AppScreen.More, Icons.Filled.Menu, "Далее")
 )

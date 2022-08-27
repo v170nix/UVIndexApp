@@ -128,6 +128,9 @@ dependencies {
     implementation("com.github.v170nix:uv-index-library:1.0.7")
     implementation("com.github.v170nix.astronomy-core:astronomy-core:1.0.0-alpha22")
 
+    implementation("com.halilibo.compose-richtext:richtext-ui-material3:0.13.0")
+    implementation("com.halilibo.compose-richtext:richtext-commonmark:0.13.0")
+
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.room:room-testing:2.5.0-alpha02")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

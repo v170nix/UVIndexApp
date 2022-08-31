@@ -8,6 +8,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import uv.index.features.preferences.data.ThemeMode
 
 class UVSkinColors(
     val typeI: Color,
@@ -93,21 +94,25 @@ fun UVSkinColors.contentColorFor(backgroundColor: Color): Color {
 }
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
-    background = Color(0xFF090909),
+    primary = Color(0xFFDCE9FD),
+    onPrimary = Color(0xFF4A6894),
+    secondary =  Color.White,
+    onSecondary = Color(0xFF00796B),
+    tertiaryContainer = Color(red = 127, green = 121, blue = 153, alpha = 255),
+    onTertiaryContainer = Color(red = 222, green = 235, blue = 248, alpha = 255),
+    background = Color(0xFF1A1A1A),
     onBackground = Color(0xFFF7F7F7),
-    surface = Color(0xFF354A69),
+    surface = Color(0xFF262C35),
     onSurface = Color(0xFFF7F7F7),
-    surfaceVariant = Color(0xFF354A69),
+    surfaceVariant = Color(0xFF262C35),
     onSurfaceVariant = Color(0xFFFFFFFF),
     inverseOnSurface = Color.White,
     )
 
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF4A6894),
-    secondary = Color.Red,
+    secondary = Color(0xFF00796B),
+    onSecondary = Color.White,
     tertiaryContainer = Color(red = 222, green = 235, blue = 248, alpha = 255),
     onTertiaryContainer = Color(red = 29, green = 25, blue = 43),
 
@@ -150,7 +155,8 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun UVIndexAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: ThemeMode = ThemeMode.Light,
+//    darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
@@ -158,9 +164,13 @@ fun UVIndexAppTheme(
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (themeMode == ThemeMode.System) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> DarkColorScheme
+        themeMode == ThemeMode.System -> {
+            if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme
+        }
+        themeMode == ThemeMode.Dark -> DarkColorScheme
+        themeMode == ThemeMode.Light -> LightColorScheme
         else -> LightColorScheme
     }
 
@@ -173,7 +183,7 @@ fun UVIndexAppTheme(
 //    }
 
     MaterialTheme(
-        colorScheme = LightColorScheme,
+        colorScheme = colorScheme,
         typography = Typography,
         content = content
     )

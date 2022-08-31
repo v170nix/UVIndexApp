@@ -1,5 +1,6 @@
 package uv.index.navigation
 
+import androidx.activity.ComponentActivity
 import androidx.annotation.ArrayRes
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -8,6 +9,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
@@ -139,6 +141,7 @@ sealed class AppScreen(
             get() = { entry: NavBackStackEntry ->
                 UIEffect(isDarkSystemIcons = isDarkSystemIcons)
                 MoreScreen(
+                    themeViewModel = hiltViewModel(LocalContext.current as ComponentActivity),
                     onDetailInfo = {
                         navController.navigate("more/${it}")
                     },

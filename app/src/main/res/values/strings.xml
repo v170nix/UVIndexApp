@@ -57,5 +57,28 @@
         <item>Never burns, always tans darkly</item>
     </string-array>
 
+    <string name="uvindex_more_title">More</string>
+    <string name="uvindex_more_color_title">Display</string>
+    <string-array name="uvindex_more_color_light_items">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>System</item>
+    </string-array>
+
+    <string name="uvindex_more_info_title">Information</string>
+    <string name="uvindex_more_info_uvindex_item">UV index</string>
+
+    <string name="uvindex_more_remove_ads_title">Remove ads</string>
+    <string name="uvindex_more_remove_ads_item">Full version</string>
+
+    <string name="uvindex_more_support_title">Support us</string>
+    <string name="uvindex_more_support_share_item">Share with friends</string>
+    <string name="uvindex_more_support_rate_item">Rate us</string>
+    <string name="uvindex_more_support_feedback_item">Feedback</string>
+
+    <string name="uvindex_more_support_privacy_item">Privacy policy</string>
+
+    <string name="uvindex_more_support_disclaimer_item">Disclaimer</string>
+
 
 </resources>

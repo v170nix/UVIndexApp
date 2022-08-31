@@ -5,10 +5,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import dagger.hilt.android.AndroidEntryPoint
+import uv.index.features.preferences.ui.ThemeViewModel
 import uv.index.navigation.AppScreen
 import uv.index.ui.AppNavGraph
 import uv.index.ui.theme.UVIndexAppTheme
@@ -23,7 +27,13 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         checkGooglePlayServices()
         setContent {
-            UVIndexAppTheme {
+
+            val themeViewModel = hiltViewModel<ThemeViewModel>(this)
+            val themeState by themeViewModel.state.collectAsState()
+
+            UVIndexAppTheme(
+                themeMode = themeState
+            ) {
                 CompositionLocalProvider(LocalAppState provides rememberAppState()) {
                     AppNavGraph(startDestination = AppScreen.Main.route)
                 }

@@ -94,6 +94,8 @@ dependencies {
     kapt("androidx.room:room-compiler:2.5.0-alpha02")
     implementation("androidx.room:room-ktx:2.5.0-alpha02")
 
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.compose.ui:ui:1.3.0-beta01")
     implementation("androidx.compose.material3:material3:1.0.0-beta01")

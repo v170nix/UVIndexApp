@@ -78,9 +78,18 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                     MainTimeToEventPart(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = Dimens.grid_2),
                         timeToBurn = state.currentTimeToBurn,
                         timeToVitaminD = state.currentTimeToVitaminD
+                    )
+                }
+
+                item {
+                    MainSunscreenReminder(
+                        modifier  = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Dimens.grid_2)
+                            .padding(top = Dimens.grid_2),
                     )
                 }
 

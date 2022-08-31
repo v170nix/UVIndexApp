@@ -3,7 +3,6 @@ package uv.index.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -72,9 +71,9 @@ private sealed class NavigationItems(val icon: ImageVector, val name: String) {
     ) : NavigationItems(icon, name)
 }
 
-private val items = listOf(
+private val items = listOf<NavigationItems>(
     NavigationItems.Screen(AppScreen.Main, Icons.Filled.Home, "В начало"),
     NavigationItems.Screen(AppScreen.SkinType, Icons.Filled.Person, "Тип кожи"),
-    NavigationItems.Notification(false, Icons.Filled.Notifications, "Извещения"),
+ //   NavigationItems.Notification(false, Icons.Filled.Notifications, "Извещения"),
     NavigationItems.Screen(AppScreen.More, Icons.Filled.Menu, "Далее")
 )

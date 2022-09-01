@@ -19,19 +19,19 @@ internal fun ItemRow(
     item: PlaceListItem,
     onLocationPermission: (isGrained: Boolean) -> Unit,
     onAutoUpdate: () -> Unit,
-    selectedContainerColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
-    selectedContentColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
+    selectedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    selectedContentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     onSelect: (PlaceListItem) -> Unit,
     onEdit: (PlaceListItem) -> Unit,
     onDelete: (PlaceListItem) -> Unit
 ) {
 
     val backgroundColor by animateColorAsState(
-        if (item.isSelected) selectedContainerColor else MaterialTheme.colorScheme.surface
+        if (item.isSelected) selectedContainerColor else MaterialTheme.colorScheme.surfaceVariant
     )
 
     val textColor by animateColorAsState(
-        if (item.isSelected) selectedContentColor else MaterialTheme.colorScheme.onSurface
+        if (item.isSelected) selectedContentColor else MaterialTheme.colorScheme.onSurfaceVariant
     )
 
     Card(

@@ -1,6 +1,7 @@
 package uv.index.features.more.parts.ui
 
 import androidx.annotation.ArrayRes
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -47,7 +48,10 @@ fun MorePartScreen(
         },
     ) {
         LazyColumn(
-            modifier = Modifier.padding(it).nestedScroll(scrollBehavior.nestedScrollConnection)
+            modifier = Modifier
+                .padding(it)
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            contentPadding = PaddingValues(vertical = Dimens.grid_1)
         ) {
 
             item {

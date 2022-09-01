@@ -43,7 +43,7 @@ fun SkinScreen(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = Color.Transparent,
+//        containerColor = Color.Transparent,
         topBar = {
             SmallTopAppBar(
                 title = {
@@ -66,6 +66,8 @@ fun SkinScreen(
 
         LazyColumn(
             modifier = Modifier.padding(it),
+            verticalArrangement = Arrangement.spacedBy(Dimens.grid_1),
+            contentPadding = PaddingValues(vertical = Dimens.grid_1)
 //            state = lazyListState,
         ) {
             items(UVSkinType.values()) { item ->
@@ -76,11 +78,6 @@ fun SkinScreen(
                         viewModel.doEvent(MainContract.Event.DoChangeSkin(skin))
                     }
                 )
-                if (item != UVSkinType.Type6) {
-                    Divider(
-                        modifier = Modifier.padding(horizontal = Dimens.grid_2)
-                    )
-                }
             }
         }
     }
@@ -90,8 +87,8 @@ fun SkinScreen(
 private fun SkinItem(
     skin: UVSkinType,
     selected: Boolean,
-    selectedContainerColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
-    selectedContentColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
+    selectedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    selectedContentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     onClick: (UVSkinType) -> Unit
 ) {
 
@@ -103,76 +100,86 @@ private fun SkinItem(
         if (selected) selectedContentColor else MaterialTheme.colorScheme.onSurface
     )
 
-    Column(
-        modifier = Modifier
-            .selectable(
-                selected = selected,
-                onClick = {
-                    onClick(skin)
-                })
-            .background(backgroundColor)
-            .padding(vertical = Dimens.grid_2),
-    ) {
-        Row(
-            modifier = Modifier
-                .heightIn(min = 56.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-            Box(
-                Modifier
-                    .widthIn(min = 56.dp)
-                    .padding(
-                        start = Dimens.grid_2,
-                        top = 4.dp,
-                        bottom = 4.dp
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Spacer(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(
-                            UVITheme.skinColors.getColor(skin.ordinal),
-                            MaterialTheme.shapes.small
-                        )
-                )
-                Text(
-                    text = (skin.ordinal + 1).toString(),
-                    color = UVITheme.skinColors.contentColorFor(
-                        backgroundColor = UVITheme.skinColors.getColor(skin.ordinal)
-                    )
-                )
-            }
 
-            Column(
+    Card(
+        modifier = Modifier.padding(horizontal = Dimens.grid_2),
+    ) {
+
+        Column(
+            modifier = Modifier
+                .selectable(
+                    selected = selected,
+                    onClick = {
+                        onClick(skin)
+                    }
+                )
+                .fillMaxWidth()
+                .background(backgroundColor)
+                .padding(Dimens.grid_1_5)
+        ) {
+
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = Dimens.grid_2),
-                verticalArrangement = Arrangement.spacedBy(Dimens.grid_0_25)
+//                    .heightIn(min = 56.dp)
+                ,
+                verticalAlignment = Alignment.Top
             ) {
-                Text(
-                    text = stringResource(id = R.string.uvindex_skin_typical_features_title).uppercase(),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = textColor
-                )
-                Text(
-                    text = stringArrayResource(id = R.array.uvindex_skin_typical_features)[skin.ordinal],
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = textColor
-                )
-                Spacer(
-                    modifier = Modifier.size(Dimens.grid_1)
-                )
-                Text(
-                    text = stringResource(id = R.string.uvindex_skin_tanning_ability_title).uppercase(),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = textColor
-                )
-                Text(
-                    text = stringArrayResource(id = R.array.uvindex_skin_tanning_ability)[skin.ordinal],
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = textColor
-                )
+                Box(
+                    Modifier
+//                        .widthIn(min = 56.dp)
+//                        .padding(
+//                            top = 4.dp,
+//                            bottom = 4.dp
+//                        )
+                    ,
+                    contentAlignment = Alignment.Center
+                ) {
+                    Spacer(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(
+                                UVITheme.skinColors.getColor(skin.ordinal),
+                                MaterialTheme.shapes.small
+                            )
+                    )
+                    Text(
+                        text = (skin.ordinal + 1).toString(),
+                        color = UVITheme.skinColors.contentColorFor(
+                            backgroundColor = UVITheme.skinColors.getColor(skin.ordinal)
+                        )
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = Dimens.grid_2),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.grid_0_25)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.uvindex_skin_typical_features_title).uppercase(),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = textColor
+                    )
+                    Text(
+                        text = stringArrayResource(id = R.array.uvindex_skin_typical_features)[skin.ordinal],
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = textColor
+                    )
+                    Spacer(
+                        modifier = Modifier.size(Dimens.grid_1)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.uvindex_skin_tanning_ability_title).uppercase(),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = textColor
+                    )
+                    Text(
+                        text = stringArrayResource(id = R.array.uvindex_skin_tanning_ability)[skin.ordinal],
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = textColor
+                    )
+                }
             }
         }
     }

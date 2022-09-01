@@ -33,8 +33,8 @@ fun PlaceEditTimeZoneSection(
     state: State,
     eventHandler: EventHandler<PlaceEditTimeZoneContract.Event>,
     contentListPadding: PaddingValues = PaddingValues(0.dp),
-    selectedContainerColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
-    selectedContentColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
+    selectedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    selectedContentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     headerBackgroundColor: Color = MaterialTheme.colorScheme.background,
 ) {

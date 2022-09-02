@@ -45,7 +45,10 @@ internal fun MainProtectionPart(
                         style = MaterialTheme.typography.labelLarge
                     )
 
-                    Box(modifier = Modifier.fillMaxWidth(0.7f)) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(0.7f),
+                        contentAlignment = Alignment.Center
+                    ) {
                         AutoSizeText(
                             text = stringResource(
                                 id = R.string.uvindex_current_protection_required_second_part,

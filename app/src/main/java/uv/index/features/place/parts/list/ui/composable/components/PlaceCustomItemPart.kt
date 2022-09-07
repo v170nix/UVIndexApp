@@ -17,11 +17,14 @@ import uv.index.ui.theme.Dimens
 
 @Composable
 internal fun CustomRow(
+    modifier: Modifier = Modifier,
     data: PlaceData,
     onEditItem: () -> Unit,
     onDeleteItem: () -> Unit
 ) {
-    ItemContainer {
+    ItemContainer(
+        modifier = modifier
+    ) {
         BodyPart(
             title = data.name ?: "",
             subTitle = data.subName ?: "",
@@ -50,10 +53,11 @@ internal fun CustomRow(
 
 @Composable
 internal fun ItemContainer(
+    modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(Dimens.grid_2),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Dimens.grid_1_5)
     ) {
         content()

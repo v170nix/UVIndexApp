@@ -40,12 +40,19 @@ import uv.index.features.place.data.room.PlaceData
 import java.time.ZoneId
 
 @Composable
-internal fun AutoAllowRow(data: PlaceData, onUpdateLocation: () -> Unit) {
-    AutoAllowRow(data.name, data.subName, data.latLng, data.zone, onUpdateLocation)
+internal fun AutoAllowRow(
+    modifier: Modifier = Modifier,
+    data: PlaceData,
+    onUpdateLocation: () -> Unit
+) {
+    AutoAllowRow(
+        modifier, data.name, data.subName, data.latLng, data.zone, onUpdateLocation
+    )
 }
 
 @Composable
 internal fun AutoAllowRow(
+    modifier: Modifier = Modifier,
     title: String?,
     subTitle: String?,
     latLng: LatLng,
@@ -59,7 +66,9 @@ internal fun AutoAllowRow(
         }
     )
 
-    AutoContainer {
+    AutoContainer(
+        modifier = modifier
+    ) {
         BodyPart(
             title = title ?: "",
             subTitle = subTitle ?: "",
@@ -93,9 +102,12 @@ internal fun AutoAllowRow(
 
 @Composable
 internal fun AutoAllowButNotDataRow(
+    modifier: Modifier = Modifier,
     onAutoUpdate: () -> Unit
 ) {
-    AutoContainer {
+    AutoContainer(
+        modifier = modifier
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -115,6 +127,7 @@ internal fun AutoAllowButNotDataRow(
 
 @Composable
 internal fun AutoDeniedRow(
+    modifier: Modifier = Modifier,
     onLocationPermission: (isGrained: Boolean) -> Unit
 ) {
     val requestPermissionLauncher = rememberLauncherForActivityResult(
@@ -127,7 +140,9 @@ internal fun AutoDeniedRow(
         }
     )
 
-    AutoContainer {
+    AutoContainer(
+        modifier = modifier,
+    ) {
         Text(
             text = stringResource(R.string.place_location_permission_info),
         )
@@ -153,9 +168,10 @@ internal fun AutoDeniedRow(
 
 @Composable
 private fun AutoContainer(
+    modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    ItemContainer {
+    ItemContainer(modifier = modifier) {
         Text(
             text = stringResource(R.string.place_location_header_auto).uppercase(),
             style = MaterialTheme.typography.labelLarge

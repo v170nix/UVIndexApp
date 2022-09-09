@@ -1,6 +1,7 @@
 package uv.index.features.main.ui.composable.sections.dataview.components
 
 import android.content.Context
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.LocalContentColor
@@ -18,14 +19,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.features.main.ui.MainContract
+import kotlin.math.roundToInt
 
 @Composable
 internal fun MainTimeToEventPart(
     modifier: Modifier = Modifier,
+    infoState: MainInfoState,
     timeToBurn: MainContract.TimeToEvent?,
     timeToVitaminD: MainContract.TimeToEvent?
 ) {
-
     val context = LocalContext.current
 
     val timeToBurnString by remember(timeToBurn, context) {
@@ -51,12 +53,13 @@ internal fun MainTimeToEventPart(
             when (timeToVitaminD) {
                 MainContract.TimeToEvent.Infinity -> "∞"
                 is MainContract.TimeToEvent.Value -> {
-                    var time = (timeToVitaminD.minTimeInMins + (timeToVitaminD.maxTimeInMins
+                    val time = (timeToVitaminD.minTimeInMins + (timeToVitaminD.maxTimeInMins
                         ?: (1.5 * timeToVitaminD.minTimeInMins)).toInt()) / 2
-                    time = (time / 5) * 5
-                    if (time < 5) time = 5
+                    var roundTime = (time / 5.0).roundToInt() * 5
+//                    time = (time / 5) * 5
+                    if (time < 5) roundTime = time
                     buildString {
-                        timeToString(context, time)
+                        timeToString(context, roundTime)
                     }
                 }
                 else -> ""
@@ -64,22 +67,7 @@ internal fun MainTimeToEventPart(
         }
     }
 
-//    val timeToVitaminD by remember(timeToBurn, context) {
-//        derivedStateOf {
-//            when (timeToBurn) {
-//                MainContract.TimeToEvent.Infinity -> "∞"
-//                is MainContract.TimeToEvent.Value -> {
-//                    var time = (timeToBurn.minTimeInMins + (timeToBurn.maxTimeInMins
-//                        ?: (1.5 * timeToBurn.minTimeInMins)).toInt()) / 6
-//                    time = (time / 5) * 5
-//                    buildString {
-//                        timeToString(context, time)
-//                    }
-//                }
-//                else -> ""
-//            }
-//        }
-//    }
+    val resource = LocalContext.current.resources
 
     Row(
         modifier = modifier.height(IntrinsicSize.Max),
@@ -88,7 +76,14 @@ internal fun MainTimeToEventPart(
         InnerCard(
             modifier = Modifier.weight(1f),
             info = timeToBurnString,
-            description = stringResource(id = R.string.uvindex_sunburn_title)
+            description = stringResource(id = R.string.uvindex_sunburn_title),
+            onClick = {
+                infoState.data = MainInfoData(
+                    headline = resource.getString(R.string.uvindex_sunburn_title),
+                    info = resource.getString(R.string.uvindex_sunburn_info),
+                )
+                infoState.openDialog = true
+            }
         )
 
         InnerCard(
@@ -96,7 +91,14 @@ internal fun MainTimeToEventPart(
                 .weight(1f)
                 .fillMaxHeight(),
             info = timeToVitaminDString,
-            description = stringResource(id = R.string.uvindex_vitamin_D_title)
+            description = stringResource(id = R.string.uvindex_vitamin_D_title),
+            onClick = {
+                infoState.data = MainInfoData(
+                    headline = resource.getString(R.string.uvindex_vitamin_D_title),
+                    info = resource.getString(R.string.uvindex_vitamin_D_info)
+                )
+                infoState.openDialog = true
+            }
         )
     }
 }
@@ -129,14 +131,15 @@ private fun getHourPart(duration: Int) = duration / 60
 private fun InnerCard(
     modifier: Modifier = Modifier,
     info: String,
-    description: String
+    description: String,
+    onClick: () -> Unit
 ) {
-    Card(
-        modifier = modifier,
-    ) {
+    Card(modifier = modifier)
+    {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .clickable(onClick = onClick)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center

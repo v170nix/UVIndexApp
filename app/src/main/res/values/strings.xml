@@ -16,13 +16,31 @@
         <item>Extreme UV</item>
     </string-array>
 
+    <string-array name="uvindex_alert_info_headline">
+        <item>Носите солнцезащитные очки</item>
+        <item>Нанесите солнцезащитный крем</item>
+        <item>Наденьте шляпу</item>
+        <item>Несколько слоев одежды</item>
+        <item>Оставайтесь в тени</item>
+    </string-array>
+    <string-array name="uvindex_alert_info_text">
+        <item>Выбирайте солнцезащитные очки с плотной посадкой и охватом</item>
+        <item>Используйте водостойкий солнцезащитный крем широкого спектра действия SPF15+ (или выше) на всех участках кожи, не прикрытых одеждой. Регулярно обновляйте защиту</item>
+        <item>Отдавайте предпочтение шляпам с плотным плетением и широкими полями, которые хорошо затеняют лицо, голову, шею и уши</item>
+        <item>Носите свободную защитную одежду, закрывающую как можно больше кожи</item>
+        <item>Используйте сочетание естественных и специально возведенных укрытий от Солнца</item>
+    </string-array>
+
     <string name="uvindex_peak_time">Peak time</string>
 
     <string name="uvindex_sunburn_title">Time to sunburn</string>
     <string name="uvindex_sunburn_hour_part">h</string>
     <string name="uvindex_sunburn_min_part">min</string>
+    <string name="uvindex_sunburn_info">Sunburn info</string>
+
 
     <string name="uvindex_vitamin_D_title">Vitamin D</string>
+    <string name="uvindex_vitamin_D_info">Vitamin D forms in the skin when it is exposed to UV from sunlight and keeps bones and muscles strong and healthy</string>
 
     <string name="uvindex_forecast_title">Forecast</string>
     <string name="uvindex_forecast_title_recommendation">Recommendation</string>

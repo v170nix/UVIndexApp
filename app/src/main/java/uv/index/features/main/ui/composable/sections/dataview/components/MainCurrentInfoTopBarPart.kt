@@ -29,14 +29,15 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
     collapsedHeight: Dp = 64.dp,
     state: MainContract.State,
-    onEditPlace: () -> Unit
+    onEditPlace: () -> Unit,
+    onShowIndexInfo: () -> Unit
 ) {
     val statusHeight: Dp by animateDpAsState(
         targetValue = max(
@@ -86,9 +87,10 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
         scrollBehavior = scrollBehavior
     )
 
-    Column(Modifier
-        .statusBarsPadding()
-        .height(statusHeight)) {
+    Column(
+        Modifier
+            .statusBarsPadding()
+            .height(statusHeight)) {
 
         val inverseSurface = contentColorFor(MaterialTheme.colorScheme.inverseSurface)
         val surface = contentColorFor(MaterialTheme.colorScheme.surface)
@@ -118,10 +120,32 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
                 )
             },
             titleContent = {
-                Text(
-                    modifier = Modifier.padding(horizontal = Dimens.grid_2),
-                    text = titleString,
-                )
+                val style = LocalTextStyle.current
+//                Text(
+//                    modifier = Modifier.padding(horizontal = Dimens.grid_2),
+//                    text = titleString,
+//                    style = style
+//                )
+                TextButton(
+                    colors = ButtonDefaults.textButtonColors(contentColor = LocalContentColor.current),
+                    modifier = Modifier.padding(end = Dimens.grid_0_5),
+                    contentPadding = PaddingValues( 0.dp
+//                        start = Dimens.grid_2,
+//                        top = ButtonDefaults.TextButtonContentPadding.calculateTopPadding(),
+//                        bottom = ButtonDefaults.TextButtonContentPadding.calculateBottomPadding(),
+//                        end = Dimens.grid_1
+                    ),
+                    onClick = onShowIndexInfo
+
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = Dimens.grid_2),
+                        text = titleString,
+                        style = style
+                    )
+                }
+
             },
             indexContent = {
                 IndexParts(
@@ -132,7 +156,11 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
                 IconsInfo(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = Dimens.grid_2, top = Dimens.grid_2),
+                        .padding(
+                            start = Dimens.grid_2,
+                            end = Dimens.grid_2,
+                            top = Dimens.grid_2
+                        ),
                     currentIndexValue = state.currentIndexValue
                 )
             },
@@ -147,7 +175,7 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
 }
 
 @Composable
-private fun IconsInfo(
+internal fun IconsInfo(
     modifier: Modifier = Modifier,
     currentIndexValue: Double?
 ) {

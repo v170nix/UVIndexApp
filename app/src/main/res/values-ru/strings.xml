@@ -1,0 +1,84 @@
+<resources>
+    <string name="app_name">UVIndexApp</string>
+    <string name="MAP_ID" translatable="false">5ee5e9bf8069b68a</string>
+
+    <string name="place_empty_title">Your Places</string>
+    <string name="place_empty_text">Please add a location to use this app</string>
+    <string name="place_empty_button">Continue</string>
+
+    <string-array name="uvindex_status_info">
+        <item>Ночь</item>
+        <item>Сумерки</item>
+        <item>Низкий УФ</item>
+        <item>Умеренный УФ</item>
+        <item>Высокий УФ</item>
+        <item>Очень высокий УФ</item>
+        <item>Экстремальный УФ</item>
+    </string-array>
+
+    <string name="uvindex_peak_time">Пиковое время</string>
+
+    <string name="uvindex_sunburn_title">Время до ожога</string>
+    <string name="uvindex_sunburn_hour_part">ч</string>
+    <string name="uvindex_sunburn_min_part">мин</string>
+
+    <string name="uvindex_vitamin_D_title">Витамин Д</string>
+
+    <string name="uvindex_forecast_title">Прогноз</string>
+    <string name="uvindex_forecast_title_recommendation">Рекомендации</string>
+    <string name="uvindex_forecast_title_max_index">Макс. индекс</string>
+    <string name="uvindex_forecast_item_protection_not_required">Защита от Солнца не требуется</string>
+    <string name="uvindex_forecast_item_protection_required">Защита от Солнца рекомендована с %s по %s</string>
+    <string name="uvindex_current_protection_not_required">@string/uvindex_forecast_item_protection_not_required</string>
+    <string name="uvindex_current_protection_required_first_part">Защита от Солнца рекомендована</string>
+    <string name="uvindex_current_protection_required_second_part">с %s по %s</string>
+
+    <string name="uvindex_skin_type_select_title">Выберите свой тип кожи</string>
+
+    <string name="uvindex_skin_typical_features_title">Типичные характеристики</string>
+
+    <string-array name="uvindex_skin_typical_features">
+        <item>Кожа очень светлая, белая; рыжие или светлые волосы; светлые глаза; веснушки</item>
+        <item>Кожа светлая, белая; светлые глаза; светлые волосы</item>
+        <item>Кожа светлая, кремово-белая; любой цвет глаз или волос (очень распространенный тип кожи)</item>
+        <item>Оливковая кожа, типичная средиземноморская кавказская кожа; темно-коричневые волосы; средняя и сильная пигментация</item>
+        <item>Коричневая кожа, типичная ближневосточная кожа; темные волосы; слабо чувствителена к Солнцу</item>
+        <item>Черная кожа; слабо чувствителена к Солнцу</item>
+    </string-array>
+
+    <string name="uvindex_skin_tanning_ability_title">Способность к загару</string>
+
+    <string-array name="uvindex_skin_tanning_ability">
+        <item>Всегда обгорает, не загорает</item>
+        <item>Легко обгорает, плохо загорает</item>
+        <item>Загорает после первоначального ожога</item>
+        <item>Обгорает минимально, легко загорает</item>
+        <item>Редко обгорает, легко загорает</item>
+        <item>Никогда не обгорает, всегда загорает</item>
+    </string-array>
+
+    <string name="uvindex_more_title">Меню</string>
+    <string name="uvindex_more_color_title">Тема</string>
+    <string-array name="uvindex_more_color_light_items">
+        <item>Светлая</item>
+        <item>Тёмная</item>
+        <item>Системная</item>
+    </string-array>
+
+    <string name="uvindex_more_info_title">Информация</string>
+    <string name="uvindex_more_info_uvindex_item">УФ индекс</string>
+
+    <string name="uvindex_more_remove_ads_title">Удалить рекламу</string>
+    <string name="uvindex_more_remove_ads_item">Полная версия</string>
+
+    <string name="uvindex_more_support_title">Поддержка</string>
+    <string name="uvindex_more_support_share_item">Share with friends</string>
+    <string name="uvindex_more_support_rate_item">Rate us</string>
+    <string name="uvindex_more_support_feedback_item">Feedback</string>
+
+    <string name="uvindex_more_support_privacy_item">Политика конфиденциальности</string>
+
+    <string name="uvindex_more_support_disclaimer_item">Отказ от ответственности</string>
+
+
+</resources>

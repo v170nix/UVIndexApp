@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
@@ -22,7 +23,7 @@ import uv.index.navigation.AppNavigationBar
 import uv.index.ui.theme.Dimens
 import java.time.ZonedDateTime
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 internal fun BoxWithConstraintsScope.MainDataSection(
     modifier: Modifier = Modifier,
@@ -39,6 +40,13 @@ internal fun BoxWithConstraintsScope.MainDataSection(
         }
     }
 
+    val infoState = remember {
+        MainInfoState(MainInfoData(""))
+    }
+
+    val uvIndexState = rememberUVIndexInfoDialogState(state.currentIndexValue)
+    MainUVIndexInfoDialog(uvIndexState)
+
     Scaffold(
         containerColor = Color.Transparent,
         modifier = modifier,
@@ -46,7 +54,10 @@ internal fun BoxWithConstraintsScope.MainDataSection(
             MainCurrentInfoTopBarPart(
                 scrollBehavior = scrollBehavior,
                 state = state,
-                onEditPlace = onEditPlace
+                onEditPlace = onEditPlace,
+                onShowIndexInfo = {
+                    uvIndexState.isShow = true
+                }
             )
         },
         bottomBar = {
@@ -79,14 +90,15 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = Dimens.grid_2),
+                        infoState = infoState,
                         timeToBurn = state.currentTimeToBurn,
-                        timeToVitaminD = state.currentTimeToVitaminD
+                        timeToVitaminD = state.currentTimeToVitaminD,
                     )
                 }
 
                 item {
                     MainSunscreenReminder(
-                        modifier  = Modifier
+                        modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = Dimens.grid_2)
                             .padding(top = Dimens.grid_2),
@@ -153,6 +165,76 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                     )
                 }
             }
+
+
+            MainInfoHost(infoState)
+
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .systemBarsPadding()
+//                    .padding(bottom = 80.dp)
+//                    .padding(32.dp),
+//            contentAlignment = Alignment.Center
+//            ) {
+//
+//                Card(
+//                    elevation = CardDefaults.cardElevation(
+//                        defaultElevation = 8.dp
+//                    )
+//                ) {
+//                    Text(
+//                        modifier = Modifier.padding(8.dp),
+//                        text = "info"
+//                    )
+//                }
+//            }
+
+
+//            var openDialog by remember { mutableStateOf(true) }
+//
+//            if (openDialog) {
+//
+//                Dialog(
+//                    onDismissRequest = { openDialog = false },
+//                    properties = DialogProperties(
+//                        dismissOnBackPress = true,
+//                        dismissOnClickOutside = true,
+////                    usePlatformDefaultWidth = false,
+////                    decorFitsSystemWindows = false,
+//                        securePolicy = SecureFlagPolicy.SecureOff
+//                    )
+//                ) {
+//                    Card(
+////                        modifier = Modifier.fillMaxSize(),
+//                    shape = MaterialTheme.shapes.extraLarge
+//                    ) {
+//                        Column(
+//                            modifier = Modifier.padding(24.dp),
+//                            verticalArrangement = Arrangement.spacedBy(Dimens.grid_2)
+//                        ) {
+//                            Text(
+//                                modifier = Modifier.align(Alignment.CenterHorizontally),
+//                                text = "Vitamin D",
+//                                style = MaterialTheme.typography.headlineSmall
+//                            )
+//
+//                            Text(
+//                                modifier = Modifier.align(Alignment.End),
+//                                text = "info",
+//                                style = MaterialTheme.typography.labelLarge
+//                            )
+//
+//                            Text(
+//                                text = "Vitamin D forms in the skin when it is exposed to UV from sunlight and keeps bones and muscles strong and healthy",
+//                                style = MaterialTheme.typography.bodyMedium
+//                            )
+//
+//
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 }

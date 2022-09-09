@@ -125,7 +125,13 @@ internal fun MainCurrentInfoTopBarInnerPart(
             Box(
                 Modifier.layoutId("titleContent")
             ) {
-                ProvideTextStyle(value = titleStyle) { titleContent(fraction) }
+                ProvideTextStyle(value = titleStyle) {
+                    CompositionLocalProvider(
+                        LocalContentColor provides titleStyle.color.copy(alpha = placeAlpha)
+                    ) {
+                        titleContent(fraction)
+                    }
+                }
             }
 
             Box(

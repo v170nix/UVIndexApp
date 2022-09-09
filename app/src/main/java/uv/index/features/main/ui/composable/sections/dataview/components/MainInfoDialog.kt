@@ -1,13 +1,17 @@
 package uv.index.features.main.ui.composable.sections.dataview.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -38,38 +42,79 @@ fun MainInfoHost(
     }
 }
 
-
 @Composable
 private fun MainInfoDialogPart(
     state: MainInfoState
 ) {
+    val data = state.data
+
+    MainInfoDialog(
+        headline = data.headline,
+        onDismissRequest = {
+            state.openDialog = false
+        }
+    ) {
+        if (data.info != null) {
+            item {
+                Text(
+                    text = data.info,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@Composable
+internal fun MainInfoDialog(
+    headline: String,
+    usePlatformDefaultWidth: Boolean = true,
+    isViewCloseButton: Boolean = false,
+    onDismissRequest: () -> Unit,
+    info: (LazyListScope.() -> Unit)?,
+) {
     Dialog(
-        onDismissRequest = { state.openDialog = false },
+        onDismissRequest = onDismissRequest,
         properties = DialogProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = true,
+            usePlatformDefaultWidth = usePlatformDefaultWidth,
             securePolicy = SecureFlagPolicy.SecureOff
         )
     ) {
+        Card(
+            shape = MaterialTheme.shapes.extraLarge
+        ) {
 
-        val data = state.data
-
-        Card(shape = MaterialTheme.shapes.extraLarge) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(Dimens.grid_2)
-            ) {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    text = data.headline, // "Vitamin D",
-                    style = MaterialTheme.typography.headlineSmall
-                )
-
-                if (data.info != null) {
+            Column {
+                Row(modifier = Modifier.padding(top = 24.dp, start = 24.dp, end = 8.dp)) {
                     Text(
-                        text = data.info,
-                        style = MaterialTheme.typography.bodyMedium
+                        modifier = Modifier.weight(1f)
+//                                    .background(MaterialTheme.colorScheme.surface)
+                            .padding(vertical = Dimens.grid_1),
+                        text = headline,
+                        style = MaterialTheme.typography.headlineSmall,
                     )
+                    if (isViewCloseButton) {
+                        IconButton(
+                            onClick = { onDismissRequest() },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "close",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+                }
+                LazyColumn(
+                    modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 24.dp, top = 0.dp),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.grid_2)
+                ) {
+                    if (info != null) {
+                        info()
+                    }
                 }
             }
         }

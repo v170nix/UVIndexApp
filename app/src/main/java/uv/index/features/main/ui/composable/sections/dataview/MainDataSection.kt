@@ -44,8 +44,8 @@ internal fun BoxWithConstraintsScope.MainDataSection(
         MainInfoState(MainInfoData(""))
     }
 
-    val uvIndexState = rememberUVIndexInfoDialogState(state.currentIndexValue)
-    MainUVIndexInfoDialog(uvIndexState)
+    val uvIndexInfoDialogState = rememberUVIndexInfoDialogState(state.currentIndexValue)
+    MainUVIndexInfoDialog(uvIndexInfoDialogState)
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -56,7 +56,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                 state = state,
                 onEditPlace = onEditPlace,
                 onShowIndexInfo = {
-                    uvIndexState.isShow = true
+                    uvIndexInfoDialogState.isShow = true
                 }
             )
         },

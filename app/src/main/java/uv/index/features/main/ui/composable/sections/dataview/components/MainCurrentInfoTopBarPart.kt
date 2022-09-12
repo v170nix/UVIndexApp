@@ -1,9 +1,14 @@
 package uv.index.features.main.ui.composable.sections.dataview.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -14,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -76,8 +82,7 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
     SmallTopAppBar(
         modifier = modifier
             .statusBarsPadding()
-            .height(statusHeight)
-        ,
+            .height(statusHeight),
         title = {},
         colors = TopAppBarDefaults.smallTopAppBarColors(
             containerColor = Color.Transparent,
@@ -90,7 +95,8 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
     Column(
         Modifier
             .statusBarsPadding()
-            .height(statusHeight)) {
+            .height(statusHeight)
+    ) {
 
         val inverseSurface = contentColorFor(MaterialTheme.colorScheme.inverseSurface)
         val surface = contentColorFor(MaterialTheme.colorScheme.surface)
@@ -121,21 +127,14 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
             },
             titleContent = {
                 val style = LocalTextStyle.current
-//                Text(
-//                    modifier = Modifier.padding(horizontal = Dimens.grid_2),
-//                    text = titleString,
-//                    style = style
-//                )
                 TextButton(
                     colors = ButtonDefaults.textButtonColors(contentColor = LocalContentColor.current),
-                    modifier = Modifier.padding(end = Dimens.grid_0_5),
-                    contentPadding = PaddingValues( 0.dp
-//                        start = Dimens.grid_2,
-//                        top = ButtonDefaults.TextButtonContentPadding.calculateTopPadding(),
-//                        bottom = ButtonDefaults.TextButtonContentPadding.calculateBottomPadding(),
-//                        end = Dimens.grid_1
-                    ),
-                    onClick = onShowIndexInfo
+                    modifier = Modifier.padding(end = Dimens.grid_1),
+                    contentPadding = PaddingValues(0.dp),
+                    onClick = {
+                        if (currentIndex > 2) onShowIndexInfo()
+                    },
+                    enabled = currentIndex > 2
 
                 ) {
                     Text(
@@ -150,18 +149,20 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
             indexContent = {
                 IndexParts(
                     modifier = Modifier.padding(horizontal = Dimens.grid_2),
-                    currentIndex = currentIndex, maxIndex = maxIndex)
+                    currentIndex = currentIndex, maxIndex = maxIndex
+                )
             },
             subTitleContent = {
                 IconsInfo(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
-                            start = Dimens.grid_2,
-                            end = Dimens.grid_2,
+                            start = Dimens.grid_1,
+                            end = Dimens.grid_1,
                             top = Dimens.grid_2
                         ),
-                    currentIndexValue = state.currentIndexValue
+                    currentIndexValue = state.currentIndexValue,
+                    onClick = onShowIndexInfo
                 )
             },
             maxTimeContent = {
@@ -177,7 +178,8 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
 @Composable
 internal fun IconsInfo(
     modifier: Modifier = Modifier,
-    currentIndexValue: Double?
+    currentIndexValue: Double?,
+    onClick: () -> Unit
 ) {
 
     val currentIndexInt by remember(currentIndexValue) {
@@ -192,31 +194,29 @@ internal fun IconsInfo(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
+
         if (currentIndexInt > 2) {
-            Icon(
+            InfoIconButton(
                 modifier = Modifier.size(48.dp),
-                tint = Color.White,
-                painter = painterResource(id = R.drawable.ic_glasses),
-                contentDescription = ""
+                id = R.drawable.ic_glasses,
+                onClick = onClick
             )
             Spacer(modifier = Modifier.width(8.dp))
         }
 
         if (currentIndexInt > 2) {
-            Icon(
+            InfoIconButton(
                 modifier = Modifier.size(36.dp),
-                tint = Color.White,
-                painter = painterResource(id = R.drawable.ic_sunblock_alt),
-                contentDescription = ""
+                id = R.drawable.ic_sunblock_alt,
+                onClick = onClick
             )
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Icon(
+            InfoIconButton(
                 modifier = Modifier.size(48.dp),
-                tint = Color.White,
-                painter = painterResource(id = R.drawable.ic_hat),
-                contentDescription = ""
+                id = R.drawable.ic_hat,
+                onClick = onClick
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -224,11 +224,10 @@ internal fun IconsInfo(
 
         if (currentIndexInt > 4) {
 
-            Icon(
+            InfoIconButton(
                 modifier = Modifier.size(40.dp),
-                tint = Color.White,
-                painter = painterResource(id = R.drawable.ic_shirt),
-                contentDescription = ""
+                id = R.drawable.ic_shirt,
+                onClick = onClick
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -236,14 +235,38 @@ internal fun IconsInfo(
         }
 
         if (currentIndexInt > 6) {
-            Icon(
+            InfoIconButton(
                 modifier = Modifier.size(40.dp),
-                tint = Color.White,
-                painter = painterResource(id = R.drawable.beach_shadow),
-                contentDescription = ""
+                id = R.drawable.beach_shadow,
+                onClick = onClick
             )
         }
     }
+}
+
+@Composable
+private fun InfoIconButton(
+    modifier: Modifier = Modifier,
+    @DrawableRes id: Int,
+    onClick: () -> Unit
+) {
+    Icon(
+        modifier = modifier
+            .clickable(
+                onClick = onClick,
+                enabled = true,
+                role = Role.Button,
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(
+                    bounded = false,
+                    radius = 48.dp / 2,
+                    color = MaterialTheme.colorScheme.inverseOnSurface
+                )
+            ),
+        tint = MaterialTheme.colorScheme.inverseOnSurface,
+        painter = painterResource(id = id),
+        contentDescription = null
+    )
 }
 
 @OptIn(ExperimentalAnimationApi::class)

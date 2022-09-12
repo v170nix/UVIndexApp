@@ -150,6 +150,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 0.dp),
+                            place = state.place,
                             hoursList = state.currentUiHoursData
                         )
                     }
@@ -166,75 +167,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                 }
             }
 
-
             MainInfoHost(infoState)
-
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .systemBarsPadding()
-//                    .padding(bottom = 80.dp)
-//                    .padding(32.dp),
-//            contentAlignment = Alignment.Center
-//            ) {
-//
-//                Card(
-//                    elevation = CardDefaults.cardElevation(
-//                        defaultElevation = 8.dp
-//                    )
-//                ) {
-//                    Text(
-//                        modifier = Modifier.padding(8.dp),
-//                        text = "info"
-//                    )
-//                }
-//            }
-
-
-//            var openDialog by remember { mutableStateOf(true) }
-//
-//            if (openDialog) {
-//
-//                Dialog(
-//                    onDismissRequest = { openDialog = false },
-//                    properties = DialogProperties(
-//                        dismissOnBackPress = true,
-//                        dismissOnClickOutside = true,
-////                    usePlatformDefaultWidth = false,
-////                    decorFitsSystemWindows = false,
-//                        securePolicy = SecureFlagPolicy.SecureOff
-//                    )
-//                ) {
-//                    Card(
-////                        modifier = Modifier.fillMaxSize(),
-//                    shape = MaterialTheme.shapes.extraLarge
-//                    ) {
-//                        Column(
-//                            modifier = Modifier.padding(24.dp),
-//                            verticalArrangement = Arrangement.spacedBy(Dimens.grid_2)
-//                        ) {
-//                            Text(
-//                                modifier = Modifier.align(Alignment.CenterHorizontally),
-//                                text = "Vitamin D",
-//                                style = MaterialTheme.typography.headlineSmall
-//                            )
-//
-//                            Text(
-//                                modifier = Modifier.align(Alignment.End),
-//                                text = "info",
-//                                style = MaterialTheme.typography.labelLarge
-//                            )
-//
-//                            Text(
-//                                text = "Vitamin D forms in the skin when it is exposed to UV from sunlight and keeps bones and muscles strong and healthy",
-//                                style = MaterialTheme.typography.bodyMedium
-//                            )
-//
-//
-//                        }
-//                    }
-//                }
-//            }
         }
     }
 }

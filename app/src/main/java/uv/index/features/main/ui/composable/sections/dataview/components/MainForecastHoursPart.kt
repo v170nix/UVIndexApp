@@ -1,27 +1,70 @@
 package uv.index.features.main.ui.composable.sections.dataview.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import uv.index.features.main.common.getUVIColor
 import uv.index.features.main.ui.MainContract
+import uv.index.features.place.data.room.PlaceData
 
 
 @Composable
 fun MainForecastHoursPart(
     modifier: Modifier = Modifier,
+    place: PlaceData?,
     hoursList: List<MainContract.UIHourData>,
 ) {
+
+    val listState = rememberSaveable(
+        place,
+        key = place?.latLng?.toString(),
+        saver = listSaver(
+            save = {
+                listOf(
+                    it.firstVisibleItemIndex,
+                    it.firstVisibleItemScrollOffset,
+                    place?.latLng
+                )
+            },
+            restore = {
+                runCatching {
+                    if (it[2] == place?.latLng) {
+                        LazyListState(
+                            firstVisibleItemIndex = it[0] as Int,
+                            firstVisibleItemScrollOffset = it[1] as Int
+                        )
+                    } else {
+                        LazyListState(
+                            firstVisibleItemIndex = 0,
+                            firstVisibleItemScrollOffset = 0
+                        )
+                    }
+                }.getOrDefault(
+                    LazyListState(
+                        firstVisibleItemIndex = 0,
+                        firstVisibleItemScrollOffset = 0
+                    )
+                )
+            }
+        ),
+    ) {
+        LazyListState(0, 0)
+    }
+
     LazyRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        state = listState
     ) {
 
         item {
@@ -31,7 +74,9 @@ fun MainForecastHoursPart(
         items(hoursList) { item ->
             when (item) {
                 MainContract.UIHourData.Divider -> Divider(
-                    modifier = Modifier.height(32.dp).width(1.dp),
+                    modifier = Modifier
+                        .height(32.dp)
+                        .width(1.dp),
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 is MainContract.UIHourData.Item -> HourBox(

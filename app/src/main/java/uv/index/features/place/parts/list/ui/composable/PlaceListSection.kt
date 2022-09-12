@@ -22,7 +22,7 @@ internal fun PlaceListSection(
     state: PlaceListContract.State,
     eventHandler: EventHandler<PlaceListContract.Event>,
     listContentPadding: PaddingValues,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
 ) {
 //    val state by model.state.collectAsState()
     val coroutineScope = rememberCoroutineScope()

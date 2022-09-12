@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import net.arwix.mvi.EventHandler
 import uv.index.features.place.parts.list.data.PlaceListItem
 import uv.index.features.place.parts.list.ui.PlaceListContract
+import uv.index.features.preferences.ui.rememberPlaceLazyListState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -23,10 +24,12 @@ fun PlaceListComponent(
     onLocationUpdate: () -> Unit,
     onShowUndoSnackbar: (PlaceListItem.Custom) -> Unit
 ) {
+
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
+        state = rememberPlaceLazyListState()
     ) {
         items(
             items = state.list,

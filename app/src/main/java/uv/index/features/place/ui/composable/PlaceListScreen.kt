@@ -120,7 +120,7 @@ fun PlaceListScreen(
                     state = state,
                     eventHandler = viewModel,
                     snackbarHostState = snackbarHostState,
-                    listContentPadding = paddingExceptBottomBar
+                    listContentPadding = paddingExceptBottomBar,
                 )
                 BottomNavigationSpacer()
             }

@@ -63,7 +63,7 @@ class AppNavigationActions(navController: NavController) : NavigationActions(nav
 
     val nestedNavigateToPlace = { from: NavBackStackEntry ->
         if (from.lifecycleIsResumed()) navController.navigate(
-            AppScreen.Place.List.route
+            AppScreen.Place.List.route,
         )
     }
 

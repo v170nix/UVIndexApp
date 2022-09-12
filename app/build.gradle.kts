@@ -68,7 +68,7 @@ kapt {
 
 dependencies {
 
-    implementation("androidx.appcompat:appcompat:1.5.0")
+    implementation("androidx.appcompat:appcompat:1.5.1")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
@@ -81,8 +81,8 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.43.2")
     kapt("com.google.dagger:hilt-android-compiler:2.43.2")
 
-    implementation("androidx.navigation:navigation-compose:2.5.1")
-    implementation("androidx.navigation:navigation-common-ktx:2.5.1")
+    implementation("androidx.navigation:navigation-compose:2.5.2")
+    implementation("androidx.navigation:navigation-common-ktx:2.5.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     implementation("io.ktor:ktor-client-core:2.0.3")
@@ -90,13 +90,13 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
 
-    implementation("androidx.room:room-runtime:2.5.0-alpha02")
-    kapt("androidx.room:room-compiler:2.5.0-alpha02")
-    implementation("androidx.room:room-ktx:2.5.0-alpha02")
+    implementation("androidx.room:room-runtime:2.5.0-alpha03")
+    kapt("androidx.room:room-compiler:2.5.0-alpha03")
+    implementation("androidx.room:room-ktx:2.5.0-alpha03")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-    implementation("androidx.core:core-ktx:1.8.0")
+    implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.compose.ui:ui:1.3.0-beta01")
     implementation("androidx.compose.material3:material3:1.0.0-beta01")
     implementation("androidx.compose.ui:ui-tooling-preview:1.3.0-beta01")
@@ -134,7 +134,7 @@ dependencies {
     implementation("com.halilibo.compose-richtext:richtext-commonmark:0.13.0")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("androidx.room:room-testing:2.5.0-alpha02")
+    testImplementation("androidx.room:room-testing:2.5.0-alpha03")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.0-beta01")

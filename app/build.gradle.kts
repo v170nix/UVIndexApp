@@ -124,6 +124,8 @@ dependencies {
 
     implementation("com.android.billingclient:billing-ktx:5.0.0")
 
+    implementation("com.android.billingclient:billing-ktx:5.0.0")
+
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 
     implementation("com.github.v170nix:arwix-common-library:0.4.0")

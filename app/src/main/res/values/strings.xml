@@ -2,6 +2,10 @@
     <string name="app_name">UVIndexApp</string>
     <string name="MAP_ID" translatable="false">5ee5e9bf8069b68a</string>
 
+    <string name="navigation_bar_main_screen_title">Home</string>
+    <string name="navigation_bar_skin_screen_title">Skin</string>
+    <string name="navigation_bar_more_screen_title">More</string>
+
     <string name="place_empty_title">Your Places</string>
     <string name="place_empty_text">Please add a location to use this app</string>
     <string name="place_empty_button">Continue</string>

@@ -86,8 +86,6 @@ fun MainUVIndexInfoDialog(
             onDismissRequest = {
                 state.isShow = false
             },
-            usePlatformDefaultWidth = false,
-            isViewCloseButton = true
         ) {
 
             items(dataCount) { i ->

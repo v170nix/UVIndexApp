@@ -1,6 +1,5 @@
 package uv.index.features.main.ui.composable.sections.dataview.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -65,12 +64,12 @@ private fun MainInfoDialogPart(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun MainInfoDialog(
     headline: String,
-    usePlatformDefaultWidth: Boolean = true,
-    isViewCloseButton: Boolean = false,
+//    usePlatformDefaultWidth: Boolean = true,
+//    isViewCloseButton: Boolean = false,
     onDismissRequest: () -> Unit,
     info: (LazyListScope.() -> Unit)?,
 ) {
@@ -79,16 +78,17 @@ internal fun MainInfoDialog(
         properties = DialogProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = true,
-            usePlatformDefaultWidth = usePlatformDefaultWidth,
+            usePlatformDefaultWidth = false,
             securePolicy = SecureFlagPolicy.SecureOff
         )
     ) {
         Card(
+            modifier = Modifier.padding(Dimens.grid_2),
             shape = MaterialTheme.shapes.extraLarge
         ) {
 
             Column {
-                Row(modifier = Modifier.padding(top = 24.dp, start = 24.dp, end = 8.dp)) {
+                Row(modifier = Modifier.padding(top = 8.dp, start = 24.dp, end = 8.dp)) {
                     Text(
                         modifier = Modifier.weight(1f)
 //                                    .background(MaterialTheme.colorScheme.surface)
@@ -96,7 +96,7 @@ internal fun MainInfoDialog(
                         text = headline,
                         style = MaterialTheme.typography.headlineSmall,
                     )
-                    if (isViewCloseButton) {
+//                    if (isViewCloseButton) {
                         IconButton(
                             onClick = { onDismissRequest() },
                         ) {
@@ -106,7 +106,7 @@ internal fun MainInfoDialog(
                                 tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
-                    }
+//                    }
                 }
                 LazyColumn(
                     modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 24.dp, top = 0.dp),

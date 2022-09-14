@@ -105,9 +105,9 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
             minHeight = collapsedHeight,
             collapsedFraction = scrollBehavior.state.collapsedFraction,
             textStyles = MainTopBarDefaults.mainTopBarTextStyles(
-                placeExpandedStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
+                placeExpandedStyle = MaterialTheme.typography.labelLarge.copy(color = Color.White),
                 placeCollapsedStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
-                titleExpandedStyle = MaterialTheme.typography.displaySmall.copy(color = inverseSurface),
+                titleExpandedStyle = MaterialTheme.typography.displaySmall.copy(color = Color.White),
                 titleCollapsedStyle = MaterialTheme.typography.titleLarge.copy(color = surface),
                 riseSetTextStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
                 indexExpandedStyle = MaterialTheme.typography.displayLarge
@@ -263,7 +263,7 @@ private fun InfoIconButton(
                     color = MaterialTheme.colorScheme.inverseOnSurface
                 )
             ),
-        tint = MaterialTheme.colorScheme.inverseOnSurface,
+        tint = Color.White,
         painter = painterResource(id = id),
         contentDescription = null
     )

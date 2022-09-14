@@ -29,6 +29,7 @@ import uv.index.features.place.parts.list.ui.PlaceListViewModel
 import uv.index.features.place.ui.composable.PlaceListScreen
 import uv.index.features.place.ui.composable.PlaceLocationScreen
 import uv.index.features.place.ui.composable.PlaceTimeZoneScreen
+import uv.index.features.preferences.ui.isAppInDarkTheme
 
 fun NavBackStackEntry.lifecycleIsResumed() =
     lifecycle.currentState == Lifecycle.State.RESUMED
@@ -88,7 +89,6 @@ class AppNavigationActions(navController: NavController) : NavigationActions(nav
 @Stable
 sealed class AppScreen(
     override val route: String,
-    val isDarkSystemIcons: Boolean = false,
 ) : Screen<AppNavigationActions>(
     enterTransition = { fadeIn(animationSpec = tween(450)) },
     exitTransition = { fadeOut(animationSpec = tween(250, 300)) },
@@ -99,8 +99,8 @@ sealed class AppScreen(
         override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit =
             { entry ->
                 UIEffect(
-                    isDarkStatusIcons = isDarkSystemIcons,
-                    isDarkNavigationIcons = !isDarkSystemIcons
+                    isDarkStatusIcons = false,
+                    isDarkNavigationIcons = !isAppInDarkTheme()
                 )
 
                 val viewModel: MainViewModel = hiltViewModel()
@@ -114,12 +114,12 @@ sealed class AppScreen(
     }
 
     object SkinType : AppScreen(
-        route = "skin",
-        isDarkSystemIcons = true
+        route = "skin"
     ) {
         override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit
             get() = { entry: NavBackStackEntry ->
-                UIEffect(isDarkSystemIcons = isDarkSystemIcons)
+
+                UIEffect(isDarkSystemIcons = !isAppInDarkTheme())
 
                 val parentEntry = remember(entry) { navController.getBackStackEntry(Main.route) }
                 val viewModel = hiltViewModel<MainViewModel>(parentEntry)
@@ -133,13 +133,14 @@ sealed class AppScreen(
     }
 
     object More : AppScreen(
-        route = "more",
-        isDarkSystemIcons = true
+        route = "more"
     ) {
 
         override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit
             get() = { entry: NavBackStackEntry ->
-                UIEffect(isDarkSystemIcons = isDarkSystemIcons)
+
+                UIEffect(isDarkSystemIcons = !isAppInDarkTheme())
+
                 MoreScreen(
                     themeViewModel = hiltViewModel(LocalContext.current as ComponentActivity),
                     onDetailInfo = {
@@ -152,8 +153,7 @@ sealed class AppScreen(
             }
 
         object Parts : AppScreen(
-            route = "more/{screenId}",
-            isDarkSystemIcons = true
+            route = "more/{screenId}"
         ) {
 
             enum class Item(@ArrayRes val infoId: Int) {
@@ -176,7 +176,7 @@ sealed class AppScreen(
 
             override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit
                 get() = { entry: NavBackStackEntry ->
-                    UIEffect(isDarkSystemIcons = isDarkSystemIcons)
+                    UIEffect(isDarkSystemIcons = !isAppInDarkTheme())
 
                     val part =
                         Item.of(entry.arguments?.getString("screenId"), Item.UVInfo)
@@ -200,12 +200,11 @@ sealed class AppScreen(
         )
 
         object List : AppScreen(
-            route = "place/list",
-            isDarkSystemIcons = true
+            route = "place/list"
         ) {
             override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit
                 get() = { entry ->
-                    UIEffect(isDarkSystemIcons = isDarkSystemIcons)
+                    UIEffect(isDarkSystemIcons = !isAppInDarkTheme())
                     val viewModel: PlaceListViewModel = hiltViewModel()
                     PlaceListScreen(
                         viewModel = viewModel,
@@ -220,12 +219,11 @@ sealed class AppScreen(
         }
 
         object Location : AppScreen(
-            route = "place/location",
-            isDarkSystemIcons = true
+            route = "place/location"
         ) {
             override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit
                 get() = { entry ->
-                    UIEffect(isDarkSystemIcons = isDarkSystemIcons)
+                    UIEffect(isDarkSystemIcons = !isAppInDarkTheme())
                     val viewModel: PlaceEditLocationViewModel = hiltViewModel()
                     PlaceLocationScreen(
                         viewModel = viewModel,
@@ -240,12 +238,11 @@ sealed class AppScreen(
         }
 
         object TimeZone : AppScreen(
-            route = "place/timezone",
-            isDarkSystemIcons = true
+            route = "place/timezone"
         ) {
             override val content: @Composable AppNavigationActions.(backStackEntry: NavBackStackEntry) -> Unit
                 get() = { entry ->
-                    UIEffect(isDarkSystemIcons = isDarkSystemIcons)
+                    UIEffect(isDarkSystemIcons = !isAppInDarkTheme())
                     val viewModel: PlaceEditTimeZoneViewModel = hiltViewModel()
                     PlaceTimeZoneScreen(
                         viewModel = viewModel,

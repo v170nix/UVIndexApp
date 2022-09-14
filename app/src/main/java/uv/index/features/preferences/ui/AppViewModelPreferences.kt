@@ -1,6 +1,5 @@
 package uv.index.features.preferences.ui
 
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
@@ -24,13 +23,8 @@ class AppViewModelPreferences @Inject constructor(
     private val preferences: DataStore<Preferences>
 ) : ViewModel() {
 
-    init {
-        Log.e("init", "3")
-    }
-
     fun saveLazyListStatePlace(state: LazyListState) {
         runBlocking {
-            Log.e("save", state.firstVisibleItemIndex.toString())
             preferences.edit {
                 it[LAZY_LIST_STATE_PLACE_INDEX_KEY] = state.firstVisibleItemIndex
                 it[LAZY_LIST_STATE_PLACE_SCROLL_OFFSET_KEY] = state.firstVisibleItemScrollOffset

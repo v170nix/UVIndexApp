@@ -9,7 +9,9 @@ import androidx.compose.runtime.Immutable
 import androidx.navigation.*
 import com.google.accompanist.navigation.animation.composable
 
-abstract class NavigationActions(val navController: NavController)
+interface NavigationActions {
+    val navController: NavController
+}
 
 @Immutable
 data class NestedScreens<T : NavigationActions>(

@@ -35,11 +35,11 @@ fun NavBackStackEntry.lifecycleIsResumed() =
     lifecycle.currentState == Lifecycle.State.RESUMED
 
 class PlaceNavigationActions(
-    navController: NavController,
+    override val navController: NavController,
     listRoute: String,
     locationRoute: String,
-    timeZoneRoute: String
-) : NavigationActions(navController) {
+    timeZoneRoute: String,
+) : NavigationActions {
     val wizardNavigateToLocationPlace = { from: NavBackStackEntry ->
         if (from.lifecycleIsResumed())
             navController.navigate(locationRoute)
@@ -57,7 +57,7 @@ class PlaceNavigationActions(
     }
 }
 
-class AppNavigationActions(navController: NavController) : NavigationActions(navController) {
+class AppNavigationActions(override val navController: NavController) : NavigationActions {
     val popBack = { from: NavBackStackEntry ->
         if (from.lifecycleIsResumed()) navController.popBackStack()
     }

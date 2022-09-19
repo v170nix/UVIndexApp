@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package uv.index.features.astronomy.data.context
 
 import androidx.compose.runtime.Immutable
@@ -24,7 +26,7 @@ import java.time.Duration
 import java.time.Instant
 import java.time.ZonedDateTime
 
-open class PositionContext : AstronomyContext() {
+open class PositionContext : AstronomyContext {
 
     interface Event : AstronomyContext.Event<PositionContext>
     interface State : AstronomyContext.State<PositionContext>
@@ -121,11 +123,13 @@ open class PositionContext : AstronomyContext() {
     ): List<Event> = coroutineScope {
 
         if (BuildConfig.DEBUG) {
-            if (with(ephemeris.metadata) {
+            require(
+                !with(ephemeris.metadata) {
                     orbit != Orbit.Geocentric ||
                             plane != Plane.Equatorial ||
                             epoch != Epoch.Apparent
-                }) throw IllegalArgumentException()
+                }
+            )
         }
 
         val duration = Duration.between(zdt, zdt.plusDays(1L))

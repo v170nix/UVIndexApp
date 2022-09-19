@@ -3,7 +3,7 @@ package uv.index.features.main.ui
 import androidx.compose.runtime.Immutable
 import net.arwix.mvi.UIEvent
 import net.arwix.mvi.UIState
-import uv.index.features.main.domain.SunPosition
+import uv.index.features.main.data.SunPosition
 import uv.index.features.place.data.room.PlaceData
 import uv.index.lib.data.UVIndexData
 import uv.index.lib.data.UVSkinType

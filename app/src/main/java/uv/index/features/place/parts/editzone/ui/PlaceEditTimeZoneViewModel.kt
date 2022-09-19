@@ -111,6 +111,7 @@ class PlaceEditTimeZoneViewModel @Inject constructor(
         }
     }
 
+    @Suppress("MagicNumber")
     private fun updateAutoZone(latLng: LatLng) {
         if (state.value.autoTimeZoneEntry == AutoTimeZoneEntry.Denied) return
         autoLocationJob += viewModelScope.launch {

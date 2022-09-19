@@ -1,4 +1,4 @@
-package uv.index.features.main.domain
+package uv.index.features.main.data
 
 import androidx.compose.runtime.Immutable
 

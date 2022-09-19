@@ -1,3 +1,4 @@
+@file:Suppress("MagicNumber")
 package uv.index.features.main.ui.composable.sections.dataview.components
 
 import android.content.Context
@@ -108,13 +109,13 @@ private fun StringBuilder.timeToString(context: Context, time: Int): StringBuild
     if (hourPart > 0) {
         append(hourPart)
         append(" ")
-        append(context.getString(uv.index.R.string.uvindex_sunburn_hour_part))
+        append(context.getString(R.string.uvindex_sunburn_hour_part))
         append(" ")
     }
     if (minPart > 0) {
         append(minPart)
         append(" ")
-        append(context.getString(uv.index.R.string.uvindex_sunburn_min_part))
+        append(context.getString(R.string.uvindex_sunburn_min_part))
     }
 
     return this

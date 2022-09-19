@@ -17,6 +17,7 @@ import uv.index.R
 import uv.index.ui.theme.Dimens
 
 @Composable
+@Suppress("MagicNumber")
 internal fun EmptyPlaceSection(
     modifier: Modifier = Modifier,
     onAddPlaceScreen: () -> Unit

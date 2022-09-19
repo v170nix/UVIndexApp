@@ -22,7 +22,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-@Suppress("unused")
+@Suppress("unused", "MagicNumber")
 object SunPositionContext : PositionContext() {
 
     private val elevation = RiseSetTransitCalculation.Request.RiseSet.DefaultSun.elevation.toDeg()
@@ -126,6 +126,7 @@ object SunPositionContext : PositionContext() {
 
     fun getAstronomicalAngle(): Degree = (-18.0).deg
 
+    @Suppress("LongMethod")
     suspend fun provideDayEvents(
         zdt: ZonedDateTime,
         observer: Observer,
@@ -247,6 +248,7 @@ object SunPositionContext : PositionContext() {
         }
     }
 
+    @Suppress("ComplexMethod")
     fun getDayLengthInSeconds(
         zoneId: ZoneId,
         currentDayEvents: Pair<Instant?, Instant?>,

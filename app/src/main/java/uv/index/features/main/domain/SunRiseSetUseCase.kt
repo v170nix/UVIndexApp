@@ -8,6 +8,7 @@ import uv.index.features.astronomy.data.SunRepository
 import uv.index.features.astronomy.data.context.ASTRONOMY_EVENT_RISE
 import uv.index.features.astronomy.data.context.ASTRONOMY_EVENT_SET
 import uv.index.features.astronomy.data.context.SunPositionContext
+import uv.index.features.main.data.SunPosition
 import uv.index.features.place.data.room.PlaceData
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -52,8 +53,12 @@ class SunRiseSetUseCase @Inject constructor(private val sunRepository: SunReposi
         return if (SunPositionContext.isAbove(altitude)) {
             SunPosition.Above
         } else {
-            if (altitude >= (-18).deg) SunPosition.Twilight else SunPosition.Night
+            if (altitude >= (-TWILIGHT_ANGLE).deg) SunPosition.Twilight else SunPosition.Night
         }
+    }
+
+    private companion object {
+        private const val TWILIGHT_ANGLE = 18
     }
 
 }

@@ -86,6 +86,7 @@ class AppNavigationActions(navController: NavController) : NavigationActions(nav
     )
 }
 
+@Suppress("MagicNumber")
 @Stable
 sealed class AppScreen(
     override val route: String,

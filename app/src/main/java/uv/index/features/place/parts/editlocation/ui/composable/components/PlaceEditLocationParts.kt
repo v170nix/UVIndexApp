@@ -37,7 +37,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import uv.index.R
 import uv.index.common.InputTextField
-import uv.index.common.TextFieldState
+import uv.index.common.InputTextFieldState
 import uv.index.features.place.data.PlaceAutocompleteResult
 import uv.index.ui.theme.Dimens
 
@@ -138,12 +138,13 @@ private fun InputTitlePart(
 }
 
 @Composable
+@Suppress("MagicNumber")
 internal fun InputLocationBoxPart(
     modifier: Modifier = Modifier,
     title: String?,
     subTitle: String?,
-    latitudeFieldState: TextFieldState,
-    longitudeFieldState: TextFieldState,
+    latitudeFieldState: InputTextFieldState,
+    longitudeFieldState: InputTextFieldState,
     onSearchClick: () -> Unit,
     onSearchResult: (PlaceAutocompleteResult) -> Unit,
 ) {
@@ -185,8 +186,8 @@ internal fun InputLocationBoxPart(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun InputTextFieldsPart(
-    latitudeFieldState: TextFieldState,
-    longitudeFieldState: TextFieldState,
+    latitudeFieldState: InputTextFieldState,
+    longitudeFieldState: InputTextFieldState,
     onDoneClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current

@@ -38,6 +38,7 @@ interface MainTopBarTextStyles {
 
 object MainTopBarDefaults {
 
+    @Suppress("LongParameterList")
     @Composable
     fun mainTopBarTextStyles(
         placeExpandedStyle: TextStyle,
@@ -73,6 +74,7 @@ object MainTopBarDefaults {
     }
 }
 
+@Suppress("LongParameterList", "LongMethod", "MagicNumber")
 @Composable
 internal fun MainCurrentInfoTopBarInnerPart(
     modifier: Modifier = Modifier,
@@ -294,6 +296,7 @@ private class AnimatingMainTopBarTextStyles(
 
     private companion object {
 
+        @Suppress("MagicNumber")
         private fun getFractionTextStyle(
             cStyle: TextStyle,
             eStyle: TextStyle,

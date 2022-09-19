@@ -3,13 +3,14 @@ package uv.index.features.main.ui
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 import net.arwix.mvi.SimpleViewModel
 import net.arwix.mvi.UISideEffect
 import uv.index.features.main.common.ConflatedReducer
+import uv.index.features.main.data.SunPosition
 import uv.index.features.main.data.toUVIPlaceData
-import uv.index.features.main.domain.SunPosition
 import uv.index.features.main.domain.SunRiseSetUseCase
 import uv.index.features.main.domain.UVForecastHoursUseCase
 import uv.index.features.place.data.room.PlaceDao
@@ -25,6 +26,7 @@ import java.time.format.FormatStyle
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class MainViewModel @Inject constructor(
     placeDao: PlaceDao,
@@ -64,7 +66,7 @@ class MainViewModel @Inject constructor(
                 latitude = place.latLng.latitude,
                 zdtAtStartDay
             ).onEach { list: List<UVIndexData> ->
-                if (list.size < 23) return@onEach
+                if (list.size < HOURS_IN_DAY - 1) return@onEach
 
                 innerStateUpdater.setCurrentDayData(place, list)
 
@@ -177,7 +179,7 @@ class MainViewModel @Inject constructor(
                     is UVIndexRepository.RemoteUpdateState.Failure -> {
                         copy(
                             isViewLoadingData = false,
-                            isViewRetry = currentDayData?.let { it.size < 23 } ?: true
+                            isViewRetry = currentDayData?.let { it.size < HOURS_IN_DAY - 1 } ?: true
                         )
                     }
                     UVIndexRepository.RemoteUpdateState.Loading ->
@@ -188,7 +190,7 @@ class MainViewModel @Inject constructor(
                     is UVIndexRepository.RemoteUpdateState.Success<*> -> {
                         copy(
                             isViewLoadingData = false,
-                            isViewRetry = currentDayData?.let { it.size < 23 } ?: true
+                            isViewRetry = currentDayData?.let { it.size < HOURS_IN_DAY - 1 } ?: true
                         )
                     }
                     UVIndexRepository.RemoteUpdateState.None -> {
@@ -229,6 +231,9 @@ class MainViewModel @Inject constructor(
 
     private companion object {
 
+        const val FORECAST_HOUR_COUNT = 12
+        const val HOURS_IN_DAY = 24
+
         val formatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
 
         private class CurrentDateTimeReducer(
@@ -242,6 +247,7 @@ class MainViewModel @Inject constructor(
 
             private val uiHourReducer = UIHourReducer()
 
+            @Suppress("MagicNumber")
             suspend fun reduce(
                 state: MainContract.State,
                 updateStartOfDay: (ZonedDateTime) -> Unit
@@ -341,31 +347,32 @@ class MainViewModel @Inject constructor(
             val maxTime: LocalTime? = null
         )
 
-        @Volatile
-        private var previousHash: Int? = null
+//        @Volatile
+//        private var previousHash: Int? = null
+//
+//        @Volatile
+//        private var previousUiHourListHash: Int = -1
 
-        @Volatile
-        private var previousUiHourListHash: Int = -1
+//        private fun checkHash(
+//            place: PlaceData,
+//            zdt: ZonedDateTime,
+//            valueList: List<UVIndexData>,
+//            uiList: List<MainContract.UIHourData>
+//        ): Boolean {
+//            val hash = place.hashCode() +
+//                    zdt.dayOfYear * 100000 +
+//                    zdt.hour * 1000 +
+//                    valueList.size * 10
+//
+//            val uiHash = uiList.size
+//
+//            return (hash == previousHash && uiHash == previousUiHourListHash).also {
+//                previousHash = hash
+//                previousUiHourListHash = uiHash
+//            }
+//        }
 
-        private fun checkHash(
-            place: PlaceData,
-            zdt: ZonedDateTime,
-            valueList: List<UVIndexData>,
-            uiList: List<MainContract.UIHourData>
-        ): Boolean {
-            val hash = place.hashCode() +
-                    zdt.dayOfYear * 100000 +
-                    zdt.hour * 1000 +
-                    valueList.size * 10
-
-            val uiHash = uiList.size
-
-            return (hash == previousHash && uiHash == previousUiHourListHash).also {
-                previousHash = hash
-                previousUiHourListHash = uiHash
-            }
-        }
-
+        @Suppress("MagicNumber")
         suspend fun reduce(
             sunRiseSetUseCase: SunRiseSetUseCase,
             state: MainContract.State,
@@ -374,20 +381,20 @@ class MainViewModel @Inject constructor(
             if (state.hoursForecast.isEmpty() || state.place == null) return Result()
 
             val firstTime = currentZdt.toEpochSecond() - 3600L
-            val firstZdt = Instant.ofEpochSecond(firstTime).atZone(state.place.zone)
+//            val firstZdt = Instant.ofEpochSecond(firstTime).atZone(state.place.zone)
 
-            if (checkHash(
-                    state.place,
-                    firstZdt,
-                    state.hoursForecast,
-                    state.currentUiHoursData
-                )
-            ) return Result(
-                state.currentUiHoursData, state.currentPeakTime
-            )
+//            if (checkHash(
+//                    state.place,
+//                    firstZdt,
+//                    state.hoursForecast,
+//                    state.currentUiHoursData
+//                )
+//            ) return Result(
+//                state.currentUiHoursData, state.currentPeakTime
+//            )
 
             val maxHour = state.hoursForecast.asSequence()
-                .take(24)
+                .take(FORECAST_HOUR_COUNT)
                 .maxByOrNull { it.value }
                 ?.let {
                     Instant.ofEpochSecond(it.time).atZone(currentZdt.zone).toLocalTime()
@@ -396,7 +403,7 @@ class MainViewModel @Inject constructor(
             val list = state.hoursForecast
                 .asSequence()
                 .filter { it.time > firstTime }
-                .take(24)
+                .take(FORECAST_HOUR_COUNT)
                 .flatMapIndexed { i: Int, data: UVIndexData ->
                     sequence {
                         val zdt = Instant

@@ -5,14 +5,12 @@ import android.location.Address
 
 fun Address.getTitle(): String {
     return premises
-        ?: thoroughfare?.let {
-            if (it == "Unnamed Road") return@let null
-            return@let try {
-                Integer.parseInt(it)
+        ?: thoroughfare?.let { name ->
+            if (name == "Unnamed Road") return@let null
+            runCatching {
+                Integer.parseInt(name)
                 null
-            } catch (e: Exception) {
-                it
-            }
+            }.getOrElse { name }
         }
         ?: locality
         ?: subAdminArea

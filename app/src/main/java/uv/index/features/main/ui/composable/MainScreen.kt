@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import uv.index.common.LifecycleTimer
 import uv.index.features.main.common.getUVIColor
-import uv.index.features.main.domain.SunPosition
+import uv.index.features.main.data.SunPosition
 import uv.index.features.main.ui.MainContract
 import uv.index.features.main.ui.MainViewModel
 import uv.index.features.main.ui.composable.sections.dataview.MainDataSection
@@ -102,6 +102,7 @@ private fun BoxWithConstraintsScope.DataPart(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@Suppress("MagicNumber")
 private fun BoxWithConstraintsScope.MainBackground(
     modifier: Modifier = Modifier,
     behaviorState: TopAppBarState,

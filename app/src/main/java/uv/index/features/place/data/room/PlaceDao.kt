@@ -9,6 +9,7 @@ import uv.index.features.place.data.getSubTitle
 import uv.index.features.place.data.getTitle
 import java.time.ZoneId
 
+@Suppress("TooManyFunctions")
 @Dao
 abstract class PlaceDao {
     @Query("SELECT * FROM location_tz_table ORDER BY (id = 1) DESC, id DESC")

@@ -29,7 +29,7 @@ import kotlinx.coroutines.plus
 import net.arwix.mvi.EventHandler
 import net.arwix.mvi.SimpleViewModel
 import uv.index.R
-import uv.index.common.TextFieldState
+import uv.index.common.InputTextFieldState
 import uv.index.common.getViewsByType
 import uv.index.common.setLogoPadding
 import uv.index.features.place.common.except
@@ -42,6 +42,9 @@ import kotlin.math.abs
 import kotlin.random.Random
 
 
+private const val CAMERA_MIN_ZOOM = 10f
+
+@Suppress("LongMethod")
 @Composable
 fun PlaceEditPositionSection(
     modifier: Modifier = Modifier,
@@ -81,7 +84,7 @@ fun PlaceEditPositionSection(
                 is PlaceLocationContract.Effect.ChangeLocationOnMap -> {
                     val newZoom = if (effect.updateZoom) {
                         (effect.cameraPosition?.zoom
-                            ?: cameraPositionState.position.zoom).coerceAtLeast(10f)
+                            ?: cameraPositionState.position.zoom).coerceAtLeast(CAMERA_MIN_ZOOM)
                     } else cameraPositionState.position.zoom
 
                     val newPosition = CameraPosition.builder().apply {
@@ -94,7 +97,9 @@ fun PlaceEditPositionSection(
                         .target(effect.latLng)
                         .build()
 
-                    cameraPositionState.move(CameraUpdateFactory.newCameraPosition(newPosition))
+                    runCatching {
+                        cameraPositionState.move(CameraUpdateFactory.newCameraPosition(newPosition))
+                    }
                     eventHandler.doEvent(
                         PlaceLocationContract.Event.NotifyUpdateCameraPosition(
                             newPosition
@@ -165,6 +170,9 @@ fun PlaceEditPositionSection(
 
 }
 
+private const val BACK_HANDLER_SEARCH_TIMEOUT = 300L
+
+@Suppress("MagicNumber")
 @Composable
 fun InputLocationBoxComponent(
     modifier: Modifier = Modifier,
@@ -179,7 +187,7 @@ fun InputLocationBoxComponent(
 
     val latState by remember(state.latitude, eventHandler) {
         derivedStateOf {
-            TextFieldState(
+            InputTextFieldState(
                 state.latitude,
                 onValueChange = { eventHandler.doEvent(PlaceLocationContract.Event.ChangeLatitudeFromInput(it)) },
                 isError = isLatitudeError(state.latitude),
@@ -190,7 +198,7 @@ fun InputLocationBoxComponent(
 
     val lngState by remember(state.longitude, eventHandler) {
         derivedStateOf {
-            TextFieldState(
+            InputTextFieldState(
                 state.longitude,
                 onValueChange = { eventHandler.doEvent(PlaceLocationContract.Event.ChangeLongitudeFromInput(it)) },
                 isError = isLongitudeError(state.longitude),
@@ -203,7 +211,7 @@ fun InputLocationBoxComponent(
 
     BackHandler {
         val currentTime = SystemClock.elapsedRealtime()
-        if (currentTime > searchResultTime + 300L) {
+        if (currentTime > searchResultTime + BACK_HANDLER_SEARCH_TIMEOUT) {
             eventHandler.doEvent(PlaceLocationContract.Event.ClearData)
             onPreviousClick()
         }
@@ -229,12 +237,14 @@ fun InputLocationBoxComponent(
     }
 }
 
+@Suppress("ReturnCount", "MagicNumber")
 private fun isLatitudeError(latitude: String): Boolean {
     if (latitude.isBlank()) return false
     val dLatitude = latitude.toDoubleOrNull() ?: return true
     return abs(dLatitude) > 90
 }
 
+@Suppress("ReturnCount", "MagicNumber")
 private fun isLongitudeError(longitude: String): Boolean {
     if (longitude.isBlank()) return false
     val dLongitude = longitude.toDoubleOrNull() ?: return true

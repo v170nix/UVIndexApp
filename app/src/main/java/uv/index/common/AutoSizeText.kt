@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 
 // https://stackoverflow.com/questions/63971569/androidautosizetexttype-in-jetpack-compose
+@Suppress("LongParameterList", "MagicNumber")
 @Composable
 fun AutoSizeText(
     text: String,
@@ -82,6 +83,7 @@ fun AutoSizeText(
 }
 
 @Composable
+@Suppress("LongParameterList", "MagicNumber")
 fun MoreText(
     text: String,
     modifier: Modifier = Modifier,

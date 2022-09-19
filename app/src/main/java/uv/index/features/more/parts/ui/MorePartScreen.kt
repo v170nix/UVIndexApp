@@ -17,6 +17,7 @@ import com.halilibo.richtext.ui.material3.Material3RichText
 import uv.index.ui.theme.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Suppress("MagicNumber")
 @Composable
 fun MorePartScreen(
     @ArrayRes infoId: Int,

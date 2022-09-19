@@ -1,3 +1,4 @@
+@file:Suppress("unused", "MagicNumber")
 package uv.index.features.astronomy.data.ephemeris
 
 import kotlinx.coroutines.sync.Mutex

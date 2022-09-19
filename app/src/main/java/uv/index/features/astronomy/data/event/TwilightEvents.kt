@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.arwix.urania.core.ephemeris.Ephemeris
 import net.arwix.urania.core.ephemeris.calculation.RiseSetTransitCalculation
+import net.arwix.urania.core.ephemeris.calculation.RiseSetTransitCalculation.Request.RiseSet.*
 import net.arwix.urania.core.observer.Observer
 import uv.index.features.astronomy.data.context.SunPositionContext
 import java.time.Duration
@@ -56,21 +57,21 @@ private fun transformResultToContextResult(
     request: RiseSetTransitCalculation.Request.RiseSet,
 ): SunPositionContext.SunEvent {
     return when (request) {
-        is RiseSetTransitCalculation.Request.RiseSet.TwilightCivil -> if (isBegin) SunPositionContext.SunEvent.CivilBegin(
+        is TwilightCivil -> if (isBegin) SunPositionContext.SunEvent.CivilBegin(
             context,
             Instant.ofEpochMilli(instant.toEpochMilliseconds())
         ) else SunPositionContext.SunEvent.CivilEnd(
             context,
             Instant.ofEpochMilli(instant.toEpochMilliseconds())
         )
-        is RiseSetTransitCalculation.Request.RiseSet.TwilightNautical -> if (isBegin) SunPositionContext.SunEvent.NauticalBegin(
+        is TwilightNautical -> if (isBegin) SunPositionContext.SunEvent.NauticalBegin(
             context,
             Instant.ofEpochMilli(instant.toEpochMilliseconds())
         ) else SunPositionContext.SunEvent.NauticalEnd(
             context,
             Instant.ofEpochMilli(instant.toEpochMilliseconds())
         )
-        is RiseSetTransitCalculation.Request.RiseSet.TwilightAstronomical -> if (isBegin) SunPositionContext.SunEvent.AstronomicalBegin(
+        is TwilightAstronomical -> if (isBegin) SunPositionContext.SunEvent.AstronomicalBegin(
             context,
             Instant.ofEpochMilli(instant.toEpochMilliseconds())
         ) else SunPositionContext.SunEvent.AstronomicalEnd(

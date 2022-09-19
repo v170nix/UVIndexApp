@@ -46,6 +46,9 @@
     <string name="uvindex_vitamin_D_title">Vitamin D</string>
     <string name="uvindex_vitamin_D_info">Vitamin D forms in the skin when it is exposed to UV from sunlight and keeps bones and muscles strong and healthy</string>
 
+    <string name="uvindex_notification_sunscreen_reminder">Sunscreen reminder</string>
+    <string name="uvindex_notification_sunscreen_reminder_channel_name">Sunscreen reminder</string>
+
     <string name="uvindex_forecast_title">Forecast</string>
     <string name="uvindex_forecast_title_recommendation">Recommendation</string>
     <string name="uvindex_forecast_title_max_index">Max index</string>

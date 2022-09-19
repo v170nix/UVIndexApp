@@ -27,7 +27,8 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import uv.index.R
 import uv.index.features.main.common.getUVITitle
-import uv.index.features.main.domain.SunPosition
+import uv.index.features.main.data.SunPosition
+import uv.index.features.main.data.UVLevel
 import uv.index.features.main.ui.MainContract
 import uv.index.ui.theme.Dimens
 import java.time.LocalTime
@@ -37,6 +38,7 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@Suppress("LongMethod")
 fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
@@ -184,7 +186,8 @@ internal fun IconsInfo(
 
     val currentIndexInt by remember(currentIndexValue) {
         derivedStateOf {
-            currentIndexValue?.roundToInt() ?: Int.MIN_VALUE
+            UVLevel.valueOf(currentIndexValue?.roundToInt() ?: Int.MIN_VALUE) ?: UVLevel.Low
+//            currentIndexValue?.roundToInt() ?: Int.MIN_VALUE
         }
     }
 
@@ -195,7 +198,7 @@ internal fun IconsInfo(
     ) {
 
 
-        if (currentIndexInt > 2) {
+        if (currentIndexInt > UVLevel.Low) {
             InfoIconButton(
                 modifier = Modifier.size(48.dp),
                 id = R.drawable.ic_glasses,
@@ -204,7 +207,7 @@ internal fun IconsInfo(
             Spacer(modifier = Modifier.width(8.dp))
         }
 
-        if (currentIndexInt > 2) {
+        if (currentIndexInt > UVLevel.Low) {
             InfoIconButton(
                 modifier = Modifier.size(36.dp),
                 id = R.drawable.ic_sunblock_alt,
@@ -222,7 +225,7 @@ internal fun IconsInfo(
             Spacer(modifier = Modifier.width(8.dp))
         }
 
-        if (currentIndexInt > 4) {
+        if (currentIndexInt > UVLevel.Moderate) {
 
             InfoIconButton(
                 modifier = Modifier.size(40.dp),
@@ -234,7 +237,7 @@ internal fun IconsInfo(
 
         }
 
-        if (currentIndexInt > 6) {
+        if (currentIndexInt > UVLevel.High) {
             InfoIconButton(
                 modifier = Modifier.size(40.dp),
                 id = R.drawable.beach_shadow,

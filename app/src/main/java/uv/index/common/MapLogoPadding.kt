@@ -15,5 +15,5 @@ fun setLogoPadding(context: Context, offset: DpOffset, mapView: MapView) {
         params.marginStart = x.toInt()
         params.bottomMargin = y.toInt()
         logo.layoutParams = params
-    } catch (i: Exception) {}
+    } catch (_: Exception) {}
 }

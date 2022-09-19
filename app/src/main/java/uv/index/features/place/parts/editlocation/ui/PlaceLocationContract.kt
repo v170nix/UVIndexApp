@@ -8,7 +8,7 @@ import net.arwix.mvi.UISideEffect
 import net.arwix.mvi.UIState
 import uv.index.features.place.data.PlaceAutocompleteResult
 
-
+@Suppress("MagicNumber")
 object PlaceLocationContract {
 
     data class State(
@@ -22,6 +22,7 @@ object PlaceLocationContract {
             val latitude: String = "",
             val longitude: String = ""
         ) {
+            @Suppress("ReturnCount")
             fun getLatLng(): LatLng? {
                 val lat = latitude.toDoubleOrNull() ?: return null
                 val lng = longitude.toDoubleOrNull() ?: return null

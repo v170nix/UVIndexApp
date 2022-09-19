@@ -1,3 +1,6 @@
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -7,6 +10,29 @@ plugins {
     kotlin("plugin.serialization") version "1.6.21"
     id("com.google.gms.google-services")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("io.gitlab.arturbosch.detekt") version("1.21.0")
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    config = files("../config/detekt/detekt.yml")
+}
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = "1.8"
+}
+tasks.withType<DetektCreateBaselineTask>().configureEach {
+    jvmTarget = "1.8"
+}
+
+tasks.withType<Detekt>().configureEach {
+    reports {
+        html {
+            required.set(true)
+            outputLocation.set(file("build/reports/detekt.html"))
+        }
+    }
 }
 
 android {
@@ -68,6 +94,8 @@ kapt {
 
 dependencies {
 
+    detektPlugins("com.twitter.compose.rules:detekt:0.0.12")
+
     implementation("androidx.appcompat:appcompat:1.5.1")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
@@ -85,6 +113,8 @@ dependencies {
     implementation("androidx.navigation:navigation-common-ktx:2.5.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
+
     implementation("io.ktor:ktor-client-core:2.0.3")
     implementation("io.ktor:ktor-client-okhttp:2.0.3")
     implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
@@ -100,6 +130,8 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.3.0-beta01")
     implementation("androidx.compose.material3:material3:1.0.0-beta01")
     implementation("androidx.compose.ui:ui-tooling-preview:1.3.0-beta01")
+    implementation("androidx.compose.runtime:runtime-livedata:1.3.0-beta01")
+
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("androidx.activity:activity-compose:1.5.1")

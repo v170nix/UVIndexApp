@@ -1,3 +1,5 @@
+@file:Suppress("unused", "MagicNumber")
+
 package uv.index.features.astronomy.data.date
 
 import java.time.Instant

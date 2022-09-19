@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package uv.index.features.astronomy.data.context
 
 const val ASTRONOMY_EVENT_LOWER_CULMINATION_ABOVE = 100

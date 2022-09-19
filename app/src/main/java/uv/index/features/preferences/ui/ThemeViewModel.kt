@@ -51,7 +51,6 @@ fun isAppInDarkTheme(): Boolean {
                 }
                 ThemeMode.Dark -> true
                 ThemeMode.Light -> false
-                else -> false
             }
         }
     }

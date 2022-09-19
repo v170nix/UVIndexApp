@@ -74,6 +74,7 @@ class PlaceListUseCase @Inject constructor(
         innerAutoState.value = createAutoItem(isForceUpdateLocation)
     }
 
+    @Suppress("MagicNumber")
     private suspend fun createAutoItem(isForceUpdateLocation: Boolean = false): PlaceListItem.Auto? {
         val permission = applicationContext.locationCheckPermission()
 
@@ -85,7 +86,9 @@ class PlaceListUseCase @Inject constructor(
 
         while (location == null && count < maxCount) {
             count++
-            location = withTimeoutOrNull(timeOut + delta * count) { applicationContext.getLocation(isForceUpdateLocation) }
+            location = withTimeoutOrNull(timeOut + delta * count) {
+                applicationContext.getLocation(isForceUpdateLocation)
+            }
             if (location == null) location = applicationContext.getLocation(false)
         }
 
@@ -124,6 +127,4 @@ class PlaceListUseCase @Inject constructor(
         private fun List<PlaceListItem>.getAutoItem() = find { it is PlaceListItem.Auto }
 
     }
-
-
 }

@@ -41,11 +41,14 @@ suspend fun Context.awaitLastLocation(): Location? {
 }
 
 @SuppressLint("MissingPermission")
-suspend fun FusedLocationProviderClient.awaitUpdateLastLocation(): Location? {
+suspend fun FusedLocationProviderClient.awaitUpdateLastLocation(
+    interval: Long = 10000L,
+    fastestInterval: Long = 5000L
+): Location? {
     val request = LocationRequest.create().apply {
         numUpdates = 1
-        interval = 10000
-        fastestInterval = 5000
+        this.interval = interval
+        this.fastestInterval = fastestInterval
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
     return suspendCancellableCoroutine { continuation ->
@@ -80,6 +83,7 @@ suspend fun FusedLocationProviderClient.getLocation(isForceUpdate: Boolean) =
 
 private const val LOCATION_FORMAT_STRING = "%02d°%02d′%04.1f″"
 
+@Suppress("MagicNumber")
 private fun getDegree(double: Double): Triple<Int, Int, Double> {
     val degs = abs(double)
     val deg = degs.toInt()
@@ -89,6 +93,7 @@ private fun getDegree(double: Double): Triple<Int, Int, Double> {
     return Triple(deg, minute, second)
 }
 
+@Suppress("SpreadOperator")
 fun latToString(latitude: Double, n: String, s: String): String {
     val ns = if (latitude > 0) n else s
     val lat = getDegree(latitude).toList().toTypedArray()

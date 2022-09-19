@@ -27,7 +27,5 @@ fun rememberAppState(
     uiController: SystemUiController = rememberSystemUiController(),
     actions: AppNavigationActions = remember(navController) { AppNavigationActions(navController) },
 ): AppState = remember {
-    AppState(
-        navController, uiController, actions
-    )
+    AppState(navController, uiController, actions)
 }

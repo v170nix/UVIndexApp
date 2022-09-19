@@ -17,6 +17,7 @@ import uv.index.features.main.common.rememberPeriod
 import uv.index.lib.data.UVSummaryDayData
 
 @Composable
+@Suppress("MagicNumber")
 internal fun MainProtectionPart(
     modifier: Modifier = Modifier,
     uvSummaryDayData: UVSummaryDayData?

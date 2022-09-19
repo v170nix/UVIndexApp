@@ -27,6 +27,7 @@ import javax.inject.Inject
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
+@Suppress("MagicNumber")
 @HiltViewModel
 class PlaceEditLocationViewModel @Inject constructor(
     @ApplicationContext applicationContext: Context,
@@ -69,6 +70,7 @@ class PlaceEditLocationViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    @Suppress("ComplexMethod", "LongMethod")
     override fun handleEvents(event: Event) {
         when (event) {
             is SelectLocationFromMap -> {

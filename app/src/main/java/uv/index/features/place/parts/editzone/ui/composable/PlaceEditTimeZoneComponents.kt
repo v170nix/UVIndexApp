@@ -179,6 +179,7 @@ private fun HeaderRow(text: String, backgroundColor: Color) {
     )
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun AutoDetectRow(
     modifier: Modifier = Modifier,

@@ -5,24 +5,25 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import uv.index.features.main.domain.SunPosition
+import uv.index.features.main.data.SunPosition
+import uv.index.features.main.data.UVLevel
 import uv.index.lib.data.UVSummaryDayData
 import uv.index.ui.theme.UVITheme
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-
-internal fun getUVITitle(index: Int, sunPosition: SunPosition,  array: Array<String>): String {
+@Suppress("MagicNumber")
+internal fun getUVITitle(index: Int, sunPosition: SunPosition, array: Array<String>): String {
     return when (sunPosition) {
         SunPosition.Night -> array[0]
         SunPosition.Twilight -> array[1]
         SunPosition.Above -> {
-            when (index) {
-                in 0..2 -> array[2]
-                in 3..5 -> array[3]
-                in 6..7 -> array[4]
-                in 7..10 -> array[5]
-                in 11..Int.MAX_VALUE -> array[6]
+            when (UVLevel.valueOf(index)) {
+                UVLevel.Low -> array[2]
+                UVLevel.Moderate -> array[3]
+                UVLevel.High -> array[4]
+                UVLevel.VeryHigh -> array[5]
+                UVLevel.Extreme -> array[6]
                 else -> ""
             }
         }
@@ -35,12 +36,12 @@ internal fun getUVIColor(index: Int, sunPosition: SunPosition, transparentColor:
         SunPosition.Twilight -> UVITheme.colors.twilight
         SunPosition.Night -> UVITheme.colors.night
         SunPosition.Above -> {
-            when (index) {
-                in 0..2 -> UVITheme.colors.lowUV
-                in 3..5 -> UVITheme.colors.moderateUV
-                in 6..7 -> UVITheme.colors.highUV
-                in 7..10 -> UVITheme.colors.veryHighUV
-                in 11..Int.MAX_VALUE -> UVITheme.colors.extremeUV
+            when (UVLevel.valueOf(index)) {
+                UVLevel.Low -> UVITheme.colors.lowUV
+                UVLevel.Moderate -> UVITheme.colors.moderateUV
+                UVLevel.High -> UVITheme.colors.highUV
+                UVLevel.VeryHigh -> UVITheme.colors.veryHighUV
+                UVLevel.Extreme -> UVITheme.colors.extremeUV
                 else -> transparentColor
             }
         }
@@ -48,16 +49,21 @@ internal fun getUVIColor(index: Int, sunPosition: SunPosition, transparentColor:
 }
 
 @Composable
+@Suppress("MagicNumber")
 internal fun getUVIColor(index: Int, transparentColor: Color): Color {
     return when (index) {
         -2 -> UVITheme.colors.night
         -1 -> UVITheme.colors.twilight
-        in 0..2 -> UVITheme.colors.lowUV
-        in 3..5 -> UVITheme.colors.moderateUV
-        in 6..7 -> UVITheme.colors.highUV
-        in 7..10 -> UVITheme.colors.veryHighUV
-        in 11..Int.MAX_VALUE -> UVITheme.colors.extremeUV
-        else -> transparentColor
+        else -> {
+            when (UVLevel.valueOf(index)) {
+                UVLevel.Low -> UVITheme.colors.lowUV
+                UVLevel.Moderate -> UVITheme.colors.moderateUV
+                UVLevel.High -> UVITheme.colors.highUV
+                UVLevel.VeryHigh -> UVITheme.colors.veryHighUV
+                UVLevel.Extreme -> UVITheme.colors.extremeUV
+                else -> transparentColor
+            }
+        }
     }
 }
 

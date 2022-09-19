@@ -14,29 +14,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.features.main.common.getUVITitle
-import uv.index.features.main.domain.SunPosition
-import kotlin.math.roundToInt
-
-@Stable
-class MainUVIndexInfoDialogState {
-    var isShow by mutableStateOf(false)
-    var currentIndex by mutableStateOf(0)
-}
+import uv.index.features.main.data.SunPosition
 
 @Composable
-fun rememberUVIndexInfoDialogState(currentIndex: Double?): MainUVIndexInfoDialogState {
-    val state = remember(Unit) {
-        MainUVIndexInfoDialogState()
-    }
-
-    LaunchedEffect(currentIndex) {
-        state.currentIndex = currentIndex?.roundToInt() ?: Int.MIN_VALUE
-    }
-
-    return state
-}
-
-@Composable
+@Suppress("MagicNumber")
 fun MainUVIndexInfoDialog(
     state: MainUVIndexInfoDialogState
 ) {

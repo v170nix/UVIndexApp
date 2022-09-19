@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
@@ -23,7 +22,8 @@ import uv.index.navigation.AppNavigationBar
 import uv.index.ui.theme.Dimens
 import java.time.ZonedDateTime
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
+@Suppress("LongMethod", "FunctionNaming")
 @Composable
 internal fun BoxWithConstraintsScope.MainDataSection(
     modifier: Modifier = Modifier,
@@ -173,6 +173,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@Suppress("MagicNumber")
 private fun LazyListScope.mainBackgroundHeader(
     modifier: Modifier = Modifier,
     state: TopAppBarState,
@@ -182,8 +183,10 @@ private fun LazyListScope.mainBackgroundHeader(
 
             val alpha by remember(state.collapsedFraction) {
                 derivedStateOf {
-                    ((state.collapsedFraction - 0.9)
-                        .coerceAtLeast(0.0) * 10.0)
+                    (
+                        (state.collapsedFraction - 0.9)
+                            .coerceAtLeast(0.0) * 10.0
+                        )
                         .coerceIn(0.01, 1.0)
                         .toFloat()
                 }

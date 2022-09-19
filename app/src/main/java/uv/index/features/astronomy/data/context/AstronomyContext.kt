@@ -1,9 +1,11 @@
+@file:Suppress("unused")
+
 package uv.index.features.astronomy.data.context
 
 import androidx.compose.runtime.Immutable
 import java.time.Instant
 
-abstract class AstronomyContext {
+interface AstronomyContext {
 
     @Immutable
     interface Event<out T : AstronomyContext> : Comparable<Event<AstronomyContext>> {

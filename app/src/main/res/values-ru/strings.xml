@@ -25,7 +25,15 @@
     <string name="uvindex_sunburn_hour_part">ч</string>
     <string name="uvindex_sunburn_min_part">мин</string>
 
+    <string name="uvindex_local_time_text">Местное время</string>
+    <string name="uvindex_sunrise_text">Восход</string>
+    <string name="uvindex_sunset_text">Закат</string>
+
     <string name="uvindex_vitamin_D_title">Витамин Д</string>
+    <string name="uvindex_vitamin_D_info">Витамин D образуется в коже, когда она подвергается воздействию ультрафиолетового излучения солнечного света, и сохраняет кости и мышцы крепкими и здоровыми.</string>
+
+    <string name="uvindex_notification_sunscreen_reminder">Напоминание о солнцезащитном креме</string>
+    <string name="uvindex_notification_sunscreen_reminder_channel_name">Напоминание о солнцезащитном креме</string>
 
     <string name="uvindex_forecast_title">Прогноз</string>
     <string name="uvindex_forecast_title_recommendation">Рекомендации</string>

@@ -42,6 +42,10 @@
     <string name="uvindex_sunburn_min_part">min</string>
     <string name="uvindex_sunburn_info">Sunburn info</string>
 
+    <string name="uvindex_local_time_text">The local time</string>
+    <string name="uvindex_sunrise_text">Sunrise</string>
+    <string name="uvindex_sunset_text">Sunset</string>
+
 
     <string name="uvindex_vitamin_D_title">Vitamin D</string>
     <string name="uvindex_vitamin_D_info">Vitamin D forms in the skin when it is exposed to UV from sunlight and keeps bones and muscles strong and healthy</string>

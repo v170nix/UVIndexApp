@@ -105,22 +105,38 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                     )
                 }
 
-                if (isShowCurrentZdt) {
-                    item {
-                        MainCurrentTimePart(
-                            modifier = Modifier.padding(top = Dimens.grid_3),
-                            currentZdt = state.currentZdt
-                        )
-                    }
-                }
-
                 item {
                     MainProtectionPart(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = if (!isShowCurrentZdt) 24.dp else 8.dp, bottom = 0.dp),
+                            .padding(top = Dimens.grid_1_5),
                         uvSummaryDayData = state.currentSummaryDayData
                     )
+                }
+
+                item {
+                    Column(
+                        modifier = Modifier,
+                        horizontalAlignment = Alignment.CenterHorizontally
+
+                    ) {
+                        Divider(
+                            modifier = Modifier
+                                .padding(
+                                    horizontal = Dimens.grid_2,
+                                    vertical = Dimens.grid_1_5
+                                )
+                                .fillMaxWidth()
+                        )
+                        Text(
+                            text = stringResource(id = R.string.uvindex_local_time_text),
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                        MainCurrentTimePart(
+                            modifier = Modifier,
+                            currentZdt = state.currentZdt
+                        )
+                    }
                 }
 
                 item {
@@ -137,9 +153,17 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                     Column(
                         Modifier
                             .fillMaxWidth()
-                            .padding(top = 24.dp),
+                            .padding(top = 0.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Divider(
+                            modifier = Modifier
+                                .padding(
+                                    horizontal = Dimens.grid_2,
+                                    vertical = Dimens.grid_1_5
+                                )
+                                .fillMaxWidth()
+                        )
                         Text(
                             text = stringResource(id = R.string.uvindex_forecast_title),
                             style = MaterialTheme.typography.labelLarge
@@ -184,9 +208,9 @@ private fun LazyListScope.mainBackgroundHeader(
             val alpha by remember(state.collapsedFraction) {
                 derivedStateOf {
                     (
-                        (state.collapsedFraction - 0.9)
-                            .coerceAtLeast(0.0) * 10.0
-                        )
+                            (state.collapsedFraction - 0.9)
+                                .coerceAtLeast(0.0) * 10.0
+                            )
                         .coerceIn(0.01, 1.0)
                         .toFloat()
                 }

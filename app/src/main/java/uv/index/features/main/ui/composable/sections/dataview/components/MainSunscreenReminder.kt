@@ -49,7 +49,7 @@ internal fun MainSunscreenReminder(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                .heightIn(min = 56.dp)
                 .clickable(
                     onClick = {
                         if (checked) {
@@ -64,8 +64,8 @@ internal fun MainSunscreenReminder(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.padding(start = Dimens.grid_1_5),
-                text = stringResource(id = R.string.uvindex_notification_sunscreen_reminder)
+                modifier = Modifier.padding(Dimens.grid_1_5,).weight(1f),
+                text = stringResource(id = R.string.uvindex_notification_sunscreen_reminder),
             )
             Switch(
                 modifier = Modifier.padding(end = Dimens.grid_1_5),

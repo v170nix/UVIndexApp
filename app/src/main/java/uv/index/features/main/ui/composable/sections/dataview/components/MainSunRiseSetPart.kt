@@ -1,6 +1,7 @@
 package uv.index.features.main.ui.composable.sections.dataview.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import uv.index.R
@@ -46,37 +48,53 @@ internal fun MainSunRiseSetPart(
         modifier,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        Column(
         ) {
-
-            Icon(
-                modifier = Modifier.size(32.dp),
-                painter = painterResource(id = R.drawable.ic_sunrise),
-                contentDescription = ""
-            )
-
             Text(
-                text = riseString,
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.titleMedium
+                text = stringResource(id = R.string.uvindex_sunrise_text),
+                style = MaterialTheme.typography.labelLarge,
             )
+
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+                Icon(
+                    modifier = Modifier.size(32.dp),
+                    painter = painterResource(id = R.drawable.ic_sunrise),
+                    contentDescription = ""
+                )
+
+                Text(
+                    text = riseString,
+                    textAlign = TextAlign.Start,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        Column(
+            horizontalAlignment = Alignment.End
         ) {
             Text(
-                text = setString,
-                textAlign = TextAlign.End,
-                style = MaterialTheme.typography.titleMedium
+                text = stringResource(id = R.string.uvindex_sunset_text),
+                style = MaterialTheme.typography.labelLarge,
             )
-            Icon(
-                modifier = Modifier.size(32.dp),
-                painter = painterResource(id = R.drawable.ic_sunset),
-                contentDescription = ""
-            )
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = setString,
+                    textAlign = TextAlign.End,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Icon(
+                    modifier = Modifier.size(32.dp),
+                    painter = painterResource(id = R.drawable.ic_sunset),
+                    contentDescription = ""
+                )
+            }
         }
     }
 }

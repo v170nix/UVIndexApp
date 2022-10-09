@@ -231,7 +231,7 @@ class MainViewModel @Inject constructor(
 
     private companion object {
 
-        const val FORECAST_HOUR_COUNT = 12
+        const val FORECAST_HOUR_COUNT = 24
         const val HOURS_IN_DAY = 24
 
         val formatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)

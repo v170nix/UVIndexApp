@@ -2,9 +2,7 @@ package uv.index.features.main.ui.composable.sections.dataview.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Card
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -16,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import uv.index.R
@@ -63,10 +62,26 @@ internal fun MainSunscreenReminder(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                modifier = Modifier.padding(Dimens.grid_1_5,).weight(1f),
-                text = stringResource(id = R.string.uvindex_notification_sunscreen_reminder),
-            )
+            Column(
+                modifier = Modifier
+                    .padding(Dimens.grid_1_5)
+                    .weight(1f),
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = stringResource(id = R.string.uvindex_notification_sunscreen_reminder),
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        lineHeight = 20.sp
+                    )
+                )
+                Spacer(modifier = Modifier.height(Dimens.grid_1))
+                Text(
+                    modifier = Modifier,
+                    text = "Every hour",
+                    color = LocalContentColor.current.copy(alpha = 0.6f),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
             Switch(
                 modifier = Modifier.padding(end = Dimens.grid_1_5),
                 checked = checked,

@@ -13,29 +13,15 @@ class SunscreenNotificationWorker(
 
     override fun doWork(): Result {
         context.showSunscreenNotification()
+        createWork(context)
         return Result.success()
     }
 
     companion object {
-
         fun removeWork(context: Context) {
             WorkManager.getInstance(context)
                 .cancelUniqueWork(Constants.SUNSCREEN_NOTIFICATION_WORK_NAME)
         }
-
-
-//        suspend fun isWork(context: Context) {
-//            WorkManager.getInstance(context)
-//                .getWorkInfosForUniqueWorkLiveData(Constants.SUNSCREEN_NOTIFICATION_WORK_NAME)
-//
-//
-//
-////                .getWorkInfosForUniqueWork(Constants.SUNSCREEN_NOTIFICATION_WORK_NAME)
-//
-//
-//
-//            info.addListener()
-//        }
 
         fun createWork(context: Context) {
             WorkManager.getInstance(context).beginUniqueWork(

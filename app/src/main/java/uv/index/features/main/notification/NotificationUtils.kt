@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import uv.index.MainActivity
 import uv.index.R
+import uv.index.features.main.notification.Constants.SUNSCREEN_NOTIFICATION_ID
 
 fun Context.updateNotificationChannels() {
     createNotificationChannel(
@@ -35,7 +36,7 @@ fun Context.showSunscreenNotification() {
     )
 
     val nextIntent = Intent(this, SunscreenNextBroadcastReceiver::class.java).apply {
-        action = "SUNSCREEN_NEXT"
+        action = "SUNSCREEN_STOP"
     }
 
     val builder = NotificationCompat.Builder(this, Constants.CHANNEL_SUNSCREEN_ID)
@@ -50,12 +51,12 @@ fun Context.showSunscreenNotification() {
         .setCategory(NotificationCompat.CATEGORY_ALARM)
         .addAction(
             R.drawable.ic_sunblock,
-            "notify next 2 hours",
+            "stop notify",
             PendingIntent.getBroadcast(this, 0, nextIntent, PendingIntent.FLAG_IMMUTABLE)
         )
 
     with(NotificationManagerCompat.from(this)) {
-        notify(48938, builder.build())
+        notify(SUNSCREEN_NOTIFICATION_ID, builder.build())
     }
 }
 

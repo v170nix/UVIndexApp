@@ -109,8 +109,8 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.43.2")
     kapt("com.google.dagger:hilt-android-compiler:2.43.2")
 
-    implementation("androidx.navigation:navigation-compose:2.5.2")
-    implementation("androidx.navigation:navigation-common-ktx:2.5.2")
+    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation("androidx.navigation:navigation-common-ktx:2.5.3")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     implementation("androidx.work:work-runtime-ktx:2.7.1")
@@ -120,21 +120,21 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
 
-    implementation("androidx.room:room-runtime:2.5.0-alpha03")
-    kapt("androidx.room:room-compiler:2.5.0-alpha03")
-    implementation("androidx.room:room-ktx:2.5.0-alpha03")
+    implementation("androidx.room:room-runtime:2.5.0-beta01")
+    kapt("androidx.room:room-compiler:2.5.0-beta01")
+    implementation("androidx.room:room-ktx:2.5.0-beta01")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.compose.ui:ui:1.3.0-beta01")
-    implementation("androidx.compose.material3:material3:1.0.0-beta01")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.3.0-beta01")
-    implementation("androidx.compose.runtime:runtime-livedata:1.3.0-beta01")
+    implementation("androidx.compose.ui:ui:1.3.0")
+    implementation("androidx.compose.material3:material3:1.0.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.3.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.3.0")
 
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
-    implementation("androidx.activity:activity-compose:1.5.1")
+    implementation("androidx.activity:activity-compose:1.6.1")
 
     implementation("com.google.accompanist:accompanist-insets:0.25.0")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.25.0")
@@ -168,10 +168,10 @@ dependencies {
     implementation("com.halilibo.compose-richtext:richtext-commonmark:0.13.0")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("androidx.room:room-testing:2.5.0-alpha03")
+    testImplementation("androidx.room:room-testing:2.5.0-beta01")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.0-beta01")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.3.0-beta01")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.0-beta01")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.0")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.3.0")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.0")
 }

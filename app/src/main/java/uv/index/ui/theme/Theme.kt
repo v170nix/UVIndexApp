@@ -113,6 +113,7 @@ private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF4A6894),
     secondary = Color(0xFF00796B),
     onSecondary = Color.White,
+    tertiary = Color(0xFF7D5260),
     tertiaryContainer = Color(red = 222, green = 235, blue = 248, alpha = 255),
     onTertiaryContainer = Color(red = 29, green = 25, blue = 43),
 
@@ -215,9 +216,9 @@ fun UVIndexAppTheme(
         themeMode == ThemeMode.System -> {
             if (isSystemInDarkTheme()) DarkColors else LightColors
         }
-        themeMode == ThemeMode.Dark -> DarkColorScheme
-        themeMode == ThemeMode.Light -> LightColorScheme
-        else -> LightColorScheme
+        themeMode == ThemeMode.Dark -> DarkColors
+        themeMode == ThemeMode.Light -> LightColors
+        else -> LightColors
     }
 
 //    val view = LocalView.current

@@ -7,7 +7,7 @@ plugins {
     kotlin("kapt")
 //    id("com.google.devtools.ksp") version "1.7.10-1.0.6"
     id("dagger.hilt.android.plugin")
-    kotlin("plugin.serialization") version "1.6.21"
+    kotlin("plugin.serialization") version "1.8.0"
     id("com.google.gms.google-services")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("io.gitlab.arturbosch.detekt") version("1.21.0")
@@ -71,7 +71,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.0"
+        kotlinCompilerExtensionVersion = "1.3.2"
     }
 
     namespace = "uv.index"
@@ -94,20 +94,24 @@ kapt {
 
 dependencies {
 
-    detektPlugins("com.twitter.compose.rules:detekt:0.0.12")
+    val composeBom = platform("androidx.compose:compose-bom:2022.12.00")
+    implementation (composeBom)
+    androidTestImplementation (composeBom)
+
+    detektPlugins("com.twitter.compose.rules:detekt:0.0.26")
 
     implementation("androidx.appcompat:appcompat:1.5.1")
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
 
-    implementation(platform("com.google.firebase:firebase-bom:30.3.2"))
+    implementation(platform("com.google.firebase:firebase-bom:31.1.1"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
 
-    implementation("com.google.dagger:hilt-android:2.43.2")
-    kapt("com.google.dagger:hilt-android-compiler:2.43.2")
+    implementation("com.google.dagger:hilt-android:2.44.2")
+    kapt("com.google.dagger:hilt-android-compiler:2.44.2")
 
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("androidx.navigation:navigation-common-ktx:2.5.3")
@@ -115,22 +119,22 @@ dependencies {
 
     implementation("androidx.work:work-runtime-ktx:2.7.1")
 
-    implementation("io.ktor:ktor-client-core:2.0.3")
-    implementation("io.ktor:ktor-client-okhttp:2.0.3")
-    implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
+    implementation("io.ktor:ktor-client-core:2.2.2")
+    implementation("io.ktor:ktor-client-okhttp:2.2.2")
+    implementation("io.ktor:ktor-client-content-negotiation:2.2.2")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.2.2")
 
-    implementation("androidx.room:room-runtime:2.5.0-beta01")
-    kapt("androidx.room:room-compiler:2.5.0-beta01")
-    implementation("androidx.room:room-ktx:2.5.0-beta01")
+    implementation("androidx.room:room-runtime:2.5.0-rc01")
+    kapt("androidx.room:room-compiler:2.5.0-rc01")
+    implementation("androidx.room:room-ktx:2.5.0-rc01")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.compose.ui:ui:1.3.0")
-    implementation("androidx.compose.material3:material3:1.0.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.3.0")
-    implementation("androidx.compose.runtime:runtime-livedata:1.3.0")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.runtime:runtime-livedata:1.3.2")
 
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
@@ -140,12 +144,12 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.25.0")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.24.13-rc")
 
-    implementation("com.google.android.libraries.places:places:2.6.0")
+    implementation("com.google.android.libraries.places:places:3.0.0")
     implementation("com.google.maps.android:maps-ktx:3.4.0")
     implementation("com.google.maps.android:maps-utils-ktx:3.4.0")
-    implementation("com.google.maps.android:maps-compose:2.5.3")
+    implementation("com.google.maps.android:maps-compose:2.8.0")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
-    implementation("com.google.android.gms:play-services-location:20.0.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-config-ktx")
@@ -154,9 +158,7 @@ dependencies {
 //    implementation("com.google.firebase:firebase-crashlytics")
 //    implementation("com.google.android.gms:play-services-ads:21.1.0")
 
-    implementation("com.android.billingclient:billing-ktx:5.0.0")
-
-    implementation("com.android.billingclient:billing-ktx:5.0.0")
+    implementation("com.android.billingclient:billing-ktx:5.1.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 
@@ -168,10 +170,10 @@ dependencies {
     implementation("com.halilibo.compose-richtext:richtext-commonmark:0.13.0")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("androidx.room:room-testing:2.5.0-beta01")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.0")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.3.0")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.0")
+    testImplementation("androidx.room:room-testing:2.5.0-rc01")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.2")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.3.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.2")
 }

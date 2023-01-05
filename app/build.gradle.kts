@@ -108,7 +108,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 
     implementation("com.google.dagger:hilt-android:2.44.2")
     kapt("com.google.dagger:hilt-android-compiler:2.44.2")
@@ -162,8 +162,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 
-    implementation("com.github.v170nix:arwix-common-library:0.4.0")
-    implementation("com.github.v170nix:uv-index-library:1.0.7")
+    implementation("com.github.v170nix:arwix-common-library:0.4.1")
+    implementation("com.github.v170nix:uv-index-library:1.0.8")
     implementation("com.github.v170nix.astronomy-core:astronomy-core:1.0.0-alpha22")
 
     implementation("com.halilibo.compose-richtext:richtext-ui-material3:0.13.0")

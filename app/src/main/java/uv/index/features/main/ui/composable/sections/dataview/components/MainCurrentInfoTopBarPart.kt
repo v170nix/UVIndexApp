@@ -81,7 +81,7 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
         }
     }
 
-    SmallTopAppBar(
+    TopAppBar(
         modifier = modifier
             .statusBarsPadding()
             .height(statusHeight),

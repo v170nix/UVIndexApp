@@ -45,7 +45,7 @@ fun SkinScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 //        containerColor = Color.Transparent,
         topBar = {
-            SmallTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
                         stringResource(id = R.string.uvindex_skin_type_select_title)

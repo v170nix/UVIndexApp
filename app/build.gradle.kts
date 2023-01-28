@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 
@@ -71,7 +73,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.2"
+        kotlinCompilerExtensionVersion = "1.4.0"
     }
 
     namespace = "uv.index"
@@ -94,13 +96,13 @@ kapt {
 
 dependencies {
 
-    val composeBom = platform("androidx.compose:compose-bom:2022.12.00")
+    val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
     implementation (composeBom)
     androidTestImplementation (composeBom)
 
     detektPlugins("com.twitter.compose.rules:detekt:0.0.26")
 
-    implementation("androidx.appcompat:appcompat:1.5.1")
+    implementation("androidx.appcompat:appcompat:1.6.0")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
 
@@ -124,17 +126,18 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.2.2")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.2.2")
 
-    implementation("androidx.room:room-runtime:2.5.0-rc01")
-    kapt("androidx.room:room-compiler:2.5.0-rc01")
-    implementation("androidx.room:room-ktx:2.5.0-rc01")
+    implementation("androidx.room:room-runtime:2.5.0")
+    kapt("androidx.room:room-compiler:2.5.0")
+    implementation("androidx.room:room-ktx:2.5.0")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.runtime:runtime-livedata:1.3.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.3.3")
 
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
@@ -170,10 +173,10 @@ dependencies {
     implementation("com.halilibo.compose-richtext:richtext-commonmark:0.13.0")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("androidx.room:room-testing:2.5.0-rc01")
+    testImplementation("androidx.room:room-testing:2.5.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.2")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.3.2")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.3.3")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.3")
 }

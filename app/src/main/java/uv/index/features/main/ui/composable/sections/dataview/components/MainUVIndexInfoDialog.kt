@@ -13,8 +13,8 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import uv.index.R
+import uv.index.features.astronomy.data.SunPosition
 import uv.index.features.main.common.getUVITitle
-import uv.index.features.main.data.SunPosition
 
 @Composable
 @Suppress("MagicNumber")
@@ -55,8 +55,8 @@ fun MainUVIndexInfoDialog(
             derivedStateOf {
                 when (state.currentIndex) {
                     in 3..4 -> 3
-                    5 -> 4
-                    in 6..20 -> 5
+                    in 5..6 -> 4
+                    in 7..20 -> 5
                     else -> 0
                 }
             }

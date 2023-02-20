@@ -21,7 +21,7 @@ import uv.index.features.place.data.room.PlaceData
 fun MainForecastHoursPart(
     modifier: Modifier = Modifier,
     place: PlaceData?,
-    hoursList: List<MainContract.UIHourData>,
+    hoursList: List<MainContract.UVHourData>,
 ) {
 
     val listState = rememberSaveable(
@@ -73,13 +73,13 @@ fun MainForecastHoursPart(
 
         items(hoursList) { item ->
             when (item) {
-                MainContract.UIHourData.Divider -> Divider(
+                MainContract.UVHourData.Divider -> Divider(
                     modifier = Modifier
                         .height(32.dp)
                         .width(1.dp),
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                is MainContract.UIHourData.Item -> HourBox(
+                is MainContract.UVHourData.Item -> HourBox(
                     bgColor = getUVIColor(item.iIndex, Color.Transparent),
                     index = item.sIndex,
                     hour = item.time

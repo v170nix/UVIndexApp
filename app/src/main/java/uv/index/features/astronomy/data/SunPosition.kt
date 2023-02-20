@@ -1,4 +1,4 @@
-package uv.index.features.main.data
+package uv.index.features.astronomy.data
 
 import androidx.compose.runtime.Immutable
 

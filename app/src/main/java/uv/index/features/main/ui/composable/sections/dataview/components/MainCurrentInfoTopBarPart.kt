@@ -8,7 +8,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -26,10 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import uv.index.R
+import uv.index.features.astronomy.data.SunPosition
 import uv.index.features.main.common.getUVITitle
-import uv.index.features.main.data.SunPosition
-import uv.index.features.main.data.UVLevel
 import uv.index.features.main.ui.MainContract
+import uv.index.features.uvi.data.UVLevel
 import uv.index.ui.theme.Dimens
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -42,6 +41,7 @@ import kotlin.math.roundToInt
 fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
+    placeContent: @Composable (fraction: Float) -> Unit,
     collapsedHeight: Dp = 64.dp,
     state: MainContract.State,
     onEditPlace: () -> Unit,
@@ -54,15 +54,15 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
         )
     )
 
-    val currentIndex by remember(state.currentIndexValue) {
+    val currentIndex by remember(state.uvCurrentData?.index) {
         derivedStateOf {
-            state.currentIndexValue?.roundToInt() ?: 0
+            state.uvCurrentData?.index?.roundToInt() ?: 0
         }
     }
 
-    val maxIndex by remember(state.currentSummaryDayData) {
+    val maxIndex by remember(state.uvCurrentSummaryDayData) {
         derivedStateOf {
-            state.currentSummaryDayData?.maxIndex?.getIntIndex() ?: 0
+            state.uvCurrentSummaryDayData?.maxIndex?.getIntIndex() ?: 0
         }
     }
 
@@ -70,14 +70,14 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
 
     @Suppress("NAME_SHADOWING")
     val titleString by remember(
-        state.currentIndexValue,
-        state.currentSunPosition,
+        state.uvCurrentData?.index,
+        state.currentSunData?.position,
         context
     ) {
         derivedStateOf {
-            val currentIndex = state.currentIndexValue?.roundToInt() ?: Int.MIN_VALUE
+            val currentIndex = state.uvCurrentData?.index?.roundToInt() ?: Int.MIN_VALUE
             val array = context.resources.getStringArray(R.array.uvindex_status_info)
-            getUVITitle(currentIndex, state.currentSunPosition ?: SunPosition.Above, array)
+            getUVITitle(currentIndex, state.currentSunData?.position ?: SunPosition.Above, array)
         }
     }
 
@@ -118,15 +118,17 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
                 indexCollapsedStyle = MaterialTheme.typography.titleLarge.copy(color = surface),
                 peakHourStyle = MaterialTheme.typography.labelLarge.copy(color = surface),
             ),
-            placeContent = {
-                MainPlacePart(
-                    modifier = Modifier
-                        .padding(horizontal = Dimens.grid_1)
-                        .fillMaxWidth(),
-                    onEditPlace = onEditPlace,
-                    place = state.place
-                )
-            },
+            placeContent = placeContent,
+//            {
+//                MainPlacePart(
+//                    modifier = Modifier
+//                        .padding(horizontal = Dimens.grid_1)
+//                        .fillMaxWidth(),
+//                    onEditPlace = onEditPlace,
+//                    place = state.place
+//                )
+//            }
+//            ,
             titleContent = {
                 val style = LocalTextStyle.current
                 TextButton(
@@ -163,14 +165,14 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
                             end = Dimens.grid_1,
                             top = Dimens.grid_2
                         ),
-                    currentIndexValue = state.currentIndexValue,
+                    currentIndexValue = state.uvCurrentData?.index,
                     onClick = onShowIndexInfo
                 )
             },
             maxTimeContent = {
                 PeakTime(
                     modifier = Modifier.padding(start = 0.dp, end = Dimens.grid_2),
-                    maxTime = state.currentPeakTime
+                    maxTime = state.peakTime
                 )
             }
         )

@@ -49,7 +49,7 @@ internal fun EmptyPlaceSection(
                 textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(Dimens.grid_2))
-            Button(onClick = onAddPlaceScreen) {
+            Button(onClick = onAddPlaceScreen, colors = ButtonDefaults.filledTonalButtonColors()) {
                 Text(
                     text = stringResource(id = R.string.place_empty_button).toUpperCase(Locale.current),
                 )

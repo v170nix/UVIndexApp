@@ -5,8 +5,8 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import uv.index.features.main.data.SunPosition
-import uv.index.features.main.data.UVLevel
+import uv.index.features.astronomy.data.SunPosition
+import uv.index.features.uvi.data.UVLevel
 import uv.index.lib.data.UVSummaryDayData
 import uv.index.ui.theme.UVITheme
 import java.time.format.DateTimeFormatter

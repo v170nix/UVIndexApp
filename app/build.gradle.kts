@@ -68,6 +68,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = listOf("-Xcontext-receivers")
     }
     buildFeatures {
         compose = true
@@ -136,16 +137,17 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
+
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.runtime:runtime-livedata:1.3.3")
-
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("androidx.activity:activity-compose:1.6.1")
 
-    implementation("com.google.accompanist:accompanist-insets:0.25.0")
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.25.0")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.24.13-rc")
+//    implementation("com.google.accompanist:accompanist-insets:0.25.0")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.28.0")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.28.0")
 
     implementation("com.google.android.libraries.places:places:3.0.0")
     implementation("com.google.maps.android:maps-ktx:3.4.0")
@@ -166,7 +168,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 
     implementation("com.github.v170nix:arwix-common-library:0.4.1")
-    implementation("com.github.v170nix:uv-index-library:1.0.8")
+//    implementation("com.github.v170nix:uv-index-library:1.0.8")
+    implementation("ui.index.lib:uv-index-library:1.1.5")
     implementation("com.github.v170nix.astronomy-core:astronomy-core:1.0.0-alpha22")
 
     implementation("com.halilibo.compose-richtext:richtext-ui-material3:0.13.0")

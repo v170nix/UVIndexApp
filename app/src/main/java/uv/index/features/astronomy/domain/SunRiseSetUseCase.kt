@@ -1,14 +1,14 @@
-package uv.index.features.main.domain
+package uv.index.features.astronomy.domain
 
 import net.arwix.urania.core.math.angle.deg
 import net.arwix.urania.core.observer.Observer
 import net.arwix.urania.core.toDeg
 import net.arwix.urania.core.toRad
+import uv.index.features.astronomy.data.SunPosition
 import uv.index.features.astronomy.data.SunRepository
 import uv.index.features.astronomy.data.context.ASTRONOMY_EVENT_RISE
 import uv.index.features.astronomy.data.context.ASTRONOMY_EVENT_SET
 import uv.index.features.astronomy.data.context.SunPositionContext
-import uv.index.features.main.data.SunPosition
 import uv.index.features.place.data.room.PlaceData
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class SunRiseSetUseCase @Inject constructor(private val sunRepository: SunRepository) {
 
-    suspend operator fun invoke(
+    suspend fun getRiseSet(
         place: PlaceData,
         zdt: ZonedDateTime
     ): Pair<LocalTime?, LocalTime?> {

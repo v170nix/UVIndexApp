@@ -1,7 +1,8 @@
 package uv.index.di
 
 import android.content.Context
-import android.content.SharedPreferences
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -14,6 +15,8 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import uv.index.lib.data.*
+import uv.index.lib.domain.UVForecastHoursUseCase
+import uv.index.lib.domain.UVIndexRemoteUpdateUseCase
 import uv.index.lib.net.CertOkHttpClient
 import javax.inject.Singleton
 
@@ -85,10 +88,20 @@ object UVIModule {
 
     @Provides
     @Singleton
-    fun provideSkinRepository(preferences: SharedPreferences): UVSkinRepository {
+    fun provideSkinRepository(preferences: DataStore<Preferences>): UVSkinRepository {
         return UVSkinRepository(
             preferences = preferences
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideRemoteUpdateUseCase(repository: UVIndexRepository) =
+        UVIndexRemoteUpdateUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideForecastHoursUseCase(repository: UVIndexRepository) =
+        UVForecastHoursUseCase(repository)
 
 }

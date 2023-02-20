@@ -55,8 +55,8 @@ fun MainUVIndexInfoDialog(
             derivedStateOf {
                 when (state.currentIndex) {
                     in 3..4 -> 3
-                    in 5..6 -> 4
-                    in 7..20 -> 5
+                    in 5..7 -> 4
+                    in 8..20 -> 5
                     else -> 0
                 }
             }

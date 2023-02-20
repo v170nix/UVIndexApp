@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,25 +20,31 @@ import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.features.main.ui.MainContract
 import uv.index.features.main.ui.composable.sections.dataview.components.*
+import uv.index.features.weather.ui.weatherPart
 import uv.index.navigation.AppNavigationBar
 import uv.index.ui.theme.Dimens
 import java.time.ZonedDateTime
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Suppress("LongMethod", "FunctionNaming")
 @Composable
 internal fun BoxWithConstraintsScope.MainDataSection(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
+    placeContent: @Composable (fraction: Float) -> Unit,
     state: MainContract.State,
     onEditPlace: () -> Unit
 ) {
 
     val lazyListState = rememberLazyListState()
 
-    val isShowCurrentZdt by remember(state.currentZdt) {
+    var visibleWeatherPart by remember() {
+        mutableStateOf(false)
+    }
+
+    val isShowCurrentZdt by remember(state.currentDateTime) {
         derivedStateOf {
-            ZonedDateTime.now().offset.totalSeconds != state.currentZdt?.offset?.totalSeconds
+            ZonedDateTime.now().offset.totalSeconds != state.currentDateTime?.offset?.totalSeconds
         }
     }
 
@@ -44,7 +52,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
         MainInfoState(MainInfoData(""))
     }
 
-    val uvIndexInfoDialogState = rememberUVIndexInfoDialogState(state.currentIndexValue)
+    val uvIndexInfoDialogState = rememberUVIndexInfoDialogState(state.uvCurrentData?.index)
     MainUVIndexInfoDialog(uvIndexInfoDialogState)
 
     Scaffold(
@@ -54,6 +62,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
             MainCurrentInfoTopBarPart(
                 scrollBehavior = scrollBehavior,
                 state = state,
+                placeContent = placeContent,
                 onEditPlace = onEditPlace,
                 onShowIndexInfo = {
                     uvIndexInfoDialogState.isShow = true
@@ -62,6 +71,13 @@ internal fun BoxWithConstraintsScope.MainDataSection(
         },
         bottomBar = {
             AppNavigationBar()
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                visibleWeatherPart = !visibleWeatherPart
+            }) {
+                Icon(Icons.Default.KeyboardArrowUp, "Switch")
+            }
         }
     ) {
 
@@ -85,113 +101,125 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                     state = scrollBehavior.state
                 )
 
-                item {
-                    MainTimeToEventPart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = Dimens.grid_2),
-                        infoState = infoState,
-                        timeToBurn = state.currentTimeToBurn,
-                        timeToVitaminD = state.currentTimeToVitaminD,
-                    )
-                }
+                if (!visibleWeatherPart) {
 
-                item {
-                    MainSunscreenReminder(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = Dimens.grid_2)
-                            .padding(top = Dimens.grid_2),
-                    )
-                }
-
-                item {
-                    MainProtectionPart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = Dimens.grid_1_5),
-                        uvSummaryDayData = state.currentSummaryDayData
-                    )
-                }
-
-                item {
-                    Column(
-                        modifier = Modifier,
-                        horizontalAlignment = Alignment.CenterHorizontally
-
-                    ) {
-                        Divider(
+                    item(key = 1) {
+                        MainTimeToEventPart(
                             modifier = Modifier
-                                .padding(
-                                    horizontal = Dimens.grid_2,
-                                    vertical = Dimens.grid_1_5
-                                )
                                 .fillMaxWidth()
+                                .padding(horizontal = Dimens.grid_2)
+                                .animateItemPlacement(),
+                            infoState = infoState,
+                            timeToBurn = state.uvCurrentData?.timeToBurn,
+                            timeToVitaminD = state.uvCurrentData?.timeToVitaminD,
                         )
-                        Text(
-                            text = stringResource(id = R.string.uvindex_local_time_text),
-                            style = MaterialTheme.typography.labelLarge,
+                    }
+
+                    item(key = 2) {
+                        MainSunscreenReminder(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = Dimens.grid_2)
+                                .padding(top = Dimens.grid_2),
                         )
-                        MainCurrentTimePart(
+                    }
+
+                    item(key = 3) {
+                        MainProtectionPart(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = Dimens.grid_1_5),
+                            uvSummaryDayData = state.uvCurrentSummaryDayData
+                        )
+                    }
+
+                    item(key = 4) {
+                        Column(
                             modifier = Modifier,
-                            currentZdt = state.currentZdt
-                        )
+                            horizontalAlignment = Alignment.CenterHorizontally
+
+                        ) {
+                            Divider(
+                                modifier = Modifier
+                                    .padding(
+                                        horizontal = Dimens.grid_2,
+                                        vertical = Dimens.grid_1_5
+                                    )
+                                    .fillMaxWidth()
+                            )
+                            Text(
+                                text = stringResource(id = R.string.uvindex_local_time_text),
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+                            MainCurrentTimePart(
+                                modifier = Modifier,
+                                currentZdt = state.currentDateTime
+                            )
+                        }
                     }
-                }
 
-                item {
-                    MainSunRiseSetPart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 0.dp),
-                        riseTime = state.riseTime,
-                        setTime = state.setTime
-                    )
-                }
-
-                item {
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 0.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Divider(
-                            modifier = Modifier
-                                .padding(
-                                    horizontal = Dimens.grid_2,
-                                    vertical = Dimens.grid_1_5
-                                )
-                                .fillMaxWidth()
-                        )
-                        Text(
-                            text = stringResource(id = R.string.uvindex_forecast_title),
-                            style = MaterialTheme.typography.labelLarge
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MainForecastHoursPart(
+                    item(key = 5) {
+                        MainSunRiseSetPart(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 0.dp),
-                            place = state.place,
-                            hoursList = state.currentUiHoursData
+                                .padding(horizontal = 16.dp, vertical = 0.dp),
+                            riseTime = state.currentSunData?.riseTime,
+                            setTime = state.currentSunData?.setTime
                         )
                     }
-                }
 
-                item {
-                    MainForecastDayPart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(top = 16.dp),
-                        data = state.daysForecast
-                    )
+                    item(key = 6) {
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 0.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Divider(
+                                modifier = Modifier
+                                    .padding(
+                                        horizontal = Dimens.grid_2,
+                                        vertical = Dimens.grid_1_5
+                                    )
+                                    .fillMaxWidth()
+                            )
+                            Text(
+                                text = stringResource(id = R.string.uvindex_forecast_title),
+                                style = MaterialTheme.typography.labelLarge
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                            MainForecastHoursPart(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 0.dp),
+                                place = state.place,
+                                hoursList = state.uvForecastHours
+                            )
+                        }
+                    }
+
+                    item(key = 7) {
+
+                        MainForecastDayPart(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .padding(top = 16.dp),
+                            data = state.uvForecastDays
+                        )
+                    }
+
+                } else {
+                    weatherPart()
                 }
             }
 
             MainInfoHost(infoState)
+
+//            } else {
+//                WeatherPart()
+//            }
         }
     }
 }
@@ -202,8 +230,9 @@ private fun LazyListScope.mainBackgroundHeader(
     modifier: Modifier = Modifier,
     state: TopAppBarState,
 ) {
-    stickyHeader {
-        Box(modifier = modifier) {
+    stickyHeader(key = 200) {
+
+        Box(modifier = modifier.animateItemPlacement()) {
 
             val alpha by remember(state.collapsedFraction) {
                 derivedStateOf {

@@ -1,11 +1,11 @@
 package uv.index.features.main.ui
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.*
+import net.arwix.extension.ConflatedJob
 import net.arwix.mvi.SimpleViewModel
 import net.arwix.mvi.UISideEffect
 import uv.index.common.*
@@ -37,20 +37,26 @@ class MainViewModel @Inject constructor(
 ) {
 
     private val zdtAtStartDayAsFlow = MutableStateFlow<ZonedDateTime?>(null)
-    private val triggerUpdateCurrentData = Channel<Unit>()
+    private val triggerUpdateCurrentDateTime = MutableStateFlow(0)
     private val innerStateReducer = InnerStateReducer()
 
     private val placeAsFlow = placeDao.getSelectedItemAsFlow()
+        .onEach { conglatedJob.cancel() }
         .onEach(innerStateReducer::changePlace)
+        .onEach { Log.e("place", it.toString()) }
         .distinctUntilChanged()
         .onEach(innerStateReducer::newPlace)
+        .onEach { Log.e("place1", it.toString()) }
         .filterNotNull()
         .onEach { place ->
             val atStartDay = LocalDate.now(place.zone).atStartOfDay(place.zone)
             zdtAtStartDayAsFlow.update { atStartDay }
         }
 
+    private val conglatedJob = ConflatedJob()
+
     init {
+
         combine(
             placeAsFlow,
             zdtAtStartDayAsFlow.filterNotNull(),
@@ -62,13 +68,18 @@ class MainViewModel @Inject constructor(
             }
         )
             .flatMapLatest { data ->
-//                delay(10_000)
+                sunDataUseCase(data.place, data.atStartDayDate, ZonedDateTime.now(data.place.zone))
+                    .also(innerStateReducer::setSunData)
                 uvDataRepository
                     .getDataAsFlow(
                         longitude = data.place.latLng.longitude,
                         latitude = data.place.latLng.latitude,
                         data.atStartDayDate
                     )
+//                    .onEach {
+//                        Log.e("thread", Thread.currentThread().name)
+//                        delay(10_000)
+//                    }
                     .filter { list ->
                         (list.size > HOURS_IN_DAY - 1).also { if (!it) innerStateReducer.loadingDataError() }
                     }
@@ -93,33 +104,41 @@ class MainViewModel @Inject constructor(
             .onEach { data ->
                 viewModelScope
                     .launch {
+                        Log.e("launch", "112")
                         uvRemoteUpdateUseCase
                             .checkAndUpdate(this, data.place.toUVIPlaceData(), data.list)
                     }
+                Log.e("launch", "1")
             }
-            .addTrigger(skinRepository.asFlow(UVSkinType.Type3)) { data, skinType ->
-                data.skinType = skinType.also(innerStateReducer::setSkin)
-                innerStateReducer.setSkin(skinType)
+            .onEach { dta ->
+                Log.e("launch", "11")
+                launchConflatedPart(dta)
+
+
             }
-            .addTrigger(triggerUpdateCurrentData.consumeAsFlow()) { data, _ ->
-                data.currentDateTime = ZonedDateTime.now(data.place.zone)
-                    .also(innerStateReducer::setCurrentDateTime)
-            }
-            .applyData {
-                sunData = sunDataUseCase(place, atStartDayDate, currentDateTime)
-                    .also(innerStateReducer::setSunData)
-            }
-            .applyData {
-                uvCurrentDataUseCase(place, skinType, sunData.position, list)
-                    .also(innerStateReducer::setCurrentUVIData)
-            }
-            .applyData {
-                uvForecastUseCase.getHours(place, atStartDayDate, currentDateTime)
-                    .also {
-                        innerStateReducer.setUVForecastHours(it.list ?: listOf())
-                        innerStateReducer.setUVPeakTime(it.maxTime)
-                    }
-            }
+//            .addTrigger(skinRepository.asFlow(UVSkinType.Type3)) { data, skinType ->
+//                data.skinType = skinType.also(innerStateReducer::setSkin)
+//                innerStateReducer.setSkin(skinType)
+//            }
+//            .addTrigger(triggerUpdateCurrentData.receiveAsFlow()) { data, _ ->
+//                data.currentDateTime = ZonedDateTime.now(data.place.zone)
+//                    .also(innerStateReducer::setCurrentDateTime)
+//            }
+//            .applyData {
+//                sunData = sunDataUseCase(place, atStartDayDate, currentDateTime)
+//                    .also(innerStateReducer::setSunData)
+//            }
+//            .applyData {
+//                uvCurrentDataUseCase(place, skinType, sunData.position, list)
+//                    .also(innerStateReducer::setCurrentUVIData)
+//            }
+//            .applyData {
+//                uvForecastUseCase.getHours(place, atStartDayDate, currentDateTime)
+//                    .also {
+//                        innerStateReducer.setUVForecastHours(it.list ?: listOf())
+//                        innerStateReducer.setUVPeakTime(it.maxTime)
+//                    }
+//            }
             .flowOn(Dispatchers.Default)
             .launchIn(viewModelScope)
 
@@ -152,19 +171,71 @@ class MainViewModel @Inject constructor(
                     skinRepository.setSkin(event.skin)
                 }
             }
-            MainContract.Event.DoDataManualUpdate -> TODO()
+            MainContract.Event.DoDataManualUpdate -> {
+                viewModelScope.launch {
+                    uvRemoteUpdateUseCase.update(
+                        viewModelScope,
+                        state.value.place?.toUVIPlaceData()
+                    )
+                }
+            }
             MainContract.Event.DoUpdateWithCurrentTime -> updateStateWithCurrentTime()
         }
     }
 
     private fun updateStateWithCurrentTime() {
-        triggerUpdateCurrentData.trySendBlocking(Unit)
-//        currentTimeReducer.launchReduce(state) {
-//            currentTimeReducer.reduce(it, ::notifyNewStartDay)
-//        }
+        viewModelScope.launch {
+            triggerUpdateCurrentDateTime.emit(triggerUpdateCurrentDateTime.value + 1)
+        }
+    }
+
+    private fun launchConflatedPart(partialData: PartialData) {
+        Log.e("launch", "3")
+        conglatedJob += listOf(partialData).asFlow()
+            .onEach { Log.e("launch", "4") }
+            .addTrigger(skinRepository.asFlow(UVSkinType.Type3)) { data, skinType ->
+                data.skinType = skinType.also(innerStateReducer::setSkin)
+                innerStateReducer.setSkin(skinType)
+            }
+            .onEach { Log.e("launch", "5") }
+            .addTrigger(triggerUpdateCurrentDateTime) { data, _ ->
+                data.currentDateTime = ZonedDateTime.now(data.place.zone)
+                    .also(innerStateReducer::setCurrentDateTime)
+            }
+            .onEach { Log.e("launch", "6") }
+            .applyData {
+                sunData = sunDataUseCase(place, atStartDayDate, currentDateTime)
+                    .also(innerStateReducer::setSunData)
+            }
+//            .onEach {
+//                delay(5_000)
+//            }
+            .onEach { Log.e("launch", "7") }
+            .applyData {
+                uvCurrentDataUseCase(place, skinType, sunData.position, list)
+                    .also(innerStateReducer::setCurrentUVIData)
+                    .also { Log.e("uv", place.toString()) }
+            }
+            .onEach { Log.e("launch", "8") }
+            .applyData {
+                uvForecastUseCase.getHours(
+                    place,
+                    atStartDayDate,
+                    currentDateTime
+                )
+                    .also {
+                        innerStateReducer.setUVForecastHours(
+                            it.list ?: listOf()
+                        )
+                        innerStateReducer.setUVPeakTime(it.maxTime)
+                    }
+            }
+            .launchIn(viewModelScope)
     }
 
     private inner class InnerStateReducer {
+
+        private val checkErrorJob = ConflatedJob()
 
         @Suppress("UNUSED_PARAMETER")
         fun changePlace(place: PlaceData?) = reduceState {
@@ -188,17 +259,22 @@ class MainViewModel @Inject constructor(
 
         fun newPlace(place: PlaceData?) {
             reduceState {
-                MainContract.State(place = place, skinType = this.skinType)
+                MainContract.State(place = place, skinType = this.skinType, isLoadingPlace = false)
             }
+//            reduceState {
+//                MainContract.State(place = place, skinType = this.skinType)
+//            }
         }
+
 
         fun remoteUpdateState(state: UVIndexRepository.RemoteUpdateState) {
             reduceState {
+                Log.e("update state", state.toString())
                 when (state) {
                     is UVIndexRepository.RemoteUpdateState.Failure -> {
                         copy(
                             isViewLoadingData = false,
-               //             isViewRetry = !uvCurrentDayData.isValidated(HOURS_IN_DAY - 1)
+                            isViewRetry = true
                         )
                     }
                     UVIndexRepository.RemoteUpdateState.Loading ->
@@ -207,9 +283,15 @@ class MainViewModel @Inject constructor(
                             isViewRetry = false
                         )
                     is UVIndexRepository.RemoteUpdateState.Success<*> -> {
+                        checkErrorJob += viewModelScope.launch {
+                            delay(5000)
+                            reduceState {
+                                copy(isViewRetry = !isViewLoadingData && this.uvCurrentData == null)
+                            }
+                        }
                         copy(
                             isViewLoadingData = false,
-                //            isViewRetry = !uvCurrentDayData.isValidated(HOURS_IN_DAY - 1)
+//                            isViewRetry = false
                         )
                     }
                     UVIndexRepository.RemoteUpdateState.None -> {

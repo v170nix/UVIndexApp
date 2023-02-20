@@ -10,6 +10,9 @@
     <string name="place_empty_text">Please add a location to use this app</string>
     <string name="place_empty_button">Continue</string>
 
+    <string name="app_load_data_error_info">Error loading data</string>
+    <string name="app_load_data_error_button">Retry</string>
+
     <string-array name="uvindex_status_info">
         <item>Night</item>
         <item>Twilight</item>

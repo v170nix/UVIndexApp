@@ -23,7 +23,7 @@ import uv.index.features.main.notification.sunscreen.SunscreenNotificationWorker
 import uv.index.ui.theme.Dimens
 
 @Composable
-internal fun MainSunscreenReminder(
+internal fun UVSunscreenReminder(
     modifier: Modifier = Modifier
 ) {
 

@@ -1,6 +1,5 @@
 package uv.index.features.main.ui.composable
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -29,7 +28,7 @@ import uv.index.features.main.ui.MainContract
 import uv.index.features.main.ui.MainViewModel
 import uv.index.features.main.ui.composable.sections.dataview.MainDataSection
 import uv.index.features.main.ui.composable.sections.dataview.components.MainPlacePart
-import uv.index.features.main.ui.composable.sections.emptyplace.EmptyPlaceSection
+import uv.index.features.main.ui.composable.sections.emptyplace.EmptyPlacePart
 import uv.index.ui.theme.Dimens
 import kotlin.math.roundToInt
 
@@ -47,10 +46,6 @@ fun MainScreen(
 
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(key1 = state.place) {
-        Log.e("state launch", state.place.toString())
-    }
-
     LifecycleTimer(timeMillis = 60_000L) {
         viewModel.doEvent(MainContract.Event.DoDataAutoUpdate)
     }
@@ -64,13 +59,9 @@ fun MainScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-
-        Log.e("state launch1", state.place.toString())
         if (state.place == null) {
-            Log.e("state.place", state.toString())
             if (!state.isLoadingPlace) {
-                Log.e("state", "!isLoading Place")
-                EmptyPlaceSection(
+                EmptyPlacePart(
                     modifier = Modifier.fillMaxSize(),
                     onAddPlaceScreen = onChangePlace
                 )
@@ -112,21 +103,9 @@ private fun BoxWithConstraintsScope.DataPart(
         backgroundColor = MaterialTheme.colorScheme.background
     )
 
-//    AnimatedVisibility(visible = isDataLoaded) {
-//
-//    }
-
-//    MainPlacePart(
-//        modifier = Modifier
-//            .padding(horizontal = Dimens.grid_1)
-//            .fillMaxWidth(),
-//        onEditPlace = onChangePlace,
-//        place = state.place
-//    )
-
     Crossfade(
         targetState = isDataLoaded, animationSpec = tween(1500)
-    ) {targetState ->
+    ) { targetState ->
         when (targetState) {
             true -> {
                 MainDataSection(
@@ -141,8 +120,7 @@ private fun BoxWithConstraintsScope.DataPart(
                             place = state.place
                         )
                     },
-                    state,
-                    onEditPlace = onChangePlace
+                    state
                 )
 
             }
@@ -218,7 +196,6 @@ private fun LoadingDataPart(
                                     modifier = Modifier.align(Alignment.CenterHorizontally),
                                     onClick = onRetryClick,
                                     colors = ButtonDefaults.filledTonalButtonColors()
-//                                shape = MaterialTheme.shapes.button
                                 ) {
                                     Text(
                                         text = stringResource(R.string.app_load_data_error_button)
@@ -226,7 +203,6 @@ private fun LoadingDataPart(
                                     )
                                 }
                             }
-//                                    }
                         }
                         false -> {
                             AnimatedVisibility(

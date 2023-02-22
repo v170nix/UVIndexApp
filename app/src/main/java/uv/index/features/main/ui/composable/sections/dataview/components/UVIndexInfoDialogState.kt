@@ -4,15 +4,15 @@ import androidx.compose.runtime.*
 import kotlin.math.roundToInt
 
 @Stable
-class MainUVIndexInfoDialogState {
+class UVIndexInfoDialogState {
     var isShow by mutableStateOf(false)
     var currentIndex by mutableStateOf(0)
 }
 
 @Composable
-fun rememberUVIndexInfoDialogState(currentIndex: Double?): MainUVIndexInfoDialogState {
+fun rememberUVIndexInfoDialogState(currentIndex: Double?): UVIndexInfoDialogState {
     val state = remember(Unit) {
-        MainUVIndexInfoDialogState()
+        UVIndexInfoDialogState()
     }
 
     LaunchedEffect(currentIndex) {

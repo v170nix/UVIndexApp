@@ -18,8 +18,8 @@ import uv.index.features.main.common.getUVITitle
 
 @Composable
 @Suppress("MagicNumber")
-fun MainUVIndexInfoDialog(
-    state: MainUVIndexInfoDialogState
+fun UVIndexInfoDialog(
+    state: UVIndexInfoDialogState
 ) {
 
     if (state.isShow) {

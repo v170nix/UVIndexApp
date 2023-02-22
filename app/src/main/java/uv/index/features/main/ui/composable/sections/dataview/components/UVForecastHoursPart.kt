@@ -18,7 +18,7 @@ import uv.index.features.place.data.room.PlaceData
 
 
 @Composable
-fun MainForecastHoursPart(
+fun UVForecastHoursPart(
     modifier: Modifier = Modifier,
     place: PlaceData?,
     hoursList: List<MainContract.UVHourData>,

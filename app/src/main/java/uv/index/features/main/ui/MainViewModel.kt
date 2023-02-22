@@ -41,22 +41,19 @@ class MainViewModel @Inject constructor(
     private val innerStateReducer = InnerStateReducer()
 
     private val placeAsFlow = placeDao.getSelectedItemAsFlow()
-        .onEach { conglatedJob.cancel() }
+        .onEach { timeUpdateJob.cancel() }
         .onEach(innerStateReducer::changePlace)
-        .onEach { Log.e("place", it.toString()) }
         .distinctUntilChanged()
         .onEach(innerStateReducer::newPlace)
-        .onEach { Log.e("place1", it.toString()) }
         .filterNotNull()
         .onEach { place ->
             val atStartDay = LocalDate.now(place.zone).atStartOfDay(place.zone)
             zdtAtStartDayAsFlow.update { atStartDay }
         }
 
-    private val conglatedJob = ConflatedJob()
+    private val timeUpdateJob = ConflatedJob()
 
     init {
-
         combine(
             placeAsFlow,
             zdtAtStartDayAsFlow.filterNotNull(),
@@ -104,41 +101,13 @@ class MainViewModel @Inject constructor(
             .onEach { data ->
                 viewModelScope
                     .launch {
-                        Log.e("launch", "112")
                         uvRemoteUpdateUseCase
                             .checkAndUpdate(this, data.place.toUVIPlaceData(), data.list)
                     }
-                Log.e("launch", "1")
             }
             .onEach { dta ->
-                Log.e("launch", "11")
                 launchConflatedPart(dta)
-
-
             }
-//            .addTrigger(skinRepository.asFlow(UVSkinType.Type3)) { data, skinType ->
-//                data.skinType = skinType.also(innerStateReducer::setSkin)
-//                innerStateReducer.setSkin(skinType)
-//            }
-//            .addTrigger(triggerUpdateCurrentData.receiveAsFlow()) { data, _ ->
-//                data.currentDateTime = ZonedDateTime.now(data.place.zone)
-//                    .also(innerStateReducer::setCurrentDateTime)
-//            }
-//            .applyData {
-//                sunData = sunDataUseCase(place, atStartDayDate, currentDateTime)
-//                    .also(innerStateReducer::setSunData)
-//            }
-//            .applyData {
-//                uvCurrentDataUseCase(place, skinType, sunData.position, list)
-//                    .also(innerStateReducer::setCurrentUVIData)
-//            }
-//            .applyData {
-//                uvForecastUseCase.getHours(place, atStartDayDate, currentDateTime)
-//                    .also {
-//                        innerStateReducer.setUVForecastHours(it.list ?: listOf())
-//                        innerStateReducer.setUVPeakTime(it.maxTime)
-//                    }
-//            }
             .flowOn(Dispatchers.Default)
             .launchIn(viewModelScope)
 
@@ -146,13 +115,6 @@ class MainViewModel @Inject constructor(
             .asFlow
             .onEach(innerStateReducer::remoteUpdateState)
             .launchIn(viewModelScope)
-
-//        viewModelScope.launch {
-//            delay(20_000)
-//            remoteUpdateUseCase.update(this,
-//
-//                state.value.place!!.toUVIPlaceData())
-//        }
     }
 
 
@@ -190,19 +152,15 @@ class MainViewModel @Inject constructor(
     }
 
     private fun launchConflatedPart(partialData: PartialData) {
-        Log.e("launch", "3")
-        conglatedJob += listOf(partialData).asFlow()
-            .onEach { Log.e("launch", "4") }
+        timeUpdateJob += listOf(partialData).asFlow()
             .addTrigger(skinRepository.asFlow(UVSkinType.Type3)) { data, skinType ->
                 data.skinType = skinType.also(innerStateReducer::setSkin)
                 innerStateReducer.setSkin(skinType)
             }
-            .onEach { Log.e("launch", "5") }
             .addTrigger(triggerUpdateCurrentDateTime) { data, _ ->
                 data.currentDateTime = ZonedDateTime.now(data.place.zone)
                     .also(innerStateReducer::setCurrentDateTime)
             }
-            .onEach { Log.e("launch", "6") }
             .applyData {
                 sunData = sunDataUseCase(place, atStartDayDate, currentDateTime)
                     .also(innerStateReducer::setSunData)
@@ -210,13 +168,10 @@ class MainViewModel @Inject constructor(
 //            .onEach {
 //                delay(5_000)
 //            }
-            .onEach { Log.e("launch", "7") }
             .applyData {
                 uvCurrentDataUseCase(place, skinType, sunData.position, list)
                     .also(innerStateReducer::setCurrentUVIData)
-                    .also { Log.e("uv", place.toString()) }
             }
-            .onEach { Log.e("launch", "8") }
             .applyData {
                 uvForecastUseCase.getHours(
                     place,
@@ -241,7 +196,6 @@ class MainViewModel @Inject constructor(
         fun changePlace(place: PlaceData?) = reduceState {
             copy(isLoadingPlace = false)
         }
-
 
         fun loadingDataError() {
             reduceState {

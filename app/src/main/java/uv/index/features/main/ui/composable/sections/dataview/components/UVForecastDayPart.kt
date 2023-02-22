@@ -25,7 +25,7 @@ import java.time.format.FormatStyle
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-internal fun MainForecastDayPart(
+internal fun UVForecastDayPart(
     modifier: Modifier = Modifier,
     data: List<UVSummaryDayData>?
 ) {

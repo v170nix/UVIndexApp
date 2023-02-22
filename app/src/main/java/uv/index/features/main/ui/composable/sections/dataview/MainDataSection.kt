@@ -23,7 +23,6 @@ import uv.index.features.main.ui.composable.sections.dataview.components.*
 import uv.index.features.weather.ui.weatherPart
 import uv.index.navigation.AppNavigationBar
 import uv.index.ui.theme.Dimens
-import java.time.ZonedDateTime
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Suppress("LongMethod", "FunctionNaming")
@@ -33,19 +32,11 @@ internal fun BoxWithConstraintsScope.MainDataSection(
     scrollBehavior: TopAppBarScrollBehavior,
     placeContent: @Composable (fraction: Float) -> Unit,
     state: MainContract.State,
-    onEditPlace: () -> Unit
 ) {
-
     val lazyListState = rememberLazyListState()
 
-    var visibleWeatherPart by remember() {
+    var visibleWeatherPart by remember {
         mutableStateOf(false)
-    }
-
-    val isShowCurrentZdt by remember(state.currentDateTime) {
-        derivedStateOf {
-            ZonedDateTime.now().offset.totalSeconds != state.currentDateTime?.offset?.totalSeconds
-        }
     }
 
     val infoState = remember {
@@ -53,7 +44,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
     }
 
     val uvIndexInfoDialogState = rememberUVIndexInfoDialogState(state.uvCurrentData?.index)
-    MainUVIndexInfoDialog(uvIndexInfoDialogState)
+    UVIndexInfoDialog(uvIndexInfoDialogState)
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -63,7 +54,6 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                 scrollBehavior = scrollBehavior,
                 state = state,
                 placeContent = placeContent,
-                onEditPlace = onEditPlace,
                 onShowIndexInfo = {
                     uvIndexInfoDialogState.isShow = true
                 }
@@ -116,7 +106,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                     }
 
                     item(key = 2) {
-                        MainSunscreenReminder(
+                        UVSunscreenReminder(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = Dimens.grid_2)
@@ -189,7 +179,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                             )
 
                             Spacer(modifier = Modifier.height(16.dp))
-                            MainForecastHoursPart(
+                            UVForecastHoursPart(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(bottom = 0.dp),
@@ -201,7 +191,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
 
                     item(key = 7) {
 
-                        MainForecastDayPart(
+                        UVForecastDayPart(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)

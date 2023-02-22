@@ -44,7 +44,6 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
     placeContent: @Composable (fraction: Float) -> Unit,
     collapsedHeight: Dp = 64.dp,
     state: MainContract.State,
-    onEditPlace: () -> Unit,
     onShowIndexInfo: () -> Unit
 ) {
     val statusHeight: Dp by animateDpAsState(

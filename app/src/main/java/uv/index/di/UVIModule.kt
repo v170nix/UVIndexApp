@@ -1,6 +1,7 @@
 package uv.index.di
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.room.Room
@@ -11,6 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
@@ -58,7 +60,15 @@ object UVIModule {
                     })
                 }
             }
-        )
+        ).apply {
+            getHttpClient().plugin(HttpSend).intercept { req ->
+                val call = execute(req)
+                val resp = call.response
+                Log.e("NETWORK", "[${resp.status.value}] ${req.url.build()}")
+                call
+
+            }
+        }
     }
 
     @Provides

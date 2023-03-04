@@ -33,7 +33,7 @@ interface MainTopBarTextStyles {
     fun peakHourTextStyle(fraction: Float): State<TextStyle>
 
     @Composable
-    fun riseSetTextStyle(fraction: Float): State<TextStyle>
+    fun subTitleTextStyle(fraction: Float): State<TextStyle>
 }
 
 object MainTopBarDefaults {
@@ -45,7 +45,7 @@ object MainTopBarDefaults {
         placeCollapsedStyle: TextStyle,
         titleExpandedStyle: TextStyle,
         titleCollapsedStyle: TextStyle,
-        riseSetTextStyle: TextStyle,
+        subTitleTextStyle: TextStyle,
         indexExpandedStyle: TextStyle,
         indexCollapsedStyle: TextStyle,
         peakHourStyle: TextStyle,
@@ -55,7 +55,7 @@ object MainTopBarDefaults {
             placeCollapsedStyle,
             titleExpandedStyle,
             titleCollapsedStyle,
-            riseSetTextStyle,
+            subTitleTextStyle,
             indexExpandedStyle,
             indexCollapsedStyle,
             peakHourStyle
@@ -65,7 +65,7 @@ object MainTopBarDefaults {
                 placeCollapsedStyle,
                 titleExpandedStyle,
                 titleCollapsedStyle,
-                riseSetTextStyle,
+                subTitleTextStyle,
                 indexExpandedStyle,
                 indexCollapsedStyle,
                 peakHourStyle
@@ -107,7 +107,7 @@ internal fun MainCurrentInfoTopBarInnerPart(
     val titleStyle by textStyles.titleTextStyle(fraction = fraction)
     val indexStyle by textStyles.indexTextStyle(fraction = fraction)
     val hourStyle by textStyles.peakHourTextStyle(fraction = fraction)
-    val subTitleStyle by textStyles.riseSetTextStyle(fraction = fraction)
+    val subTitleStyle by textStyles.subTitleTextStyle(fraction = fraction)
 
     Layout(
         modifier = modifier,
@@ -145,7 +145,11 @@ internal fun MainCurrentInfoTopBarInnerPart(
                         scaleY = fraction
                     },
             ) {
-                ProvideTextStyle(value = subTitleStyle) { subTitleContent(fraction) }
+                ProvideTextStyle(value = subTitleStyle) {
+                    CompositionLocalProvider(LocalContentColor provides subTitleStyle.color) {
+                        subTitleContent(fraction)
+                    }
+                }
             }
 
             Box(
@@ -290,7 +294,7 @@ private class AnimatingMainTopBarTextStyles(
     }
 
     @Composable
-    override fun riseSetTextStyle(fraction: Float): State<TextStyle> {
+    override fun subTitleTextStyle(fraction: Float): State<TextStyle> {
         return remember(Unit) { mutableStateOf(riseSetTextStyle) }
     }
 
@@ -375,7 +379,7 @@ private fun Preview() {
                     indexExpandedStyle = MaterialTheme.typography.displayLarge,
                     indexCollapsedStyle = MaterialTheme.typography.titleMedium,
                     peakHourStyle = MaterialTheme.typography.labelLarge,
-                    riseSetTextStyle = MaterialTheme.typography.labelLarge
+                    subTitleTextStyle = MaterialTheme.typography.labelLarge
                 ),
                 minHeight = 64.dp,
                 placeContent = {

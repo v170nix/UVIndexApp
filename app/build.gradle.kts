@@ -9,7 +9,7 @@ plugins {
     kotlin("kapt")
 //    id("com.google.devtools.ksp") version "1.7.10-1.0.6"
     id("dagger.hilt.android.plugin")
-    kotlin("plugin.serialization") version "1.8.0"
+    kotlin("plugin.serialization") version "1.8.10"
     id("com.google.gms.google-services")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("io.gitlab.arturbosch.detekt") version("1.21.0")
@@ -119,6 +119,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("androidx.navigation:navigation-common-ktx:2.5.3")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.collection:collection-ktx:1.2.0")
 
     implementation("androidx.work:work-runtime-ktx:2.7.1")
 
@@ -169,7 +170,7 @@ dependencies {
 
     implementation("com.github.v170nix:arwix-common-library:0.4.1")
 //    implementation("com.github.v170nix:uv-index-library:1.0.8")
-    implementation("ui.index.lib:uv-index-library:1.1.5")
+    implementation("ui.index.lib:uv-index-library:1.1.7")
     implementation("com.github.v170nix.astronomy-core:astronomy-core:1.0.0-alpha22")
 
     implementation("com.halilibo.compose-richtext:richtext-ui-material3:0.13.0")

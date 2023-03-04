@@ -6,7 +6,6 @@ import androidx.collection.getOrDefault
 import androidx.collection.getOrElse
 import uv.index.R
 import uv.index.features.weather.data.Weather
-import java.util.*
 
 @DrawableRes
 fun Weather.Condition.getIconId(isDay: Boolean): Int? {
@@ -63,14 +62,14 @@ fun Weather.Condition.getIconId(isDay: Boolean): Int? {
     }
 }
 
-fun Weather.Condition.getName(locale: Locale, isDay: Boolean): String {
+fun Weather.Condition.getName(language: String, isDay: Boolean): String {
 
-    val dayArray = when (locale.language) {
+    val dayArray = when (language) {
         "ru" -> conditionNamesDayRu
         else -> conditionNamesDayEn
     }
 
-    val defaultArray = when (locale.language) {
+    val defaultArray = when (language) {
         "ru" -> conditionNamesRu
         else -> conditionNamesEn
     }
@@ -84,7 +83,7 @@ fun Weather.Condition.getName(locale: Locale, isDay: Boolean): String {
 
 private val conditionNamesEn by lazy {
     SparseArrayCompat<String>(45).apply {
-        put(1000, "Sunny")
+        put(1000, "Clear")
         put(1003, "Partly cloudy")
         put(1006, "Cloudy")
         put(1009, "Overcast")
@@ -137,13 +136,13 @@ private val conditionNamesEn by lazy {
 
 private val conditionNamesDayEn by lazy {
     SparseArrayCompat<String>().apply {
-        put(1000, "Clear")
+        put(1000, "Sunny")
     }
 }
 
 private val conditionNamesRu by lazy {
     SparseArrayCompat<String>(45).apply {
-        put(1000, "Солнечно")
+        put(1000, "Ясно")
         put(1003, "Переменная облачность")
         put(1006, "Облачно")
         put(1009, "Пасмурно")
@@ -196,6 +195,6 @@ private val conditionNamesRu by lazy {
 
 private val conditionNamesDayRu by lazy {
     SparseArrayCompat<String>().apply {
-        put(1000, "Ясно")
+        put(1000, "Солнечно")
     }
 }

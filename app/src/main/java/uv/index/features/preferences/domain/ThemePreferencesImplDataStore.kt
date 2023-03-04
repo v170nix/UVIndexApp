@@ -1,4 +1,4 @@
-package uv.index.features.preferences.data
+package uv.index.features.preferences.domain
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -12,13 +12,15 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import uv.index.features.place.common.except
+import uv.index.features.preferences.data.ThemeMode
+import uv.index.features.preferences.data.ThemePreferences
 import javax.inject.Inject
 
 class ThemePreferencesImplDataStore @Inject constructor(
-    private val preferences: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>
 ) : ThemePreferences {
     override val modeAsStateFlow: Flow<ThemeMode>
-        get() = preferences.data
+        get() = dataStore.data
             .catch {
                 emit(emptyPreferences())
             }
@@ -29,7 +31,7 @@ class ThemePreferencesImplDataStore @Inject constructor(
     override fun getMode(): ThemeMode {
         return runBlocking {
             runCatching {
-                val ordinal = preferences.data.firstOrNull()?.get(PREF_THEME_MODE_KEY)
+                val ordinal = dataStore.data.firstOrNull()?.get(PREF_THEME_MODE_KEY)
                     ?: ThemeMode.System.ordinal
                 ThemeMode.values()[ordinal]
             }
@@ -39,7 +41,7 @@ class ThemePreferencesImplDataStore @Inject constructor(
     }
 
     override suspend fun updateMode(mode: ThemeMode) {
-        preferences.edit {
+        dataStore.edit {
             it[PREF_THEME_MODE_KEY] = mode.ordinal
         }
     }

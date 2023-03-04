@@ -112,5 +112,10 @@
 
     <string name="uvindex_more_support_disclaimer_item">Disclaimer</string>
 
+    <string name="uvindex_weather_temperature_celsius" translatable="false">%d°C</string>
+    <string name="uvindex_weather_temperature_fahrenheit" translatable="false">%d°F</string>
+    <string name="uvindex_weather_speed_kph">%.1f kph</string>
+    <string name="uvindex_weather_speed_mps">%.1f m/s</string>
+    <string name="uvindex_weather_speed_mph">%.1f mph</string>
 
 </resources>

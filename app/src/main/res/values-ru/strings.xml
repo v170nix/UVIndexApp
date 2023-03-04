@@ -91,5 +91,9 @@
 
     <string name="uvindex_more_support_disclaimer_item">Отказ от ответственности</string>
 
+    <string name="uvindex_weather_speed_kph">%.1f км/ч</string>
+    <string name="uvindex_weather_speed_mps">%.1f м/с</string>
+    <string name="uvindex_weather_speed_mph">%.1f миль/ч</string>
+
 
 </resources>

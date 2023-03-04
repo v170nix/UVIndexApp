@@ -15,6 +15,7 @@ import uv.index.features.main.ui.transform.UVICurrentDataUseCase
 import uv.index.features.main.ui.transform.UVIForecastUseCase
 import uv.index.features.place.data.room.PlaceDao
 import uv.index.features.place.data.room.PlaceData
+import uv.index.features.weather.data.WeatherApi
 import uv.index.lib.data.*
 import uv.index.lib.domain.UVIndexRemoteUpdateUseCase
 import java.time.LocalDate
@@ -31,7 +32,8 @@ class MainViewModel @Inject constructor(
     private val skinRepository: UVSkinRepository,
     private val uvRemoteUpdateUseCase: UVIndexRemoteUpdateUseCase,
     private val uvCurrentDataUseCase: UVICurrentDataUseCase,
-    private val uvForecastUseCase: UVIForecastUseCase
+    private val uvForecastUseCase: UVIForecastUseCase,
+    private val weatherApi: WeatherApi
 ) : SimpleViewModel<MainContract.Event, MainContract.State, UISideEffect>(
     MainContract.State()
 ) {
@@ -107,6 +109,13 @@ class MainViewModel @Inject constructor(
             }
             .onEach { dta ->
                 launchConflatedPart(dta)
+                val r = weatherApi.get(dta.place.latLng.latitude, dta.place.latLng.longitude).also {
+                    Log.e("data", it.toString())
+                }
+
+                reduceState {
+                    copy(weatherData = r)
+                }
             }
             .flowOn(Dispatchers.Default)
             .launchIn(viewModelScope)
@@ -115,6 +124,11 @@ class MainViewModel @Inject constructor(
             .asFlow
             .onEach(innerStateReducer::remoteUpdateState)
             .launchIn(viewModelScope)
+
+//        viewModelScope.launch {
+
+//        }
+
     }
 
 
@@ -124,7 +138,7 @@ class MainViewModel @Inject constructor(
                 uvRemoteUpdateUseCase.checkAndUpdate(
                     viewModelScope,
                     state.value.place?.toUVIPlaceData(),
-                    null
+                    state.value.uvCurrentSummaryDayData?.hours
                 )
             }
             is MainContract.Event.DoChangeSkin -> {
@@ -142,6 +156,17 @@ class MainViewModel @Inject constructor(
                 }
             }
             MainContract.Event.DoUpdateWithCurrentTime -> updateStateWithCurrentTime()
+            MainContract.Event.DoChangeViewMode -> {
+                reduceState {
+                    copy(
+                        viewMode =
+                        if (viewMode == MainContract.ViewMode.UV)
+                            MainContract.ViewMode.Weather
+                        else
+                            MainContract.ViewMode.UV
+                    )
+                }
+            }
         }
     }
 

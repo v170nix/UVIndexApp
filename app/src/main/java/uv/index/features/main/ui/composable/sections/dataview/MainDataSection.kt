@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import net.arwix.mvi.EventHandler
 import uv.index.R
 import uv.index.features.main.ui.MainContract
 import uv.index.features.main.ui.composable.sections.dataview.components.*
@@ -32,6 +33,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
     scrollBehavior: TopAppBarScrollBehavior,
     placeContent: @Composable (fraction: Float) -> Unit,
     state: MainContract.State,
+    handler: EventHandler<MainContract.Event>
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -64,6 +66,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
+                handler.doEvent(MainContract.Event.DoChangeViewMode)
                 visibleWeatherPart = !visibleWeatherPart
             }) {
                 Icon(Icons.Default.KeyboardArrowUp, "Switch")

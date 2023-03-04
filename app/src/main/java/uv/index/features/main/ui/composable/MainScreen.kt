@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import net.arwix.mvi.EventHandler
 import uv.index.R
 import uv.index.common.LifecycleTimer
 import uv.index.features.astronomy.data.SunPosition
@@ -72,6 +73,7 @@ fun MainScreen(
             DataPart(
                 scrollBehavior = scrollBehavior,
                 state = state,
+                handler = viewModel,
                 onChangePlace = onChangePlace,
                 onRetryClick = {
                     viewModel.doEvent(MainContract.Event.DoDataManualUpdate)
@@ -86,6 +88,7 @@ fun MainScreen(
 private fun BoxWithConstraintsScope.DataPart(
     scrollBehavior: TopAppBarScrollBehavior,
     state: MainContract.State,
+    handler: EventHandler<MainContract.Event>,
     onChangePlace: () -> Unit,
     onRetryClick: () -> Unit
 ) {
@@ -120,7 +123,8 @@ private fun BoxWithConstraintsScope.DataPart(
                             place = state.place
                         )
                     },
-                    state
+                    state,
+                    handler
                 )
 
             }

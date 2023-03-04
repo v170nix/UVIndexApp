@@ -29,13 +29,18 @@ import uv.index.features.astronomy.data.SunPosition
 import uv.index.features.main.common.getUVITitle
 import uv.index.features.main.ui.MainContract
 import uv.index.features.uvi.data.UVLevel
+import uv.index.features.uvi.ui.UVTitle
+import uv.index.features.weather.ui.WeatherBigTemperature
+import uv.index.features.weather.ui.WeatherFeelsLike
+import uv.index.features.weather.ui.WeatherSubTitle
+import uv.index.features.weather.ui.WeatherTitle
 import uv.index.ui.theme.Dimens
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 @Suppress("LongMethod")
 fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
@@ -110,7 +115,7 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
                 placeCollapsedStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
                 titleExpandedStyle = MaterialTheme.typography.displaySmall.copy(color = Color.White),
                 titleCollapsedStyle = MaterialTheme.typography.titleLarge.copy(color = surface),
-                riseSetTextStyle = MaterialTheme.typography.labelLarge.copy(color = inverseSurface),
+                subTitleTextStyle = MaterialTheme.typography.displaySmall.copy(color = Color.White),
                 indexExpandedStyle = MaterialTheme.typography.displayLarge
                     .copy(fontWeight = FontWeight.SemiBold, fontSize = 72.sp)
                     .copy(color = surface),
@@ -118,61 +123,103 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
                 peakHourStyle = MaterialTheme.typography.labelLarge.copy(color = surface),
             ),
             placeContent = placeContent,
-//            {
-//                MainPlacePart(
-//                    modifier = Modifier
-//                        .padding(horizontal = Dimens.grid_1)
-//                        .fillMaxWidth(),
-//                    onEditPlace = onEditPlace,
-//                    place = state.place
-//                )
-//            }
-//            ,
             titleContent = {
                 val style = LocalTextStyle.current
-                TextButton(
-                    colors = ButtonDefaults.textButtonColors(contentColor = LocalContentColor.current),
-                    modifier = Modifier.padding(end = Dimens.grid_1),
-                    contentPadding = PaddingValues(0.dp),
-                    onClick = {
-                        if (currentIndex > 2) onShowIndexInfo()
-                    },
-                    enabled = currentIndex > 2
+                if (state.currentSunData != null) {
 
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(horizontal = Dimens.grid_2),
-                        text = titleString,
-                        style = style
-                    )
+                    AnimatedContent(
+                        modifier = Modifier.padding(end = Dimens.grid_1),
+                        targetState = state.viewMode
+                    ) { viewMode ->
+                        ViewModeSwitcher(
+                            mode = viewMode,
+                            uv = {
+                                UVTitle(
+                                    uvCurrentData = state.uvCurrentData,
+                                    sunPosition = state.currentSunData.position,
+                                    onClick = onShowIndexInfo,
+                                    style = style
+                                )
+                            },
+                            weather = {
+                                WeatherTitle(
+                                    condition = state.weatherData?.realTime?.condition,
+                                    sunPosition = state.currentSunData.position,
+                                )
+                            }
+                        )
+                    }
                 }
-
             },
             indexContent = {
-                IndexParts(
-                    modifier = Modifier.padding(horizontal = Dimens.grid_2),
-                    currentIndex = currentIndex, maxIndex = maxIndex
+                ViewModeSwitcher(
+                    mode = state.viewMode,
+                    uv = {
+                        UVBigIndex(
+                            modifier = Modifier.padding(horizontal = Dimens.grid_2),
+                            currentIndex = currentIndex, maxIndex = maxIndex
+                        )
+                    },
+                    weather = {
+                        WeatherBigTemperature(
+                            modifier = Modifier.padding(horizontal = Dimens.grid_2),
+                            temperature = state.weatherData?.realTime?.temperature
+                        )
+                    }
                 )
             },
             subTitleContent = {
-                IconsInfo(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = Dimens.grid_1,
-                            end = Dimens.grid_1,
-                            top = Dimens.grid_2
-                        ),
-                    currentIndexValue = state.uvCurrentData?.index,
-                    onClick = onShowIndexInfo
-                )
+                Column(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(
+//                            start = Dimens.grid_1,
+//                            end = Dimens.grid_1,
+//                            top = Dimens.grid_2
+//                        )
+                ) {
+                    IconsInfo(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = Dimens.grid_1,
+                                end = Dimens.grid_1,
+                                top = Dimens.grid_2
+                            ),
+                        currentIndexValue = state.uvCurrentData?.index,
+                        onClick = onShowIndexInfo
+                    )
+                    if (state.weatherData != null && state.currentSunData != null) {
+                        WeatherSubTitle(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = Dimens.grid_1,
+                                    end = Dimens.grid_1,
+                                    top = Dimens.grid_2
+                                ),
+                            weatherData = state.weatherData,
+                            sunPosition = state.currentSunData.position
+                        )
+                    }
+                }
             },
             maxTimeContent = {
-                PeakTime(
-                    modifier = Modifier.padding(start = 0.dp, end = Dimens.grid_2),
-                    maxTime = state.peakTime
+                ViewModeSwitcher(
+                    mode = state.viewMode,
+                    uv = {
+                        PeakTime(
+                            modifier = Modifier.padding(start = 0.dp, end = Dimens.grid_2),
+                            maxTime = state.peakTime
+                        )
+                    },
+                    weather = {
+                        WeatherFeelsLike(
+                            temperature = state.weatherData?.realTime?.temperature
+                        )
+                    }
                 )
+
             }
         )
     }
@@ -275,7 +322,7 @@ private fun InfoIconButton(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-private fun IndexParts(
+private fun UVBigIndex(
     modifier: Modifier = Modifier,
     currentIndex: Int,
     maxIndex: Int

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import uv.index.features.main.common.getUVIColor
 import uv.index.features.main.ui.MainContract
 import uv.index.features.place.data.room.PlaceData
+import uv.index.ui.theme.Dimens
 
 
 @Composable
@@ -62,33 +63,33 @@ fun UVForecastHoursPart(
 
     LazyRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.grid_1),
         verticalAlignment = Alignment.CenterVertically,
         state = listState
     ) {
 
         item {
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(Dimens.grid_1))
         }
 
         items(hoursList) { item ->
             when (item) {
                 MainContract.UVHourData.Divider -> Divider(
                     modifier = Modifier
-                        .height(32.dp)
+                        .height(Dimens.grid_4)
                         .width(1.dp),
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 is MainContract.UVHourData.Item -> HourBox(
                     bgColor = getUVIColor(item.iIndex, Color.Transparent),
                     index = item.sIndex,
-                    hour = item.time
+                    hour = item.timeText
                 )
             }
         }
 
         item {
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(Dimens.grid_1))
         }
     }
 }
@@ -109,11 +110,13 @@ private fun HourBox(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp)
+                .widthIn(min = 64.dp)
+                .padding(Dimens.grid_1),
+            contentAlignment = Alignment.Center
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(Dimens.grid_0_5)
             ) {
                 Text(
                     text = index,

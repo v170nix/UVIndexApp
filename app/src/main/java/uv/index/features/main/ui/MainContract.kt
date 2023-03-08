@@ -1,6 +1,5 @@
 package uv.index.features.main.ui
 
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import net.arwix.mvi.UIEvent
 import net.arwix.mvi.UIState
@@ -9,13 +8,14 @@ import uv.index.features.place.data.room.PlaceData
 import uv.index.features.weather.data.Weather
 import uv.index.lib.data.UVSkinType
 import uv.index.lib.data.UVSummaryDayData
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
-@Immutable
+@Stable
 interface MainContract {
 
-    @Immutable
+    @Stable
     data class State constructor(
         val place: PlaceData? = null,
 
@@ -25,6 +25,7 @@ interface MainContract {
 
         val currentDateTime: ZonedDateTime? = null,
         val currentSunData: SunData? = null,
+        val uvCurrentDayHours: List<UVHourData> = listOf(),
 
         val uvCurrentSummaryDayData: UVSummaryDayData? = null,
         val uvCurrentData: UVCurrentData? = null,
@@ -36,27 +37,27 @@ interface MainContract {
         val viewMode: ViewMode = ViewMode.UV
     ) : UIState
 
-    @Immutable
+    @Stable
     data class SunData(
         val position: SunPosition,
         val riseTime: LocalTime?,
         val setTime: LocalTime?,
     )
 
-    @Immutable
+    @Stable
     sealed interface ViewMode {
         object UV: ViewMode
         object Weather: ViewMode
     }
 
-    @Immutable
+    @Stable
     data class UVCurrentData(
         val index: Double?,
         val timeToBurn: TimeToEvent,
         val timeToVitaminD: TimeToEvent,
     )
 
-    @Immutable
+    @Stable
     sealed class Event : UIEvent {
         data class DoChangeSkin(val skin: UVSkinType) : Event()
         object DoDataManualUpdate : Event()
@@ -65,26 +66,27 @@ interface MainContract {
         object DoChangeViewMode: Event()
     }
 
-    @Immutable
+    @Stable
     sealed class TimeToEvent {
 
         object Infinity : TimeToEvent()
 
-        @Immutable
+        @Stable
         data class Value(
             val minTimeInMins: Int,
             val maxTimeInMins: Int?
         ) : TimeToEvent()
     }
 
-    @Immutable
+    @Stable
     sealed class UVHourData {
 
-        @Immutable
+        @Stable
         data class Item(
+            val localDateTime: LocalDateTime,
             val sIndex: String,
             val iIndex: Int,
-            val time: String,
+            val timeText: String,
         ) : UVHourData()
 
         object Divider : UVHourData()

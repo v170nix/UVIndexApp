@@ -71,7 +71,6 @@ class UVIForecastUseCase @Inject constructor(
                 bufferList.second
             }
 
-        val firstTime = currentDateTime.toEpochSecond() - 3600L
         val maxHour = forecastHours.asSequence()
             .take(FORECAST_HOUR_COUNT)
             .maxByOrNull { it.value }
@@ -81,24 +80,51 @@ class UVIForecastUseCase @Inject constructor(
 
         val uvHours = if (!checkHashForHours(place, currentDateTime)) {
             transformListToUIHours(
-                place, firstTime, forecastHours
+                place, currentDateAtStartDay.toEpochSecond(), forecastHours, 48
             ).also {
                 bufferHours = getHashForHours(place, currentDateTime) to it
             }
         } else {
             bufferHours.second
         }
-        return Result(uvHours, maxHour)
+
+        val currentTime = currentDateTime
+            .toLocalDateTime()
+            .minusHours(1L)
+
+        var count = 0
+        val forecastList = uvHours
+            .filter {
+                run {
+                    if (it is MainContract.UVHourData.Item) {
+                        it.localDateTime.isAfter(currentTime)
+                            .also { if (it) count++ }
+                    } else true
+                }.let { it && count < 25 }
+            }
+
+        val dayList = uvHours
+            .asSequence()
+            .filterIsInstance<MainContract.UVHourData.Item>()
+            .take(24)
+            .toList()
+
+        return Result(
+            forecastList = forecastList,
+            currentDayList = dayList,
+            maxTime = maxHour
+        )
     }
 
     private suspend fun transformListToUIHours(
         place: PlaceData,
         firstTime: Long,
         forecastHours: List<UVIndexData>,
+        count: Int = FORECAST_HOUR_COUNT
     ) = forecastHours
         .asSequence()
-        .filter { it.time > firstTime }
-        .take(FORECAST_HOUR_COUNT)
+        .filter { it.time >= firstTime }
+        .take(count)
         .flatMapIndexed { i: Int, data: UVIndexData ->
             sequence {
                 val zdt = Instant
@@ -126,9 +152,10 @@ class UVIForecastUseCase @Inject constructor(
 
                 yield(
                     MainContract.UVHourData.Item(
+                        localDateTime = zdt.toLocalDateTime(),
                         sIndex = index.toString(),
                         iIndex = iIndex,
-                        time = localTime.format(formatter),
+                        timeText = localTime.format(formatter),
                     )
                 )
             }
@@ -136,7 +163,8 @@ class UVIForecastUseCase @Inject constructor(
         .toList()
 
     data class Result(
-        val list: List<MainContract.UVHourData>? = listOf(),
+        val forecastList: List<MainContract.UVHourData>? = listOf(),
+        val currentDayList: List<MainContract.UVHourData>? = listOf(),
         val maxTime: LocalTime? = null
     )
 

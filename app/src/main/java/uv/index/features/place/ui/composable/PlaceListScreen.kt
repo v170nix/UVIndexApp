@@ -103,7 +103,7 @@ fun PlaceListScreen(
                         top = dimens.grid_1,
                         start = dimens.grid_2,
                         end = dimens.grid_2,
-                        bottom = paddingValues.calculateBottomPadding() + dimens.grid_1
+                        bottom = paddingValues.calculateBottomPadding() + dimens.grid_2
                     )
                 }
             }

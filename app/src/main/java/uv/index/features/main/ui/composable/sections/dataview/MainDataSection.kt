@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,7 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import net.arwix.mvi.EventHandler
 import uv.index.R
@@ -36,10 +36,6 @@ internal fun BoxWithConstraintsScope.MainDataSection(
     handler: EventHandler<MainContract.Event>
 ) {
     val lazyListState = rememberLazyListState()
-
-    var visibleWeatherPart by remember {
-        mutableStateOf(false)
-    }
 
     val infoState = remember {
         MainInfoState(MainInfoData(""))
@@ -65,11 +61,12 @@ internal fun BoxWithConstraintsScope.MainDataSection(
             AppNavigationBar()
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                handler.doEvent(MainContract.Event.DoChangeViewMode)
-                visibleWeatherPart = !visibleWeatherPart
-            }) {
-                Icon(Icons.Default.KeyboardArrowUp, "Switch")
+            FloatingActionButton(
+                modifier = Modifier.defaultMinSize(64.dp),
+                onClick = {
+                    handler.doEvent(MainContract.Event.DoChangeViewMode)
+                }) {
+                Icon(imageVector = ImageVector.vectorResource(id = R.drawable.ic_change_mode), "Switch")
             }
         }
     ) {
@@ -94,7 +91,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                     state = scrollBehavior.state
                 )
 
-                if (!visibleWeatherPart) {
+                if (state.viewMode == MainContract.ViewMode.UV) {
 
                     item(key = 1) {
                         MainTimeToEventPart(
@@ -108,57 +105,50 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                         )
                     }
 
-                    item(key = 2) {
-                        UVSunscreenReminder(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = Dimens.grid_2)
-                                .padding(top = Dimens.grid_2),
-                        )
-                    }
+//                    item(key = 2) {
+//                        UVSunscreenReminder(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(horizontal = Dimens.grid_2)
+//                                .padding(top = Dimens.grid_2),
+//                        )
+////                        Spacer(modifier = Modifier.height(200.dp))
+//                    }
 
                     item(key = 3) {
-                        MainProtectionPart(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = Dimens.grid_1_5),
-                            uvSummaryDayData = state.uvCurrentSummaryDayData
-                        )
-                    }
+                        if (state.currentDateTime != null) {
+                            Column {
+                                MainProtectionPart(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(
+                                            top = Dimens.grid_5_5,
+                                            start = Dimens.grid_2,
+                                            end = Dimens.grid_2,
+                                            bottom = 0.dp
+                                        ),
+                                    uvSummaryDayData = state.uvCurrentSummaryDayData,
+                                    currentDayHours = state.uvCurrentDayHours,
+                                    currentZdt = state.currentDateTime,
+                                    titleStyle = MaterialTheme.typography.titleSmall.copy(
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                    ),
+                                    textStyle = MaterialTheme.typography.bodyLarge
+                                )
+                                MainSunRiseSetPart(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp, vertical = 0.dp),
+                                    riseTime = state.currentSunData?.riseTime,
+                                    setTime = state.currentSunData?.setTime,
+                                    titleStyle = MaterialTheme.typography.titleSmall.copy(
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                    ),
+                                    textStyle = MaterialTheme.typography.bodyLarge
 
-                    item(key = 4) {
-                        Column(
-                            modifier = Modifier,
-                            horizontalAlignment = Alignment.CenterHorizontally
-
-                        ) {
-                            Divider(
-                                modifier = Modifier
-                                    .padding(
-                                        horizontal = Dimens.grid_2,
-                                        vertical = Dimens.grid_1_5
-                                    )
-                                    .fillMaxWidth()
-                            )
-                            Text(
-                                text = stringResource(id = R.string.uvindex_local_time_text),
-                                style = MaterialTheme.typography.labelLarge,
-                            )
-                            MainCurrentTimePart(
-                                modifier = Modifier,
-                                currentZdt = state.currentDateTime
-                            )
+                                )
+                            }
                         }
-                    }
-
-                    item(key = 5) {
-                        MainSunRiseSetPart(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 0.dp),
-                            riseTime = state.currentSunData?.riseTime,
-                            setTime = state.currentSunData?.setTime
-                        )
                     }
 
                     item(key = 6) {
@@ -168,6 +158,7 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                                 .padding(top = 0.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            Spacer(modifier = Modifier.height(Dimens.grid_2_5))
                             Divider(
                                 modifier = Modifier
                                     .padding(
@@ -176,12 +167,29 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                                     )
                                     .fillMaxWidth()
                             )
-                            Text(
-                                text = stringResource(id = R.string.uvindex_forecast_title),
-                                style = MaterialTheme.typography.labelLarge
-                            )
+                            Spacer(modifier = Modifier.height(Dimens.grid_2_5))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = Dimens.grid_2),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+//                                Icon(
+//                                    ImageVector.vectorResource(id = R.drawable.ic_forecast),
+//                                    contentDescription = null
+//                                )
+                                Text(
+                                    text = stringResource(id = R.string.uvindex_forecast_title),
+                                    style = MaterialTheme.typography.titleLarge
+//                                        .copy(
+//                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+//                                        )
+                                )
+//                                Spacer(modifier = Modifier.width(48.dp))
+                            }
 
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(Dimens.grid_2))
                             UVForecastHoursPart(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -199,8 +207,14 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
                                 .padding(top = 16.dp),
-                            data = state.uvForecastDays
+                            data = state.uvForecastDays,
+                            titleStyle = MaterialTheme.typography.titleSmall,
+                            textStyle = MaterialTheme.typography.bodyLarge
+                                .copy(
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                )
                         )
+                        Spacer(modifier = Modifier.height(96.dp))
                     }
 
                 } else {

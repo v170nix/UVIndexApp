@@ -42,6 +42,7 @@ fun PlaceWizardBottomBarComponent(
             Button(
                 modifier = Modifier
                     .weight(1f)
+                    .heightIn(48.dp)
                     .semantics { role = Role.Button },
                 content = {
                     Text(
@@ -58,7 +59,7 @@ fun PlaceWizardBottomBarComponent(
                 )
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(Dimens.grid_2))
 
             if (isShowNextStep) {
 
@@ -70,6 +71,7 @@ fun PlaceWizardBottomBarComponent(
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .heightIn(48.dp)
                             .semantics { role = Role.Button },
                         content = {
                             Text(

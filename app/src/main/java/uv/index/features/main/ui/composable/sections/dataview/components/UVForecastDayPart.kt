@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,12 +15,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.features.main.common.getUVIColor
 import uv.index.features.main.common.rememberPeriod
 import uv.index.lib.data.UVSummaryDayData
+import uv.index.ui.theme.Dimens
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -27,7 +30,9 @@ import java.time.format.FormatStyle
 @Composable
 internal fun UVForecastDayPart(
     modifier: Modifier = Modifier,
-    data: List<UVSummaryDayData>?
+    data: List<UVSummaryDayData>?,
+    titleStyle: TextStyle = LocalTextStyle.current,
+    textStyle: TextStyle = LocalTextStyle.current
 ) {
 
     Column(
@@ -35,7 +40,11 @@ internal fun UVForecastDayPart(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AnimatedContent(targetState = data) { currentData ->
-            if (currentData != null) ForecastItemsPart(currentData)
+            if (currentData != null) ForecastItemsPart(
+                titleStyle,
+                textStyle,
+                currentData
+            )
         }
         Spacer(modifier = Modifier.height(8.dp))
     }
@@ -43,10 +52,14 @@ internal fun UVForecastDayPart(
 }
 
 @Composable
-private fun ForecastItemsPart(list: List<UVSummaryDayData>) {
+private fun ForecastItemsPart(
+    titleStyle: TextStyle,
+    textStyle: TextStyle,
+    list: List<UVSummaryDayData>,
+) {
     Column {
         list.forEachIndexed { index, item ->
-            ForecastContentItem(item)
+            ForecastContentItem(titleStyle, textStyle, item)
             if (index < list.size - 1) {
                 Spacer(Modifier.height(16.dp))
             }
@@ -56,6 +69,8 @@ private fun ForecastItemsPart(list: List<UVSummaryDayData>) {
 
 @Composable
 private fun ForecastContentItem(
+    titleStyle: TextStyle,
+    textStyle: TextStyle,
     item: UVSummaryDayData
 ) {
     val dayText by remember(item.day) {
@@ -72,7 +87,7 @@ private fun ForecastContentItem(
         Text(
             modifier = Modifier,
             text = dayText,
-            style = MaterialTheme.typography.titleMedium,
+            style = titleStyle,
             textAlign = TextAlign.Center
         )
 
@@ -89,6 +104,7 @@ private fun ForecastContentItem(
                     Text(
                         modifier = Modifier.weight(1f),
                         text = stringResource(id =  R.string.uvindex_forecast_item_protection_not_required),
+                        style = textStyle
                     )
                 }
                 else -> {
@@ -98,22 +114,29 @@ private fun ForecastContentItem(
                             id = R.string.uvindex_forecast_item_protection_required,
                             it.first, it.second
                         ),
+                        style = textStyle
                     )
                 }
             }
 
-            Text(
+            Box(
                 modifier = Modifier
+                    .widthIn(min = 64.dp)
                     .background(
                         color = getUVIColor(index = item.maxIndex.getIntIndex(), Color.White),
                         shape = MaterialTheme.shapes.small
-                    )
-                    .widthIn(min = 64.dp)
-                    .padding(8.dp),
-                text = item.maxIndex.getIntIndex().toString(),
-                textAlign = TextAlign.Center,
-                color = Color.White
-            )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    modifier = Modifier.padding(Dimens.grid_1),
+                    text = item.maxIndex.getIntIndex().toString(),
+                    textAlign = TextAlign.Center,
+                    color = Color.White
+                )
+            }
+
+
         }
     }
 

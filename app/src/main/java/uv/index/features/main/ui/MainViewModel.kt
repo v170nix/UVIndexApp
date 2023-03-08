@@ -205,9 +205,10 @@ class MainViewModel @Inject constructor(
                 )
                     .also {
                         innerStateReducer.setUVForecastHours(
-                            it.list ?: listOf()
+                            it.forecastList ?: listOf()
                         )
                         innerStateReducer.setUVPeakTime(it.maxTime)
+                        innerStateReducer.setUVCurrentHours(it.currentDayList ?: listOf())
                     }
             }
             .launchIn(viewModelScope)
@@ -304,6 +305,10 @@ class MainViewModel @Inject constructor(
 
         fun setUVForecastHours(forecastHours: List<MainContract.UVHourData>) {
             reduceState { copy(uvForecastHours = forecastHours) }
+        }
+
+        fun setUVCurrentHours(currentHours: List<MainContract.UVHourData>) {
+            reduceState { copy(uvCurrentDayHours = currentHours) }
         }
 
 

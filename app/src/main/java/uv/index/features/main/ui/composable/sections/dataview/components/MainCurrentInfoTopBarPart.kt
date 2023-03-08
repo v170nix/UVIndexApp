@@ -25,8 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import uv.index.R
-import uv.index.features.astronomy.data.SunPosition
-import uv.index.features.main.common.getUVITitle
 import uv.index.features.main.ui.MainContract
 import uv.index.features.uvi.data.UVLevel
 import uv.index.features.uvi.ui.UVTitle
@@ -71,19 +69,6 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
     }
 
     val context = LocalContext.current
-
-    @Suppress("NAME_SHADOWING")
-    val titleString by remember(
-        state.uvCurrentData?.index,
-        state.currentSunData?.position,
-        context
-    ) {
-        derivedStateOf {
-            val currentIndex = state.uvCurrentData?.index?.roundToInt() ?: Int.MIN_VALUE
-            val array = context.resources.getStringArray(R.array.uvindex_status_info)
-            getUVITitle(currentIndex, state.currentSunData?.position ?: SunPosition.Above, array)
-        }
-    }
 
     TopAppBar(
         modifier = modifier

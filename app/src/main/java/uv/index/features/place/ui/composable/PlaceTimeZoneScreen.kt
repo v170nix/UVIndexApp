@@ -105,7 +105,7 @@ fun PlaceTimeZoneScreen(
                         top = 0.dp,
                         start = 0.dp,
                         end = 0.dp,
-                        bottom = paddingValues.calculateBottomPadding() + dimens.grid_1
+                        bottom = paddingValues.calculateBottomPadding() + dimens.grid_2
                     )
                 }
             }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -15,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import uv.index.R
@@ -30,7 +30,9 @@ private val formatter by lazy {
 internal fun MainSunRiseSetPart(
     modifier: Modifier = Modifier,
     riseTime: LocalTime?,
-    setTime: LocalTime?
+    setTime: LocalTime?,
+    titleStyle: TextStyle,
+    textStyle: TextStyle
 ) {
     val riseString by remember(riseTime) {
         derivedStateOf {
@@ -52,7 +54,7 @@ internal fun MainSunRiseSetPart(
         ) {
             Text(
                 text = stringResource(id = R.string.uvindex_sunrise_text),
-                style = MaterialTheme.typography.labelLarge,
+                style = titleStyle,
             )
 
             Row(
@@ -69,7 +71,7 @@ internal fun MainSunRiseSetPart(
                 Text(
                     text = riseString,
                     textAlign = TextAlign.Start,
-                    style = MaterialTheme.typography.titleMedium
+                    style = textStyle
                 )
             }
         }
@@ -78,7 +80,7 @@ internal fun MainSunRiseSetPart(
         ) {
             Text(
                 text = stringResource(id = R.string.uvindex_sunset_text),
-                style = MaterialTheme.typography.labelLarge,
+                style = titleStyle,
             )
             Row(
                 verticalAlignment = Alignment.Bottom,
@@ -87,7 +89,7 @@ internal fun MainSunRiseSetPart(
                 Text(
                     text = setString,
                     textAlign = TextAlign.End,
-                    style = MaterialTheme.typography.titleMedium
+                    style = textStyle
                 )
                 Icon(
                     modifier = Modifier.size(32.dp),

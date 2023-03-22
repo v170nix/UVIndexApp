@@ -12,9 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import uv.index.features.main.common.getUVIColor
 import uv.index.features.main.ui.MainContract
 import uv.index.features.place.data.room.PlaceData
+import uv.index.features.uvi.ui.getUVIColor
 import uv.index.ui.theme.Dimens
 
 

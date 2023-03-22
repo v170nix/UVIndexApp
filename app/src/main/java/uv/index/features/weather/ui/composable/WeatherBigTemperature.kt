@@ -1,4 +1,4 @@
-package uv.index.features.weather.ui
+package uv.index.features.weather.ui.composable
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text

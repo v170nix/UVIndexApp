@@ -16,12 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import net.arwix.mvi.EventHandler
 import uv.index.R
 import uv.index.features.main.ui.MainContract
 import uv.index.features.main.ui.composable.sections.dataview.components.*
-import uv.index.features.weather.ui.weatherPart
+import uv.index.features.weather.ui.composable.weatherPart
 import uv.index.navigation.AppNavigationBar
 import uv.index.ui.theme.Dimens
 
@@ -66,7 +67,10 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                 onClick = {
                     handler.doEvent(MainContract.Event.DoChangeViewMode)
                 }) {
-                Icon(imageVector = ImageVector.vectorResource(id = R.drawable.ic_change_mode), "Switch")
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_change_mode),
+                    "Switch"
+                )
             }
         }
     ) {
@@ -173,18 +177,17 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                                     .fillMaxWidth()
                                     .padding(horizontal = Dimens.grid_2),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
+//                                horizontalArrangement = Arrangement.Center
                             ) {
 //                                Icon(
 //                                    ImageVector.vectorResource(id = R.drawable.ic_forecast),
 //                                    contentDescription = null
 //                                )
                                 Text(
-                                    text = stringResource(id = R.string.uvindex_forecast_title),
-                                    style = MaterialTheme.typography.titleLarge
-//                                        .copy(
-//                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-//                                        )
+                                    text = stringResource(id = R.string.uvindex_forecast_hour_title).uppercase(),
+                                    style = MaterialTheme.typography.labelLarge.copy(
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                    )
                                 )
 //                                Spacer(modifier = Modifier.width(48.dp))
                             }
@@ -202,11 +205,34 @@ internal fun BoxWithConstraintsScope.MainDataSection(
 
                     item(key = 7) {
 
+                        Spacer(modifier = Modifier.height(Dimens.grid_2_5))
+                        Divider(
+                            modifier = Modifier
+                                .padding(
+                                    horizontal = Dimens.grid_2,
+                                    vertical = Dimens.grid_1_5
+                                )
+                                .fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(Dimens.grid_2_5))
+
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = Dimens.grid_2),
+                            text = stringResource(id = R.string.uvindex_forecast_day_title).uppercase(),
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            ),
+                            textAlign = TextAlign.Start
+                        )
+
+                        Spacer(modifier = Modifier.height(Dimens.grid_1))
+
                         UVForecastDayPart(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(top = 16.dp),
+                                .padding(horizontal = 16.dp),
                             data = state.uvForecastDays,
                             titleStyle = MaterialTheme.typography.titleSmall,
                             textStyle = MaterialTheme.typography.bodyLarge
@@ -218,7 +244,12 @@ internal fun BoxWithConstraintsScope.MainDataSection(
                     }
 
                 } else {
-                    weatherPart()
+                    if (state.place?.zone != null) {
+                        weatherPart(
+                            zoneId = state.place.zone,
+                            data = state.weatherData
+                        )
+                    }
                 }
             }
 

@@ -218,10 +218,8 @@ class WeatherApi(
             heatIndex = heatIndex,
             dewPoint = dewPoint,
             willItRain = willItRain,
-            chanceOfRain = chanceOfRain,
-            willItSnow = willItSnow,
-            chanceOfSnow = chanceOfSnow
-
+            chanceOf = Weather.ChanceOf(chanceOfRain, chanceOfSnow),
+            willItSnow = willItSnow
         )
     }
 

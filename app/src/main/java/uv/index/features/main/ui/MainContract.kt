@@ -34,7 +34,7 @@ interface MainContract {
         @Stable val weatherData: Weather.Data? = null,
         val skinType: UVSkinType? = null,
         val peakTime: LocalTime? = null,
-        val viewMode: ViewMode = ViewMode.UV
+        val viewMode: ViewMode = ViewMode.Weather
     ) : UIState
 
     @Stable

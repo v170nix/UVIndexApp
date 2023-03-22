@@ -1,10 +1,15 @@
-package uv.index.features.weather.domain
+package uv.index.features.weather.ui
 
 import androidx.annotation.DrawableRes
 import androidx.collection.SparseArrayCompat
 import androidx.collection.getOrDefault
 import androidx.collection.getOrElse
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import uv.index.R
+import uv.index.features.astronomy.data.SunPosition
 import uv.index.features.weather.data.Weather
 
 @DrawableRes
@@ -197,4 +202,20 @@ private val conditionNamesDayRu by lazy {
     SparseArrayCompat<String>().apply {
         put(1000, "Солнечно")
     }
+}
+
+@Composable
+@DrawableRes
+fun rememberConditionIcon(
+    condition: Weather.Condition, sunPosition: SunPosition
+): Int? {
+
+    val weatherId by remember(
+        condition, sunPosition
+    ) {
+        derivedStateOf {
+            condition.getIconId(sunPosition == SunPosition.Above)
+        }
+    }
+    return weatherId
 }

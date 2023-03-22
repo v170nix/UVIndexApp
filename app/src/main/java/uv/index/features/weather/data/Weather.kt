@@ -48,6 +48,11 @@ interface Weather {
         }
     }
 
+    data class ChanceOf(
+        val rain: Int?,
+        val snow: Int?,
+    )
+
     data class Data(
         val latitude: Double,
         val longitude: Double,
@@ -114,9 +119,8 @@ interface Weather {
         val heatIndex: Double? = null,
         val dewPoint: Double? = null,
         val willItRain: Int? = null,
-        val chanceOfRain: Int? = null,
+        val chanceOf: ChanceOf,
         val willItSnow: Int? = null,
-        val chanceOfSnow: Int? = null
     )
 
 }

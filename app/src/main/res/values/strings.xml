@@ -57,6 +57,8 @@
     <string name="uvindex_notification_sunscreen_reminder_channel_name">Sunscreen reminder</string>
 
     <string name="uvindex_forecast_title">Forecast</string>
+    <string name="uvindex_forecast_hour_title">Hourly forecast</string>
+    <string name="uvindex_forecast_day_title">3-day forecast</string>
     <string name="uvindex_forecast_title_recommendation">Recommendation</string>
     <string name="uvindex_forecast_title_max_index">Max index</string>
     <string name="uvindex_forecast_item_protection_not_required">Sun protection not required</string>
@@ -114,8 +116,43 @@
 
     <string name="uvindex_weather_temperature_celsius" translatable="false">%d°C</string>
     <string name="uvindex_weather_temperature_fahrenheit" translatable="false">%d°F</string>
-    <string name="uvindex_weather_speed_kph">%.1f kph</string>
-    <string name="uvindex_weather_speed_mps">%.1f m/s</string>
-    <string name="uvindex_weather_speed_mph">%.1f mph</string>
+    <string name="uvindex_weather_speed_kph">%dkph</string>
+    <string name="uvindex_weather_speed_mps">%.1fm/s</string>
+    <string name="uvindex_weather_speed_mph">%dmph</string>
+    <string name="uvindex_weather_aqi_title">Air quality</string>
+    <string-array name="uvindex_weather_aqi_index_text">
+        <item>Good</item>
+        <item>Moderate</item>
+        <item>Unhealthy for sensitive groups</item>
+        <item>Unhealthy</item>
+        <item>Very unhealthy</item>
+        <item>Hazardous</item>
+    </string-array>
+    <string-array name="uvindex_weather_aqi_description">
+        <item>Air quality is satisfactory, and air pollution poses little or no risk</item>
+        <item>Air quality is acceptable. However, there may be a risk for some people, particularly those who are unusually sensitive to air pollution</item>
+        <item>Members of sensitive groups may experience health effects. The general public is less likely to be affected</item>
+        <item>Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects</item>
+        <item>Health alert: The risk of health effects is increased for everyone</item>
+        <item>Health warning of emergency conditions: everyone is more likely to be affected</item>
+    </string-array>
+    <string-array name="weather_wind_bofort_title">
+        <item>Calm</item>
+        <item>Light air</item>
+        <item>Light breeze</item>
+        <item>Gentle breeze</item>
+        <item>Moderate breeze</item>
+        <item>Fresh breeze</item>
+        <item>Strong breeze</item>
+        <item>Moderate gale</item>
+        <item>Fresh gale</item>
+        <item>Strong gale</item>
+        <item>Whole gale</item>
+        <item>Storm</item>
+        <item>Hurricane</item>
+    </string-array>
+
+    <string name="weather_hourly_forecast">Hourly forecast</string>
+    <string name="weather_wind_title">Wind</string>
 
 </resources>

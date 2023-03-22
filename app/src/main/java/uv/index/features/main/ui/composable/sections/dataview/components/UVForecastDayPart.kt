@@ -19,8 +19,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import uv.index.R
-import uv.index.features.main.common.getUVIColor
-import uv.index.features.main.common.rememberPeriod
+import uv.index.features.uvi.ui.getUVIColor
+import uv.index.features.uvi.ui.rememberPeriod
 import uv.index.lib.data.UVSummaryDayData
 import uv.index.ui.theme.Dimens
 import java.time.format.DateTimeFormatter

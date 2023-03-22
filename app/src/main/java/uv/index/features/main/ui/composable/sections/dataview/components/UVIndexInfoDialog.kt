@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.features.astronomy.data.SunPosition
-import uv.index.features.main.common.getUVITitle
+import uv.index.features.uvi.ui.getUVITitle
 
 @Composable
 @Suppress("MagicNumber")

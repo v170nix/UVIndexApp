@@ -2,6 +2,7 @@ package uv.index.features.preferences.ui
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +35,7 @@ class WeatherDisplayViewModel @Inject constructor(
 }
 
 @Composable
+@Stable
 fun rememberWeatherDisplayMode(): WeatherDisplayMode {
     val model = hiltViewModel<WeatherDisplayViewModel>(LocalContext.current as ComponentActivity)
     val mode by model.state.collectAsState()

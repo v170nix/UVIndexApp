@@ -26,16 +26,18 @@ class UVIForecastUseCase @Inject constructor(
     @Volatile
     private var bufferHours: Pair<Int, List<MainContract.UVHourData>> = 0 to listOf()
 
+    //TODO check buffer
     private fun getHashForList(
         place: PlaceData,
         currentDateAtStartDay: ZonedDateTime,
     ) = place.latLng.hashCode() + currentDateAtStartDay.hashCode()
 
 
+    //TODO check buffer
     private fun checkHashForList(
         place: PlaceData,
         currentDateAtStartDay: ZonedDateTime
-    ) = getHashForList(place, currentDateAtStartDay) == bufferList.first
+    ) = false // getHashForList(place, currentDateAtStartDay) == bufferList.first
 
     private fun getHashForHours(
         place: PlaceData,
@@ -48,10 +50,11 @@ class UVIForecastUseCase @Inject constructor(
             currentDateTime.offset.hashCode() xor
             Integer.rotateLeft(currentDateTime.zone.hashCode(), 3))
 
+    //TODO check buffer
     private fun checkHashForHours(
         place: PlaceData,
         currentDateTime: ZonedDateTime
-    ) = getHashForHours(place, currentDateTime) == bufferHours.first
+    )= false // = getHashForHours(place, currentDateTime) == bufferHours.first
 
     suspend fun getHours(
         place: PlaceData,

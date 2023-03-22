@@ -91,9 +91,45 @@
 
     <string name="uvindex_more_support_disclaimer_item">Отказ от ответственности</string>
 
-    <string name="uvindex_weather_speed_kph">%.1f км/ч</string>
-    <string name="uvindex_weather_speed_mps">%.1f м/с</string>
-    <string name="uvindex_weather_speed_mph">%.1f миль/ч</string>
+    <string name="uvindex_weather_speed_kph">%dкм/ч</string>
+    <string name="uvindex_weather_speed_mps">%.1fм/с</string>
+    <string name="uvindex_weather_speed_mph">%dмиль/ч</string>
 
+    <string name="uvindex_weather_aqi_title">Качество воздуха</string>
+    <string-array name="uvindex_weather_aqi_index_text">
+        <item>Хорошее</item>
+        <item>Среднее</item>
+        <item>Плохое для чувствительных групп</item>
+        <item>Плохое</item>
+        <item>Очень плохое</item>
+        <item>Опасное</item>
+    </string-array>
+
+    <string-array name="uvindex_weather_aqi_description">
+        <item>Качество воздуха хорошее, загрязнение воздуха представляет незначительный или нулевой риск</item>
+        <item>Качество воздуха приемлемое. Однако для некоторых людей, особенно тех, кто особенно восприимчив к загрязнению воздуха, может возникнуть опасность</item>
+        <item>Лица относящиеся к уязвимым группам, могут столкнуться с последствиями для здоровья. Вероятность влияния на население в целом ниже</item>
+        <item>Часть населения может ощутить негативное влияние на здоровье; члены уязвимых групп могут испытывать более тяжелые проблемы со здоровьем</item>
+        <item>Предупреждение о вреде для здоровья: риск последствий для здоровья повышен для всех  групп населения</item>
+        <item>Предупреждение здравоохранения о чрезвычайных условиях: вероятность воздействия на здоровье высока для всех групп населения</item>
+    </string-array>
+    <string-array name="weather_wind_bofort_title">
+        <item>Штиль</item>
+        <item>Тихий</item>
+        <item>Лёгкий</item>
+        <item>Слабый</item>
+        <item>Умеренный</item>
+        <item>Свежий</item>
+        <item>Сильный</item>
+        <item>Крепкий</item>
+        <item>Очень крепкий</item>
+        <item>Шторм</item>
+        <item>Сильный шторм</item>
+        <item>Жестокий шторм</item>
+        <item>Ураган</item>
+    </string-array>
+
+    <string name="weather_hourly_forecast">Почасовой прогноз</string>
+    <string name="weather_wind_title">Ветер</string>
 
 </resources>

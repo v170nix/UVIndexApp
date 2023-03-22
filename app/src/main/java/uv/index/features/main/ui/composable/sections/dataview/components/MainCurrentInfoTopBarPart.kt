@@ -28,10 +28,10 @@ import uv.index.R
 import uv.index.features.main.ui.MainContract
 import uv.index.features.uvi.data.UVLevel
 import uv.index.features.uvi.ui.UVTitle
-import uv.index.features.weather.ui.WeatherBigTemperature
-import uv.index.features.weather.ui.WeatherFeelsLike
-import uv.index.features.weather.ui.WeatherSubTitle
-import uv.index.features.weather.ui.WeatherTitle
+import uv.index.features.weather.ui.composable.WeatherBigTemperature
+import uv.index.features.weather.ui.composable.WeatherFeelsLike
+import uv.index.features.weather.ui.composable.WeatherSubTitle
+import uv.index.features.weather.ui.composable.WeatherTitle
 import uv.index.ui.theme.Dimens
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter

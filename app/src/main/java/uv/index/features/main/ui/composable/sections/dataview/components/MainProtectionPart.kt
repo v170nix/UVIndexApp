@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.common.AutoSizeText
-import uv.index.features.main.common.rememberPeriod
 import uv.index.features.main.ui.MainContract
 import uv.index.features.uvi.data.UVLevel
+import uv.index.features.uvi.ui.rememberPeriod
 import uv.index.lib.data.UVSummaryDayData
 import uv.index.ui.theme.Dimens
 import uv.index.ui.theme.UVITheme

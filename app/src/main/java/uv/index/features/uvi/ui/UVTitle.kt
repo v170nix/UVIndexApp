@@ -13,7 +13,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.features.astronomy.data.SunPosition
-import uv.index.features.main.common.getUVITitle
 import uv.index.features.main.ui.MainContract
 import uv.index.ui.theme.Dimens
 import kotlin.math.roundToInt

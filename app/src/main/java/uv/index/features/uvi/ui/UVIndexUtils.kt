@@ -1,4 +1,4 @@
-package uv.index.features.main.common
+package uv.index.features.uvi.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import uv.index.features.weather.data.Celsius
 import uv.index.features.weather.data.SpeedKph
 import uv.index.features.weather.data.Weather
+import kotlin.math.roundToInt
 
 @Stable
 data class WeatherDisplayMode(
@@ -40,11 +41,11 @@ fun WeatherDisplayMode.Pressure.getValue(pressure: Weather.Pressure): Double {
     }
 }
 
-fun WeatherDisplayMode.Wind.getValue(kph: SpeedKph): Double {
+fun WeatherDisplayMode.Wind.getValue(kph: SpeedKph): Number {
     return when (this) {
-        WeatherDisplayMode.Wind.KilometerPerHour -> kph.value
-        WeatherDisplayMode.Wind.MilePerHour -> kph.value / 1.609
-        WeatherDisplayMode.Wind.MeterPerSeconds -> kph.value / 3.6
+        WeatherDisplayMode.Wind.KilometerPerHour -> (kph.value).roundToInt()
+        WeatherDisplayMode.Wind.MilePerHour -> (kph.value / 1.609).roundToInt()
+        WeatherDisplayMode.Wind.MeterPerSeconds -> (kph.value / 3.6)
     }
 }
 

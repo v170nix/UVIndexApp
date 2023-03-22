@@ -24,12 +24,12 @@ import net.arwix.mvi.EventHandler
 import uv.index.R
 import uv.index.common.LifecycleTimer
 import uv.index.features.astronomy.data.SunPosition
-import uv.index.features.main.common.getUVIColor
 import uv.index.features.main.ui.MainContract
 import uv.index.features.main.ui.MainViewModel
 import uv.index.features.main.ui.composable.sections.dataview.MainDataSection
 import uv.index.features.main.ui.composable.sections.dataview.components.MainPlacePart
 import uv.index.features.main.ui.composable.sections.emptyplace.EmptyPlacePart
+import uv.index.features.uvi.ui.getUVIColor
 import uv.index.ui.theme.Dimens
 import kotlin.math.roundToInt
 

@@ -1,4 +1,4 @@
-package uv.index.features.weather.ui
+package uv.index.features.weather.ui.composable
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -11,7 +11,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import uv.index.features.astronomy.data.SunPosition
 import uv.index.features.weather.data.Weather
-import uv.index.features.weather.domain.getName
+import uv.index.features.weather.ui.getName
 import uv.index.ui.theme.Dimens
 
 @Composable

@@ -1,7 +1,6 @@
 package uv.index.features.weather.ui.composable
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
@@ -32,7 +31,7 @@ fun WeatherHours(
 
 
 @Composable
-internal fun LazyItemScope.HourTextPart(
+internal fun HourTextPart(
     hour: LocalTime,
     formatter: DateTimeFormatter
 ) {

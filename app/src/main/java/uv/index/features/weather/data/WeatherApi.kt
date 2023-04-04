@@ -61,7 +61,7 @@ class WeatherApi(
             humidity = current.humidity?.let(Weather::Humidity) ?: Weather.Humidity.Unspecified,
             cloud = current.cloud?.let(Weather::Cloud) ?: Weather.Cloud.Unspecified,
             uv = current.uv,
-            visible = current.visible?.toDouble()?.let(Weather::RangeOfVisibility)
+            visible = current.visible?.let(Weather::RangeOfVisibility)
                 ?: Weather.RangeOfVisibility.Unspecified,
             airQuality = current.air?.createAirQuality()
         )
@@ -172,6 +172,7 @@ class WeatherApi(
     @Serializable
     data class Hour(
         @SerializedName("time") val time: Long,
+        @SerializedName("isDay") val isDay: Boolean,
         @SerializedName("conditionCode") val conditionCode: Int,
         @SerializedName("temperature") val temperature: Double,
         @SerializedName("windSpeed") val windSpeed: Double,
@@ -196,6 +197,7 @@ class WeatherApi(
     private fun Hour.toWeatherHour(dateAsStartDay: LocalDate, hour: Long): Weather.Hour {
         return Weather.Hour(
             time = dateAsStartDay.atStartOfDay().plusHours(hour).toLocalTime(),
+            isDay = isDay,
             temperature = Weather.Temperature(
                 value = temperature.celsius,
                 fellsLike?.celsius ?: Celsius.Unspecified

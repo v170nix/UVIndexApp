@@ -131,5 +131,34 @@
 
     <string name="weather_hourly_forecast">Почасовой прогноз</string>
     <string name="weather_wind_title">Ветер</string>
+    <string name="weather_wind_speed_title">Скорость: %s</string>
+    <string name="weather_wind_gusts_title">Порывы: %s</string>
+
+    <string-array name="weather_wind_beaufort_scale_text">
+        <item>Штиль</item>
+        <item>Тихий</item>
+        <item>Лёгкий</item>
+        <item>Слабый</item>
+        <item>Умеренный</item>
+        <item>Свежий</item>
+        <item>Сильный</item>
+        <item>Крепкий</item>
+        <item>Очень крепкий</item>
+        <item>Шторм</item>
+        <item>Сильный шторм</item>
+        <item>Жестокий шторм</item>
+        <item>Ураган</item>
+    </string-array>
+
+    <string-array name="weather_azimuth_text">
+        <item>Северный</item>
+        <item>Северо-восточный</item>
+        <item>Восточный</item>
+        <item>Юго-восточный</item>
+        <item>Южный</item>
+        <item>Юго-западный</item>
+        <item>Западный</item>
+        <item>Северо-западный</item>
+    </string-array>
 
 </resources>

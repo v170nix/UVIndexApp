@@ -1,6 +1,7 @@
 package uv.index.features.weather.ui.composable
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -9,32 +10,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.features.preferences.ui.rememberWeatherDisplayMode
 import uv.index.features.weather.data.Weather
+import uv.index.features.weather.ui.rememberBeaufortText
+import uv.index.features.weather.ui.rememberPointOfCompassText
 import uv.index.features.weather.ui.rememberWindText
 import uv.index.ui.theme.Dimens
 
 @Composable
-fun WeatherWindCurrent(
+fun LazyItemScope.WeatherWindCurrent(
     modifier: Modifier,
     wind: Weather.Wind,
 ) {
 
     val displayMode = rememberWeatherDisplayMode()
 
-    Row(
+    Column(
         modifier = modifier,
-        verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(Dimens.grid_1)
     ) {
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Row(
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(Dimens.grid_2)
         ) {
+
             Icon(
                 modifier = Modifier
                     .rotate(180f + wind.degree.toFloat())
@@ -43,73 +48,60 @@ fun WeatherWindCurrent(
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onTertiary
             )
+
+            Column {
+                Text(
+                    modifier = Modifier,
+                    text = rememberBeaufortText(wind.speed),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                Text(
+                    modifier = Modifier,
+                    text = rememberPointOfCompassText(wind.degree),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+
         }
 
-        Column(
-            horizontalAlignment = Alignment.Start,
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.grid_0_5),
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Row(
-                horizontalArrangement = Arrangement.Start
-            ) {
+            Text(
+                text = stringResource(
+                    id = R.string.weather_wind_speed_title,
+                    rememberWindText(displayMode, wind.speed)
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+            )
 
-                Text(
-                    modifier = Modifier,
-                    text = "Легкий ",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
+            if (wind.gust > wind.speed) {
+
+                Icon(
+                    modifier = Modifier
+                        .padding(horizontal = Dimens.grid_0_5)
+                        .size(Dimens.grid_0_5),
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_circle),
+                    contentDescription = null
                 )
 
                 Text(
                     modifier = Modifier,
-                    text = rememberWindText(displayMode, wind.speed),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                )
-
-            }
-
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    modifier = Modifier,
-                    text = "Южный",
+                    text = stringResource(
+                        id = R.string.weather_wind_gusts_title,
+                        rememberWindText(displayMode, wind.gust)
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
-//                fontWeight = FontWeight.Bold,
                 )
-
-                if (wind.gust > wind.speed) {
-
-                    Icon(
-                        modifier = Modifier
-                            .padding(horizontal = Dimens.grid_0_5)
-                            .size(8.dp),
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_circle),
-                        contentDescription = null
-                    )
-
-                    Text(
-                        modifier = Modifier,
-                        text = "Порывы ",
-                        style = MaterialTheme.typography.bodyMedium,
-//                fontWeight = FontWeight.Bold,
-                    )
-
-                    Text(
-                        modifier = Modifier,
-                        text = rememberWindText(displayMode, wind.gust),
-                        style = MaterialTheme.typography.bodyMedium,
-//                fontWeight = FontWeight.Bold,
-                    )
-                }
-
             }
+
         }
-
     }
-
 
 
 }

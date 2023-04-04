@@ -1,8 +1,12 @@
 package uv.index.features.weather.data
 
+import androidx.annotation.Keep
+import kotlinx.serialization.Serializable
 import kotlin.math.roundToInt
 
 @JvmInline
+@Keep
+@Serializable
 value class SpeedKph(val value: Double) {
     operator fun compareTo(speed: SpeedKph): Int = (this.value - speed.value).roundToInt()
 

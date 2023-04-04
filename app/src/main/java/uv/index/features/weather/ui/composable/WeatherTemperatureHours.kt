@@ -39,7 +39,7 @@ fun WeatherTemperatureHours(
                 hour = item.time,
                 condition = item.condition,
                 temperature = item.temperature,
-                sunPosition = SunPosition.Above
+                isDay = item.isDay
             )
         }
     }
@@ -51,14 +51,18 @@ private fun LazyItemScope.HourBox(
     hour: LocalTime,
     condition: Weather.Condition,
     temperature: Weather.Temperature,
-    sunPosition: SunPosition
+    isDay: Boolean
 ) {
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Dimens.grid_0_5)
     ) {
-        val weatherId = rememberConditionIcon(condition, sunPosition)
+
+        val weatherId = rememberConditionIcon(
+            condition,
+            if (isDay) SunPosition.Above else SunPosition.Night
+        )
         Text(
             modifier = Modifier,
             text = rememberTemperatureText(

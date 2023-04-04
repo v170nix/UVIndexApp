@@ -13,9 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import net.arwix.mvi.EventHandler
@@ -59,20 +57,23 @@ internal fun BoxWithConstraintsScope.MainDataSection(
             )
         },
         bottomBar = {
-            AppNavigationBar()
+            AppNavigationBar(
+                viewMode = state.viewMode,
+                handler = handler
+            )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                modifier = Modifier.defaultMinSize(64.dp),
-                onClick = {
-                    handler.doEvent(MainContract.Event.DoChangeViewMode)
-                }) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_change_mode),
-                    "Switch"
-                )
-            }
-        }
+//        floatingActionButton = {
+//            FloatingActionButton(
+//                modifier = Modifier.defaultMinSize(64.dp),
+//                onClick = {
+//                    handler.doEvent(MainContract.Event.DoChangeViewMode)
+//                }) {
+//                Icon(
+//                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_change_mode),
+//                    "Switch"
+//                )
+//            }
+//        }
     ) {
 
         CompositionLocalProvider(

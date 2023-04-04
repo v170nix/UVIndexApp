@@ -154,5 +154,35 @@
 
     <string name="weather_hourly_forecast">Hourly forecast</string>
     <string name="weather_wind_title">Wind</string>
+    <string name="weather_wind_speed_title">Speed: %s</string>
+    <string name="weather_wind_gusts_title">Gusts: %s</string>
+    <string name="weather_precipitation_mm">%.1fmm</string>
+
+    <string-array name="weather_wind_beaufort_scale_text">
+        <item>Calm</item>
+        <item>Light air</item>
+        <item>Light breeze</item>
+        <item>Gentle breeze</item>
+        <item>Moderate breeze</item>
+        <item>Fresh breeze</item>
+        <item>Strong breeze</item>
+        <item>Near gale</item>
+        <item>Gale</item>
+        <item>Severe gale</item>
+        <item>Storm</item>
+        <item>Violent storm</item>
+        <item>Hurricane</item>
+    </string-array>
+
+    <string-array name="weather_azimuth_text">
+        <item>North</item>
+        <item>Northeast</item>
+        <item>East</item>
+        <item>Southeast</item>
+        <item>South</item>
+        <item>Southwest</item>
+        <item>West</item>
+        <item>Northwest</item>
+    </string-array>
 
 </resources>

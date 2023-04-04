@@ -95,20 +95,41 @@ fun getBeaufortIndexColor(beaufortIndex: Int, transparentColor: Color): Color {
     return when (beaufortIndex) {
         0 -> UVITheme.colors.lowUV
         1 -> Color(0xFFAEF1F9)
-        2 -> Color(0xFF96F7DC)
-        3 -> Color(0xFF96F7B4)
-        4 -> Color(0xFF6FF46F)
-        5 -> Color(0xFF73ED12)
-        6 -> Color(0xFFA4ED12)
-        7 -> Color(0xFFDAED12)
-        8 -> UVITheme.colors.moderateUV
-        9 -> UVITheme.colors.highUV
+        2 -> Color(0xFF96F7B4)
+        3 -> Color(0xFF6FF46F)
+        4 -> Color(0xFFA4ED12)
+        5 -> Color(0xFFDAED12)
+        6 -> UVITheme.colors.moderateUV
+        7 -> Color(0xFFFF9448)
+        8 -> UVITheme.colors.highUV
+        9 -> Color(0xFFFA5A3D)
         10 -> UVITheme.colors.veryHighUV
         11 -> UVITheme.colors.extremeUV
         12 -> Color.Magenta
         else -> transparentColor
     }
 }
+
+//@Composable
+//@Stable
+//fun getBeaufortIndexColor(beaufortIndex: Int, transparentColor: Color): Color {
+//    return when (beaufortIndex) {
+//        0 -> UVITheme.colors.lowUV
+//        1 -> Color(0xFFAEF1F9)
+//        2 -> Color(0xFF96F7DC)
+//        3 -> Color(0xFF96F7B4)
+//        4 -> Color(0xFF6FF46F)
+//        5 -> Color(0xFF73ED12)
+//        6 -> Color(0xFFA4ED12)
+//        7 -> Color(0xFFDAED12)
+//        8 -> UVITheme.colors.moderateUV
+//        9 -> UVITheme.colors.highUV
+//        10 -> UVITheme.colors.veryHighUV
+//        11 -> UVITheme.colors.extremeUV
+//        12 -> Color.Magenta
+//        else -> transparentColor
+//    }
+//}
 
 @Composable
 @Stable
@@ -133,6 +154,49 @@ fun rememberTemperatureText(
     }
 
     return tempString
+}
+
+@Composable
+@Stable
+fun rememberBeaufortText(
+    speed: SpeedKph
+): String {
+    val context = LocalContext.current
+    val beaufortIndex by remember(speed) {
+        derivedStateOf {
+            getBeaufortIndex(speed)
+        }
+    }
+    val beaufortIndexString by remember(beaufortIndex) {
+        derivedStateOf {
+            runCatching {
+                context.resources.getStringArray(R.array.weather_wind_beaufort_scale_text)[beaufortIndex]
+            }.getOrDefault("")
+        }
+    }
+    return beaufortIndexString
+}
+
+@Composable
+@Stable
+fun rememberPointOfCompassText(
+    degree: Int
+): String {
+    val context = LocalContext.current
+    val rhumb by remember(degree) {
+        derivedStateOf {
+            val azimth = degree.toDouble().mod(360.0)
+            (azimth / 45.0 - 0.25).roundToInt()
+        }
+    }
+    val rhumbString by remember(rhumb) {
+        derivedStateOf {
+            runCatching {
+                context.resources.getStringArray(R.array.weather_azimuth_text)[rhumb]
+            }.getOrDefault("")
+        }
+    }
+    return rhumbString
 }
 
 

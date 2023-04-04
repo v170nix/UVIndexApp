@@ -1,6 +1,11 @@
 package uv.index.features.weather.data
 
+import androidx.annotation.Keep
+import kotlinx.serialization.Serializable
+
 @JvmInline
+@Keep
+@Serializable
 value class MGPerM3(val value: Double) {
     companion object {
         val Unspecified = MGPerM3(value = Double.NaN)

@@ -1,6 +1,5 @@
 package uv.index.features.weather.ui.composable
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,7 +16,9 @@ import uv.index.features.weather.data.Weather
 import uv.index.ui.theme.Dimens
 import java.time.ZoneId
 
-@OptIn(ExperimentalFoundationApi::class)
+// https://windy.app/forecast2/spot/36345/Russian+Federation+-+Sankt-Peterburg
+// https://api.open-meteo.com/v1/forecast?latitude=60.06&longitude=30.33&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto
+
 fun LazyListScope.weatherPart(
     zoneId: ZoneId,
     data: Weather.Data?,
@@ -102,7 +103,7 @@ fun LazyListScope.weatherPart(
                 modifier = Modifier
                     .padding(horizontal = Dimens.grid_2)
                     .fillMaxWidth(),
-                text = "Влажность".uppercase(),
+                text = "Осадки".uppercase(),
                 style = MaterialTheme.typography.labelLarge,
                 color = LocalContentColor.current.copy(alpha = 0.7f)
             )
@@ -111,14 +112,14 @@ fun LazyListScope.weatherPart(
                 modifier = Modifier
                     .padding(horizontal = Dimens.grid_2)
                     .fillMaxWidth(),
-                text = "Точка росы +16",
+                text = "вероятность",
                 style = MaterialTheme.typography.labelSmall,
                 color = LocalContentColor.current.copy(alpha = 0.7f)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+//            Spacer(modifier = Modifier.height(16.dp))
 
-            WeatherHumidityHours(
+            WeatherPrecipitationHours(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Dimens.grid_2),
@@ -133,6 +134,17 @@ fun LazyListScope.weatherPart(
 //                data = data
 //            )
 
+        }
+    }
+
+    item(key = 400) {
+        if (data != null) {
+            WeatherDaysForecast(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Dimens.grid_2),
+                data = data
+            )
         }
     }
 

@@ -10,12 +10,13 @@ import net.arwix.mvi.SimpleViewModel
 import net.arwix.mvi.UISideEffect
 import uv.index.common.*
 import uv.index.features.main.data.toUVIPlaceData
+import uv.index.features.main.domain.WeatherUseCaseFactory
 import uv.index.features.main.ui.transform.SunDataUseCase
 import uv.index.features.main.ui.transform.UVICurrentDataUseCase
 import uv.index.features.main.ui.transform.UVIForecastUseCase
 import uv.index.features.place.data.room.PlaceDao
 import uv.index.features.place.data.room.PlaceData
-import uv.index.features.weather.data.WeatherApi
+import uv.index.features.weather.data.repository.WeatherRequest
 import uv.index.lib.data.*
 import uv.index.lib.domain.UVIndexRemoteUpdateUseCase
 import java.time.LocalDate
@@ -28,15 +29,18 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     placeDao: PlaceDao,
     private val sunDataUseCase: SunDataUseCase,
-    private val uvDataRepository: UVIndexRepository,
+    private val uvIndexRepository: UVIndexRepository,
     private val skinRepository: UVSkinRepository,
     private val uvRemoteUpdateUseCase: UVIndexRemoteUpdateUseCase,
     private val uvCurrentDataUseCase: UVICurrentDataUseCase,
     private val uvForecastUseCase: UVIForecastUseCase,
-    private val weatherApi: WeatherApi
-) : SimpleViewModel<MainContract.Event, MainContract.State, UISideEffect>(
+    weatherUseCaseFactory: WeatherUseCaseFactory,
+
+    ) : SimpleViewModel<MainContract.Event, MainContract.State, UISideEffect>(
     MainContract.State()
 ) {
+    private val weatherUseCase = weatherUseCaseFactory
+        .createdDependency(viewModelScope, 15, 3)
 
     private val zdtAtStartDayAsFlow = MutableStateFlow<ZonedDateTime?>(null)
     private val triggerUpdateCurrentDateTime = MutableStateFlow(0)
@@ -56,6 +60,16 @@ class MainViewModel @Inject constructor(
     private val timeUpdateJob = ConflatedJob()
 
     init {
+
+        weatherUseCase
+            .state
+            .onEach { weatherState ->
+                reduceState {
+                    copy(weatherData = weatherState.data)
+                }
+            }
+            .launchIn(viewModelScope)
+
         combine(
             placeAsFlow,
             zdtAtStartDayAsFlow.filterNotNull(),
@@ -69,7 +83,7 @@ class MainViewModel @Inject constructor(
             .flatMapLatest { data ->
                 sunDataUseCase(data.place, data.atStartDayDate, ZonedDateTime.now(data.place.zone))
                     .also(innerStateReducer::setSunData)
-                uvDataRepository
+                uvIndexRepository
                     .getDataAsFlow(
                         longitude = data.place.latLng.longitude,
                         latitude = data.place.latLng.latitude,
@@ -88,7 +102,7 @@ class MainViewModel @Inject constructor(
                     }
             }
             .flatMapLatest { data ->
-                uvDataRepository
+                uvIndexRepository
                     .getForecastDataAsFlow(
                         data.place.latLng.longitude,
                         data.place.latLng.latitude,
@@ -109,13 +123,18 @@ class MainViewModel @Inject constructor(
             }
             .onEach { dta ->
                 launchConflatedPart(dta)
-                val r = weatherApi.get(dta.place.latLng.latitude, dta.place.latLng.longitude).also {
-                    Log.e("data", it.toString())
+                viewModelScope.launch {
+                    weatherUseCase.newPlace(
+                        WeatherRequest.Location(dta.place.latLng)
+                    )
                 }
-
-                reduceState {
-                    copy(weatherData = r)
-                }
+//                val r = weatherApi.get(dta.place.latLng.latitude, dta.place.latLng.longitude).also {
+//                    Log.e("data", it.toString())
+//                }
+//
+//                reduceState {
+//                    copy(weatherData = r)
+//                }
             }
             .flowOn(Dispatchers.Default)
             .launchIn(viewModelScope)
@@ -183,6 +202,9 @@ class MainViewModel @Inject constructor(
                 innerStateReducer.setSkin(skinType)
             }
             .addTrigger(triggerUpdateCurrentDateTime) { data, _ ->
+                viewModelScope.launch {
+                    weatherUseCase.autoCheckTimeToRemoteUpdate()
+                }
                 data.currentDateTime = ZonedDateTime.now(data.place.zone)
                     .also(innerStateReducer::setCurrentDateTime)
             }

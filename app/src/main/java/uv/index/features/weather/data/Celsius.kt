@@ -1,6 +1,11 @@
 package uv.index.features.weather.data
 
+import androidx.annotation.Keep
+import kotlinx.serialization.Serializable
+
 @JvmInline
+@Keep
+@Serializable
 value class Celsius(val value: Double) {
     companion object {
         val Unspecified = Celsius(value = Double.NaN)

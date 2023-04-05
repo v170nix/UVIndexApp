@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import net.arwix.extension.ConflatedJob
+import net.arwix.coroutines.ConflatedJob
 import net.arwix.mvi.SimpleViewModel
 import net.arwix.mvi.UISideEffect
 import uv.index.common.*

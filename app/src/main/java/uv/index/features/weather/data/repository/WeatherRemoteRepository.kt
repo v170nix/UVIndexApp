@@ -2,12 +2,12 @@ package uv.index.features.weather.data.repository
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.*
-import uv.index.common.remote.LoadState
-import uv.index.common.remote.LoadState.Companion.complete
-import uv.index.common.remote.LoadState.Companion.error
-import uv.index.common.remote.LoadState.Companion.incomplete
-import uv.index.common.remote.LoadState.Companion.start
-import uv.index.common.remote.RemoteRepository
+import net.arwix.repo.LoadState
+import net.arwix.repo.LoadState.Companion.complete
+import net.arwix.repo.LoadState.Companion.error
+import net.arwix.repo.LoadState.Companion.incomplete
+import net.arwix.repo.LoadState.Companion.start
+import net.arwix.repo.RemoteRepository
 import uv.index.features.weather.data.WeatherApi
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,7 +18,7 @@ class WeatherRemoteRepository @Inject constructor(
 ) : RemoteRepository<WeatherRequest> {
 
     private val _state: MutableStateFlow<LoadState<out WeatherRequest>> =
-        MutableStateFlow(LoadState.Incomplete(WeatherRequest.Empty))
+        MutableStateFlow(WeatherRequest.Empty.incomplete())
 
     override val state: StateFlow<LoadState<out WeatherRequest>> = _state.asStateFlow()
 

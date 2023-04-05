@@ -168,9 +168,9 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 
-    implementation("com.github.v170nix:arwix-common-library:0.4.1")
-//    implementation("com.github.v170nix:uv-index-library:1.0.8")
-    implementation("ui.index.lib:uv-index-library:1.1.7")
+    implementation("com.github.v170nix:arwix-common-library:0.4.3")
+    implementation("com.github.v170nix:uv-index-library:1.1.8")
+//    implementation("ui.index.lib:uv-index-library:1.1.7")
     implementation("com.github.v170nix.astronomy-core:astronomy-core:1.0.0-alpha22")
 
     implementation("com.halilibo.compose-richtext:richtext-ui-material3:0.13.0")

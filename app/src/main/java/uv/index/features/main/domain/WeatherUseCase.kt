@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import net.arwix.extension.ConflatedJob
-import uv.index.common.remote.LoadState
+import net.arwix.coroutines.ConflatedJob
+import net.arwix.repo.LoadState
 import uv.index.features.weather.data.Weather
 import uv.index.features.weather.data.repository.WeatherLocalRepository
 import uv.index.features.weather.data.repository.WeatherRemoteRepository
@@ -129,11 +129,9 @@ class WeatherUseCase(
     private fun localReduce(loadState: LoadState<WeatherRequest>) {
         when (loadState) {
             is LoadState.Complete<*, *> -> {
-                if (loadState.result is Weather.Data) {
-                    if (_state.value.data != loadState.result) {
-                        _state.update { state ->
-                            state.copy(data = loadState.result)
-                        }
+                if (_state.value.data != loadState.result) {
+                    _state.update { state ->
+                        state.copy(data = loadState.result as Weather.Data)
                     }
                 }
             }
@@ -149,17 +147,18 @@ class WeatherUseCase(
     private suspend fun remoteReduce(loadState: LoadState<out WeatherRequest>) {
         when (loadState) {
             is LoadState.Complete<*, *> -> {
-                if (loadState.result is Weather.Data) {
-                    scope.launch {
-                        localRepository.saveData(loadState.request, loadState.result)
-                    }
-                    _state.update { state ->
-                        state.copy(
-                            data = loadState.result,
-                            isLoading = false,
-                            error = null
-                        )
-                    }
+                scope.launch {
+                    localRepository.saveData(
+                        loadState.request,
+                        loadState.result as Weather.Data
+                    )
+                }
+                _state.update { state ->
+                    state.copy(
+                        data = loadState.result as Weather.Data,
+                        isLoading = false,
+                        error = null
+                    )
                 }
             }
             is LoadState.Error -> {

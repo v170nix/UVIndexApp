@@ -2,7 +2,7 @@ package uv.index.common
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import net.arwix.extension.ConflatedJob
+import net.arwix.coroutines.ConflatedJob
 
 //open class ConflatedReducer<T>(
 //    private val scope: CoroutineScope,

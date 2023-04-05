@@ -5,7 +5,7 @@ import android.location.Location
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import net.arwix.extension.ConflatedJob
+import net.arwix.coroutines.ConflatedJob
 import uv.index.features.place.common.getLocation
 import uv.index.features.place.common.locationCheckPermission
 import uv.index.features.place.data.GeocoderRepository

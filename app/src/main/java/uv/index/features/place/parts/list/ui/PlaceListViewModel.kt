@@ -5,7 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import net.arwix.extension.ConflatedJob
+import net.arwix.coroutines.ConflatedJob
 import net.arwix.mvi.SimpleViewModel
 import uv.index.features.place.data.PlaceEditInnerRepository
 import uv.index.features.place.parts.list.data.PlaceListItem

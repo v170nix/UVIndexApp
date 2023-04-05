@@ -1,7 +1,7 @@
 package uv.index.features.weather.data.repository
 
 import com.google.android.gms.maps.model.LatLng
-import uv.index.common.remote.Request
+import net.arwix.repo.Request
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 

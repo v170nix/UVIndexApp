@@ -12,7 +12,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import net.arwix.extension.ConflatedJob
+import net.arwix.coroutines.ConflatedJob
 import net.arwix.mvi.SimpleViewModel
 import uv.index.di.PlaceKey
 import uv.index.features.place.data.GeocoderRepository

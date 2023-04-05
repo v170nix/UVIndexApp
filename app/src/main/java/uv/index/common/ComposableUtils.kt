@@ -9,7 +9,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import net.arwix.extension.ConflatedJob
+import net.arwix.coroutines.ConflatedJob
 
 @Composable
 fun LifecycleTimer(

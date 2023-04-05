@@ -9,7 +9,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import net.arwix.extension.ConflatedJob
+import net.arwix.coroutines.ConflatedJob
 import net.arwix.mvi.SimpleViewModel
 import net.arwix.mvi.UISideEffect
 import uv.index.features.place.common.except

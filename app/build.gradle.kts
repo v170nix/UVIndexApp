@@ -63,8 +63,8 @@ android {
     }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -100,6 +100,11 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
     implementation (composeBom)
     androidTestImplementation (composeBom)
+
+    implementation("com.github.v170nix:place-selector-library:1.0.0-alpha03")
+
+    // 'com.github.User.Repo:Module:Tag'
+  //  implementation("com.github.v170nix.place-selector-library:library:1.0.0-alpha01")
 
     detektPlugins("com.twitter.compose.rules:detekt:0.0.26")
 

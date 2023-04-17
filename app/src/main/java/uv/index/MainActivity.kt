@@ -27,7 +27,6 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         checkGooglePlayServices()
         setContent {
-
             val themeViewModel = hiltViewModel<ThemeViewModel>(this)
             val themeState by themeViewModel.state.collectAsState()
 

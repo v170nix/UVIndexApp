@@ -60,6 +60,15 @@ fun MainScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+
+//        Image(
+//
+//            painterResource(id = R.drawable.weather_d2),
+//            contentDescription = null,
+//            modifier = Modifier.fillMaxSize(),
+//            alignment = Alignment.TopCenter
+//        )
+
         if (state.place == null) {
             if (!state.isLoadingPlace) {
                 EmptyPlacePart(

@@ -2,6 +2,7 @@ package uv.index.navigation
 
 import androidx.activity.ComponentActivity
 import androidx.annotation.ArrayRes
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -86,6 +87,7 @@ class AppNavigationActions(override val navController: NavController) : Navigati
     )
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Suppress("MagicNumber")
 @Stable
 sealed class AppScreen(

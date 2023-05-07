@@ -20,6 +20,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.common.AutoSizeText
@@ -207,7 +208,7 @@ private fun LinearProtectionPart(
         val paddingValues by remember(maxWidth, delta) {
             derivedStateOf {
                 if (maxWidth - delta <= maxWidth / 2f) {
-                    PaddingValues(start = maxWidth / 2f, end = maxWidth - delta - 1.dp)
+                    PaddingValues(start = maxWidth / 2f, end = (maxWidth - delta - 1.dp).coerceAtLeast(0.dp) )
                 } else {
                     PaddingValues(start = delta, end = maxWidth / 2f)
                 }

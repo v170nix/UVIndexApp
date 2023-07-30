@@ -33,6 +33,12 @@ import uv.index.features.uvi.ui.getUVIColor
 import uv.index.ui.theme.Dimens
 import kotlin.math.roundToInt
 
+private sealed class UIScreenState {
+    object EmptyScreen: UIScreenState()
+    object DataScreen: UIScreenState()
+
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
@@ -55,6 +61,16 @@ fun MainScreen(
         viewModel.doEvent(MainContract.Event.DoUpdateWithCurrentTime)
     }
 
+    val uiScreenState by remember(state) {
+        derivedStateOf {
+            if (state.place == null && !state.loadingPlace) {
+                UIScreenState.EmptyScreen
+            } else {
+                UIScreenState.DataScreen
+            }
+        }
+    }
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -66,11 +82,18 @@ fun MainScreen(
 //            painterResource(id = R.drawable.weather_d2),
 //            contentDescription = null,
 //            modifier = Modifier.fillMaxSize(),
-//            alignment = Alignment.TopCenter
+//            alignment = Alignment.TopCenter,
+//            alpha = 0.2f
 //        )
 
+        val isEmptyScreen by remember(state) {
+            derivedStateOf {
+                state.place == null && !state.loadingPlace
+            }
+        }
+
         if (state.place == null) {
-            if (!state.isLoadingPlace) {
+            if (!state.loadingPlace) {
                 EmptyPlacePart(
                     modifier = Modifier.fillMaxSize(),
                     onAddPlaceScreen = onChangePlace
@@ -139,8 +162,8 @@ private fun BoxWithConstraintsScope.DataPart(
             }
             false -> {
                 LoadingDataPart(
-                    loaderIsVisible = state.isViewLoadingData && !isDataLoaded,
-                    retryIsVisible = state.isViewRetry,
+                    loaderIsVisible = state.viewLoadingData && !isDataLoaded,
+                    retryIsVisible = state.viewRetry,
                     placeContent = {
                         MainPlacePart(
                             modifier = Modifier

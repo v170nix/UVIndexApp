@@ -330,7 +330,6 @@ private class AnimatingMainTopBarTextStyles(
             )
         }
 
-        @OptIn(ExperimentalUnitApi::class)
         private fun getFractionTextSize(
             cTextUnit: TextUnit,
             eTextUnit: TextUnit,

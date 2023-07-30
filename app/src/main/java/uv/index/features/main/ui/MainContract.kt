@@ -19,9 +19,9 @@ interface MainContract {
     data class State constructor(
         val place: PlaceData? = null,
 
-        val isViewRetry: Boolean = false,
-        val isViewLoadingData: Boolean = false,
-        val isLoadingPlace: Boolean = true,
+        val viewRetry: Boolean = false,
+        val viewLoadingData: Boolean = false,
+        val loadingPlace: Boolean = true,
 
         val currentDateTime: ZonedDateTime? = null,
         val currentSunData: SunData? = null,
@@ -31,7 +31,7 @@ interface MainContract {
         val uvCurrentData: UVCurrentData? = null,
         val uvForecastDays: List<UVSummaryDayData> = listOf(),
         val uvForecastHours: List<UVHourData> = listOf(),
-        @Stable val weatherData: Weather.Data? = null,
+        val weatherData: Weather.Data? = null,
         val skinType: UVSkinType? = null,
         val peakTime: LocalTime? = null,
         val viewMode: ViewMode = ViewMode.Weather

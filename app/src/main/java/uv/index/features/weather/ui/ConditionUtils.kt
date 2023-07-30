@@ -207,14 +207,13 @@ private val conditionNamesDayRu by lazy {
 @Composable
 @DrawableRes
 fun rememberConditionIcon(
-    condition: Weather.Condition, sunPosition: SunPosition
+    condition: Weather.Condition?,
+    sunPosition: SunPosition?
 ): Int? {
 
-    val weatherId by remember(
-        condition, sunPosition
-    ) {
+    val weatherId by remember(condition, sunPosition) {
         derivedStateOf {
-            condition.getIconId(sunPosition == SunPosition.Above)
+            condition?.getIconId(sunPosition == SunPosition.Above)
         }
     }
     return weatherId

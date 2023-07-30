@@ -32,8 +32,7 @@ import uv.index.features.place.ui.composable.PlaceLocationScreen
 import uv.index.features.place.ui.composable.PlaceTimeZoneScreen
 import uv.index.features.preferences.ui.isAppInDarkTheme
 
-fun NavBackStackEntry.lifecycleIsResumed() =
-    getLifecycle().currentState == Lifecycle.State.RESUMED
+fun NavBackStackEntry.lifecycleIsResumed() = lifecycle.currentState == Lifecycle.State.RESUMED
 
 class PlaceNavigationActions(
     override val navController: NavController,

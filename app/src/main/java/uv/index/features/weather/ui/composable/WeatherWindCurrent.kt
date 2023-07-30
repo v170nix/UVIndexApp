@@ -15,7 +15,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import uv.index.R
-import uv.index.features.preferences.ui.rememberWeatherDisplayMode
+import uv.index.features.preferences.ui.rememberWeatherMetricsMode
 import uv.index.features.weather.data.Weather
 import uv.index.features.weather.ui.rememberBeaufortText
 import uv.index.features.weather.ui.rememberPointOfCompassText
@@ -28,7 +28,7 @@ fun LazyItemScope.WeatherWindCurrent(
     wind: Weather.Wind,
 ) {
 
-    val displayMode = rememberWeatherDisplayMode()
+    val displayMode = rememberWeatherMetricsMode()
 
     Column(
         modifier = modifier,

@@ -4,37 +4,32 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import uv.index.R
+import uv.index.features.preferences.ui.rememberWeatherMetricsMode
 import uv.index.features.weather.data.Weather
+import uv.index.features.weather.domain.WeatherMetricsMode
+import uv.index.features.weather.ui.rememberTemperatureText
 
 @Composable
 fun WeatherFeelsLike(
     modifier: Modifier = Modifier,
+    displayMode: WeatherMetricsMode = rememberWeatherMetricsMode(),
     temperature: Weather.Temperature?
 ) {
 
-
-    val stringHour by remember(temperature) {
-        derivedStateOf {
-            temperature?.feelsLike?.value?.toString()
-        }
-    }
-
     Crossfade(
         modifier = modifier,
-        targetState = stringHour
+        targetState = temperature
     ) { state ->
         when (state) {
             null -> {}
             else -> {
                 Column {
-                    Text(text = stringResource(id = R.string.uvindex_peak_time))
-                    Text(text = state)
+                    Text(text = stringResource(id = R.string.weather_temperature_feels_like))
+                    Text(text = rememberTemperatureText(displayMode, state, isFeelsLike = true)
+                    )
                 }
             }
         }

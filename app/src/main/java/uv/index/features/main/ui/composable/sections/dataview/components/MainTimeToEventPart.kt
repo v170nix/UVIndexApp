@@ -9,9 +9,6 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,7 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import uv.index.R
 import uv.index.features.main.ui.MainContract
-import kotlin.math.roundToInt
+import uv.index.features.uvi.ui.rememberTimeToBurnString
+import uv.index.features.uvi.ui.rememberTimeToVitaminDString
 
 @Composable
 internal fun MainTimeToEventPart(
@@ -29,45 +27,6 @@ internal fun MainTimeToEventPart(
     timeToBurn: MainContract.TimeToEvent?,
     timeToVitaminD: MainContract.TimeToEvent?
 ) {
-    val context = LocalContext.current
-
-    val timeToBurnString by remember(timeToBurn, context) {
-        derivedStateOf {
-            when (timeToBurn) {
-                MainContract.TimeToEvent.Infinity -> "∞"
-                is MainContract.TimeToEvent.Value -> {
-                    buildString {
-                        timeToString(
-                            context,
-                            (timeToBurn.minTimeInMins + (timeToBurn.maxTimeInMins
-                                ?: (1.5 * timeToBurn.minTimeInMins)).toInt()) / 2
-                        )
-                    }
-                }
-                else -> ""
-            }
-        }
-    }
-
-    val timeToVitaminDString by remember(timeToVitaminD, context) {
-        derivedStateOf {
-            when (timeToVitaminD) {
-                MainContract.TimeToEvent.Infinity -> "∞"
-                is MainContract.TimeToEvent.Value -> {
-                    val time = (timeToVitaminD.minTimeInMins + (timeToVitaminD.maxTimeInMins
-                        ?: (1.5 * timeToVitaminD.minTimeInMins)).toInt()) / 2
-                    var roundTime = (time / 5.0).roundToInt() * 5
-//                    time = (time / 5) * 5
-                    if (time < 5) roundTime = time
-                    buildString {
-                        timeToString(context, roundTime)
-                    }
-                }
-                else -> ""
-            }
-        }
-    }
-
     val resource = LocalContext.current.resources
 
     Row(
@@ -76,7 +35,7 @@ internal fun MainTimeToEventPart(
     ) {
         InnerCard(
             modifier = Modifier.weight(1f),
-            info = timeToBurnString,
+            info = rememberTimeToBurnString(timeToBurn),
             description = stringResource(id = R.string.uvindex_sunburn_title),
             onClick = {
                 infoState.data = MainInfoData(
@@ -91,7 +50,7 @@ internal fun MainTimeToEventPart(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight(),
-            info = timeToVitaminDString,
+            info = rememberTimeToVitaminDString(timeToVitaminD),
             description = stringResource(id = R.string.uvindex_vitamin_D_title),
             onClick = {
                 infoState.data = MainInfoData(

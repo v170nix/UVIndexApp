@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import uv.index.features.astronomy.data.SunPosition
-import uv.index.features.preferences.ui.rememberWeatherDisplayMode
+import uv.index.features.preferences.ui.rememberWeatherMetricsMode
 import uv.index.features.weather.data.Weather
-import uv.index.features.weather.domain.WeatherDisplayMode
+import uv.index.features.weather.domain.WeatherMetricsMode
 import uv.index.features.weather.ui.rememberConditionIcon
 import uv.index.features.weather.ui.rememberTemperatureText
 import uv.index.ui.theme.Dimens
@@ -28,7 +28,7 @@ fun WeatherTemperatureHours(
     modifier: Modifier = Modifier,
     data: Weather.Data
 ) {
-    val displayMode = rememberWeatherDisplayMode()
+    val displayMode = rememberWeatherMetricsMode()
 
     WeatherHours(
         modifier = modifier
@@ -47,7 +47,7 @@ fun WeatherTemperatureHours(
 
 @Composable
 private fun LazyItemScope.HourBox(
-    displayMode: WeatherDisplayMode,
+    displayMode: WeatherMetricsMode,
     hour: LocalTime,
     condition: Weather.Condition,
     temperature: Weather.Temperature,

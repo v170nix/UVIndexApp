@@ -19,9 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import uv.index.R
-import uv.index.features.preferences.ui.rememberWeatherDisplayMode
+import uv.index.features.preferences.ui.rememberWeatherMetricsMode
 import uv.index.features.weather.data.Weather
-import uv.index.features.weather.domain.WeatherDisplayMode
+import uv.index.features.weather.domain.WeatherMetricsMode
 import uv.index.ui.theme.Dimens
 import java.lang.Integer.max
 import java.time.LocalTime
@@ -34,7 +34,7 @@ fun WeatherPrecipitationHours(
     modifier: Modifier,
     data: Weather.Data,
 ) {
-    val displayMode = rememberWeatherDisplayMode()
+    val displayMode = rememberWeatherMetricsMode()
 
 
     WeatherHours(
@@ -54,7 +54,7 @@ fun WeatherPrecipitationHours(
 
 @Composable
 private fun LazyItemScope.HourBox(
-    displayMode: WeatherDisplayMode,
+    displayMode: WeatherMetricsMode,
     hour: LocalTime,
     humidity: Weather.Humidity,
     precipitation: Weather.Precipitation,

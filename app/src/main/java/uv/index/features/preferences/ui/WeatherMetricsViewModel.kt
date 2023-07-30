@@ -14,11 +14,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import uv.index.features.preferences.data.WeatherDisplayPreferences
-import uv.index.features.weather.domain.WeatherDisplayMode
+import uv.index.features.weather.domain.WeatherMetricsMode
 import javax.inject.Inject
 
 @HiltViewModel
-class WeatherDisplayViewModel @Inject constructor(
+class WeatherMetricsViewModel @Inject constructor(
     private val preferences: WeatherDisplayPreferences
 ): ViewModel() {
     val state = preferences.modeAsStateFlow.stateIn(
@@ -27,7 +27,7 @@ class WeatherDisplayViewModel @Inject constructor(
         started = SharingStarted.Lazily
     )
 
-    fun updateMode(mode: WeatherDisplayMode) {
+    fun updateMode(mode: WeatherMetricsMode) {
         viewModelScope.launch {
             preferences.updateMode(mode)
         }
@@ -36,8 +36,8 @@ class WeatherDisplayViewModel @Inject constructor(
 
 @Composable
 @Stable
-fun rememberWeatherDisplayMode(): WeatherDisplayMode {
-    val model = hiltViewModel<WeatherDisplayViewModel>(LocalContext.current as ComponentActivity)
+fun rememberWeatherMetricsMode(): WeatherMetricsMode {
+    val model = hiltViewModel<WeatherMetricsViewModel>(LocalContext.current as ComponentActivity)
     val mode by model.state.collectAsState()
     return mode
 }

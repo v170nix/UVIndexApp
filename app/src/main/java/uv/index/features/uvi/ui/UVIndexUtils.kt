@@ -1,16 +1,21 @@
 package uv.index.features.uvi.ui
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import uv.index.R
 import uv.index.features.astronomy.data.SunPosition
+import uv.index.features.main.ui.MainContract
 import uv.index.features.uvi.data.UVLevel
 import uv.index.lib.data.UVSummaryDayData
 import uv.index.ui.theme.UVITheme
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import kotlin.math.roundToInt
 
 @Suppress("MagicNumber")
 internal fun getUVITitle(index: Int, sunPosition: SunPosition, array: Array<String>): String {
@@ -80,6 +85,79 @@ internal fun rememberPeriod(data: UVSummaryDayData?): Pair<String, String>? {
     }
     return period
 }
+
+@Composable
+internal fun rememberTimeToBurnString(timeToBurn: MainContract.TimeToEvent?): String {
+    val context = LocalContext.current
+    val timeToBurnString by remember(timeToBurn, context) {
+        derivedStateOf {
+            when (timeToBurn) {
+                MainContract.TimeToEvent.Infinity -> "∞"
+                is MainContract.TimeToEvent.Value -> {
+                    buildString {
+                        timeToString(
+                            context,
+                            (timeToBurn.minTimeInMins + (timeToBurn.maxTimeInMins
+                                ?: (1.5 * timeToBurn.minTimeInMins)).toInt()) / 2
+                        )
+                    }
+                }
+                else -> ""
+            }
+        }
+    }
+    return timeToBurnString
+}
+
+@Composable
+internal fun rememberTimeToVitaminDString(timeToVitaminD: MainContract.TimeToEvent?): String {
+    val context = LocalContext.current
+    val timeToVitaminDString by remember(timeToVitaminD, context) {
+        derivedStateOf {
+            when (timeToVitaminD) {
+                MainContract.TimeToEvent.Infinity -> "∞"
+                is MainContract.TimeToEvent.Value -> {
+                    val time = (timeToVitaminD.minTimeInMins + (timeToVitaminD.maxTimeInMins
+                        ?: (1.5 * timeToVitaminD.minTimeInMins)).toInt()) / 2
+                    var roundTime = (time / 5.0).roundToInt() * 5
+//                    time = (time / 5) * 5
+                    if (time < 5) roundTime = time
+                    buildString {
+                        timeToString(context, roundTime)
+                    }
+                }
+                else -> ""
+            }
+        }
+    }
+    return timeToVitaminDString
+}
+
+
+private fun StringBuilder.timeToString(context: Context, time: Int): StringBuilder {
+    val (hourPart, minPart) = timeInMinsToHHMM(time)
+    if (hourPart > 0) {
+        append(hourPart)
+        append(" ")
+        append(context.getString(R.string.uvindex_sunburn_hour_part))
+        append(" ")
+    }
+    if (minPart > 0) {
+        append(minPart)
+        append(" ")
+        append(context.getString(R.string.uvindex_sunburn_min_part))
+    }
+
+    return this
+}
+
+private fun timeInMinsToHHMM(time: Int): Pair<Int, Int> {
+    return getHourPart(time) to getMinPart(time)
+}
+
+private fun getMinPart(duration: Int) = duration % 60
+private fun getHourPart(duration: Int) = duration / 60
+
 
 private val periodFormatter by lazy {
     DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)

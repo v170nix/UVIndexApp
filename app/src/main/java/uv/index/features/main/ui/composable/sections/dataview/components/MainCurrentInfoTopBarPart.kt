@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -26,11 +25,11 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import uv.index.R
 import uv.index.features.main.ui.MainContract
+import uv.index.features.preferences.ui.rememberWeatherMetricsMode
 import uv.index.features.uvi.data.UVLevel
 import uv.index.features.uvi.ui.UVTitle
 import uv.index.features.weather.ui.composable.WeatherBigTemperature
 import uv.index.features.weather.ui.composable.WeatherFeelsLike
-import uv.index.features.weather.ui.composable.WeatherSubTitle
 import uv.index.features.weather.ui.composable.WeatherTitle
 import uv.index.ui.theme.Dimens
 import java.time.LocalTime
@@ -53,7 +52,8 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
         targetValue = max(
             this.maxWidth * (1 - scrollBehavior.state.collapsedFraction),
             collapsedHeight
-        )
+        ),
+        label = "topHeight"
     )
 
     val currentIndex by remember(state.uvCurrentData?.index) {
@@ -67,8 +67,6 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
             state.uvCurrentSummaryDayData?.maxIndex?.getIntIndex() ?: 0
         }
     }
-
-    val context = LocalContext.current
 
     TopAppBar(
         modifier = modifier
@@ -91,6 +89,7 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
 
         val inverseSurface = contentColorFor(MaterialTheme.colorScheme.inverseSurface)
         val surface = contentColorFor(MaterialTheme.colorScheme.surface)
+        val metricsMode = rememberWeatherMetricsMode()
 
         MainCurrentInfoTopBarInnerPart(
             minHeight = collapsedHeight,
@@ -114,7 +113,8 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
 
                     AnimatedContent(
                         modifier = Modifier.padding(end = Dimens.grid_1),
-                        targetState = state.viewMode
+                        targetState = state.viewMode,
+                        label = "title"
                     ) { viewMode ->
                         ViewModeSwitcher(
                             mode = viewMode,
@@ -136,32 +136,9 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
                     }
                 }
             },
-            indexContent = {
-                ViewModeSwitcher(
-                    mode = state.viewMode,
-                    uv = {
-                        UVBigIndex(
-                            modifier = Modifier.padding(horizontal = Dimens.grid_2),
-                            currentIndex = currentIndex, maxIndex = maxIndex
-                        )
-                    },
-                    weather = {
-                        WeatherBigTemperature(
-                            modifier = Modifier.padding(horizontal = Dimens.grid_2),
-                            temperature = state.weatherData?.realTime?.temperature
-                        )
-                    }
-                )
-            },
             subTitleContent = {
                 Column(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(
-//                            start = Dimens.grid_1,
-//                            end = Dimens.grid_1,
-//                            top = Dimens.grid_2
-//                        )
+                    horizontalAlignment = Alignment.End
                 ) {
                     IconsInfo(
                         modifier = Modifier
@@ -174,34 +151,90 @@ fun BoxWithConstraintsScope.MainCurrentInfoTopBarPart(
                         currentIndexValue = state.uvCurrentData?.index,
                         onClick = onShowIndexInfo
                     )
-                    if (state.weatherData != null && state.currentSunData != null) {
-                        WeatherSubTitle(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    start = Dimens.grid_1,
-                                    end = Dimens.grid_1,
-                                    top = Dimens.grid_2
-                                ),
-                            weatherData = state.weatherData,
-                            sunPosition = state.currentSunData.position
-                        )
-                    }
+                    MainSubTitle(
+                        modifier = Modifier
+                            .padding(
+                                start = Dimens.grid_1,
+                                end = Dimens.grid_1,
+                                top = Dimens.grid_2
+                            ),
+                        viewMode = state.viewMode,
+                        metricsMode = metricsMode,
+                        uvCurrentIndex = currentIndex,
+                        uvMaxIndex = maxIndex,
+                        weatherData = state.weatherData,
+                        timeToBurn = state.uvCurrentData?.timeToBurn,
+                        timeToVitaminD = state.uvCurrentData?.timeToVitaminD,
+                        currentSunData = state.currentSunData
+                    )
+//                    ViewModeSwitcher(
+//                        mode = state.viewMode,
+//                        uv = {
+//                            if (state.weatherData != null && state.currentSunData != null) {
+//                                WeatherSubTitle(
+//                                    modifier = Modifier
+//                                        .fillMaxWidth()
+//                                        .padding(
+//                                            start = Dimens.grid_1,
+//                                            end = Dimens.grid_1,
+//                                            top = Dimens.grid_2
+//                                        ),
+//                                    weatherData = state.weatherData,
+//                                    sunPosition = state.currentSunData.position
+//                                )
+//                            }
+//                        },
+//                        weather = {
+//                            if (state.weatherData != null && state.currentSunData != null) {
+//                                UVIndexSubTitle(
+//                                    modifier = Modifier
+//                                        .fillMaxWidth()
+//                                        .padding(
+//                                            start = Dimens.grid_1,
+//                                            end = Dimens.grid_2,
+//                                            top = Dimens.grid_2
+//                                        ),
+//                                    currentIndex = currentIndex, maxIndex = maxIndex,
+//                                )
+//                            }
+//                        }
+//                    )
                 }
             },
-            maxTimeContent = {
+            indexContent = {
                 ViewModeSwitcher(
                     mode = state.viewMode,
                     uv = {
-                        PeakTime(
-                            modifier = Modifier.padding(start = 0.dp, end = Dimens.grid_2),
-                            maxTime = state.peakTime
+                        UVBigIndex(
+                            modifier = Modifier.padding(horizontal = Dimens.grid_2),
+                            currentIndex = currentIndex, maxIndex = maxIndex
                         )
                     },
                     weather = {
-                        WeatherFeelsLike(
-                            temperature = state.weatherData?.realTime?.temperature
-                        )
+                        if (state.weatherData?.realTime?.temperature != null) {
+                            WeatherBigTemperature(
+                                modifier = Modifier.padding(horizontal = Dimens.grid_2),
+                                displayMode = metricsMode,
+                                temperature = state.weatherData.realTime.temperature
+                            )
+                        }
+                    }
+                )
+            },
+            maxTimeContent = {
+                ViewModeSwitcher(
+                    modifier = Modifier.padding(start = 0.dp, end = Dimens.grid_2),
+                    mode = state.viewMode,
+                    uv = {
+                        UVIndexPeakTime(maxTime = state.peakTime)
+                    },
+                    weather = {
+                        if (state.weatherData?.realTime?.temperature != null) {
+                            WeatherFeelsLike(
+                                displayMode = metricsMode,
+                                temperature = state.weatherData.realTime.temperature
+                            )
+                        }
                     }
                 )
 
@@ -327,18 +360,17 @@ private fun UVBigIndex(
                 }.using(
                     SizeTransform(clip = false)
                 )
-            }
+            },
+            label = "bigIndex"
         ) { state ->
-
             Text(
                 text = state.toString()
             )
-
         }
         Text(
             text = "/"
         )
-        Crossfade(targetState = maxIndex) {
+        Crossfade(targetState = maxIndex, label = "maxIndex") {
             Text(
                 text = it.toString()
             )
@@ -347,7 +379,7 @@ private fun UVBigIndex(
 }
 
 @Composable
-private fun PeakTime(
+private fun UVIndexPeakTime(
     modifier: Modifier = Modifier,
     maxTime: LocalTime?
 ) {
@@ -360,7 +392,8 @@ private fun PeakTime(
 
     Crossfade(
         modifier = modifier,
-        targetState = stringHour
+        targetState = stringHour,
+        label = "PeakTime"
     ) { state ->
         when (state) {
             null -> {}

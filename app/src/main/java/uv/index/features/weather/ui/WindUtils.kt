@@ -6,7 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import uv.index.R
 import uv.index.features.weather.data.SpeedKph
 import uv.index.features.weather.data.Weather
-import uv.index.features.weather.domain.WeatherDisplayMode
+import uv.index.features.weather.domain.WeatherMetricsMode
 import uv.index.features.weather.domain.getValue
 import uv.index.ui.theme.UVITheme
 import kotlin.math.roundToInt
@@ -35,25 +35,25 @@ fun getBeaufortIndex(speedKph: SpeedKph): Int {
 @Composable
 @Stable
 fun rememberWindText(
-    displayMode: WeatherDisplayMode,
+    displayMode: WeatherMetricsMode,
     speed: SpeedKph
 ): String {
 
     val context = LocalContext.current
 
-    val windSpeedString by remember(context, displayMode.wind) {
+    val windSpeedString by remember(context, displayMode.wind, speed) {
         derivedStateOf {
             val id = when (displayMode.wind) {
-                WeatherDisplayMode.Wind.KilometerPerHour -> R.string.uvindex_weather_speed_kph
-                WeatherDisplayMode.Wind.MilePerHour -> R.string.uvindex_weather_speed_mph
-                WeatherDisplayMode.Wind.MeterPerSeconds -> R.string.uvindex_weather_speed_mps
+                WeatherMetricsMode.Wind.KilometerPerHour -> R.string.uvindex_weather_speed_kph
+                WeatherMetricsMode.Wind.MilePerHour -> R.string.uvindex_weather_speed_mph
+                WeatherMetricsMode.Wind.MeterPerSeconds -> R.string.uvindex_weather_speed_mps
             }
             context.resources.getString(
                 id,
                 displayMode.wind
                     .getValue(speed)
                     .let {
-                        if (displayMode.wind === WeatherDisplayMode.Wind.MeterPerSeconds)
+                        if (displayMode.wind === WeatherMetricsMode.Wind.MeterPerSeconds)
                             it.toDouble()
                         else
                             it.toInt()
@@ -68,17 +68,17 @@ fun rememberWindText(
 @Composable
 @Stable
 fun rememberWindGustText(
-    displayMode: WeatherDisplayMode, wind: Weather.Wind
+    displayMode: WeatherMetricsMode, wind: Weather.Wind
 ): String {
 
     val context = LocalContext.current
 
-    val windSpeedString by remember(context, displayMode.wind) {
+    val windSpeedString by remember(context, displayMode.wind, wind) {
         derivedStateOf {
             val id = when (displayMode.wind) {
-                WeatherDisplayMode.Wind.KilometerPerHour -> R.string.uvindex_weather_speed_kph
-                WeatherDisplayMode.Wind.MilePerHour -> R.string.uvindex_weather_speed_mph
-                WeatherDisplayMode.Wind.MeterPerSeconds -> R.string.uvindex_weather_speed_mps
+                WeatherMetricsMode.Wind.KilometerPerHour -> R.string.uvindex_weather_speed_kph
+                WeatherMetricsMode.Wind.MilePerHour -> R.string.uvindex_weather_speed_mph
+                WeatherMetricsMode.Wind.MeterPerSeconds -> R.string.uvindex_weather_speed_mps
             }
             context.resources.getString(id, displayMode.wind.getValue(wind.gust))
         }
@@ -134,21 +134,22 @@ fun getBeaufortIndexColor(beaufortIndex: Int, transparentColor: Color): Color {
 @Composable
 @Stable
 fun rememberTemperatureText(
-    displayMode: WeatherDisplayMode, temperature: Weather.Temperature
+    metricsMode: WeatherMetricsMode, temperature: Weather.Temperature, isFeelsLike: Boolean = false,
 ): String {
 
     val context = LocalContext.current
 
-    val tempString by remember(context, displayMode.temperature) {
+    val tempString by remember(context, metricsMode.temperature, temperature.value) {
         derivedStateOf {
-            val id = when (displayMode.temperature) {
-                WeatherDisplayMode.Temperature.Celsius -> R.string.uvindex_weather_temperature_celsius
-                WeatherDisplayMode.Temperature.Fahrenheit -> R.string.uvindex_weather_temperature_fahrenheit
+            val id = when (metricsMode.temperature) {
+                WeatherMetricsMode.Temperature.Celsius -> R.string.uvindex_weather_temperature_celsius
+                WeatherMetricsMode.Temperature.Fahrenheit -> R.string.uvindex_weather_temperature_fahrenheit
             }
-            val prefix = if (temperature.value.value > 0.0) "+" else ""
+            val celsius = if (isFeelsLike) temperature.feelsLike else temperature.value
+            val prefix = if (celsius.value > 0.0) "+" else ""
 
             prefix + context.resources.getString(
-                id, displayMode.temperature.getValue(temperature.value).roundToInt()
+                id, metricsMode.temperature.getValue(celsius).roundToInt()
             )
         }
     }

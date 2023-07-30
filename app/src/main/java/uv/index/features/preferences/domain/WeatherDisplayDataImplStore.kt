@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import uv.index.features.place.common.except
 import uv.index.features.preferences.data.WeatherDisplayPreferences
-import uv.index.features.weather.domain.WeatherDisplayMode
+import uv.index.features.weather.domain.WeatherMetricsMode
 import java.util.*
 import javax.inject.Inject
 
@@ -21,7 +21,7 @@ class WeatherDisplayDataImplStore @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) : WeatherDisplayPreferences {
 
-    override val modeAsStateFlow: Flow<WeatherDisplayMode>
+    override val modeAsStateFlow: Flow<WeatherMetricsMode>
         get() = dataStore.data
             .catch {
                 emit(emptyPreferences())
@@ -30,7 +30,7 @@ class WeatherDisplayDataImplStore @Inject constructor(
                 getDataFromPreference(Locale.getDefault(), preferences)
             }
 
-    override fun getMode(): WeatherDisplayMode {
+    override fun getMode(): WeatherMetricsMode {
         val locale = Locale.getDefault()
         return runBlocking {
             runCatching {
@@ -40,12 +40,12 @@ class WeatherDisplayDataImplStore @Inject constructor(
                 else
                     getDataFromPreference(locale)
             }
-                .except<CancellationException, WeatherDisplayMode>()
+                .except<CancellationException, WeatherMetricsMode>()
                 .getOrDefault(getDataFromPreference(locale))
         }
     }
 
-    override suspend fun updateMode(mode: WeatherDisplayMode) {
+    override suspend fun updateMode(mode: WeatherMetricsMode) {
         dataStore.edit {
             it[PREF_TEMPERATURE_MODE_KEY] = mode.temperature.ordinal
             it[PREF_PRESSURE_MODE_KEY] = mode.pressure.ordinal
@@ -61,49 +61,49 @@ class WeatherDisplayDataImplStore @Inject constructor(
         private fun getDataFromPreference(
             locale: Locale,
             preferences: Preferences
-        ): WeatherDisplayMode {
-            return WeatherDisplayMode(
-                temperature = WeatherDisplayMode.Temperature.values()[
+        ): WeatherMetricsMode {
+            return WeatherMetricsMode(
+                temperature = WeatherMetricsMode.Temperature.values()[
                         preferences[PREF_TEMPERATURE_MODE_KEY] ?: if (locale == Locale.US)
-                            WeatherDisplayMode.Temperature.Fahrenheit.ordinal
+                            WeatherMetricsMode.Temperature.Fahrenheit.ordinal
                         else
-                            WeatherDisplayMode.Temperature.Celsius.ordinal
+                            WeatherMetricsMode.Temperature.Celsius.ordinal
                 ],
-                pressure = WeatherDisplayMode.Pressure.values()[
+                pressure = WeatherMetricsMode.Pressure.values()[
                         preferences[PREF_PRESSURE_MODE_KEY] ?: if (locale == Locale.US)
-                            WeatherDisplayMode.Pressure.Inches.ordinal
+                            WeatherMetricsMode.Pressure.Inches.ordinal
                         else
-                            WeatherDisplayMode.Pressure.Millibars.ordinal
+                            WeatherMetricsMode.Pressure.Millibars.ordinal
                 ],
-                wind = WeatherDisplayMode.Wind.values()[
+                wind = WeatherMetricsMode.Wind.values()[
                         preferences[PREF_WIND_MODE_KEY] ?: if (locale == Locale.US)
-                            WeatherDisplayMode.Wind.MilePerHour.ordinal
+                            WeatherMetricsMode.Wind.MilePerHour.ordinal
                         else
-                            WeatherDisplayMode.Wind.KilometerPerHour.ordinal
+                            WeatherMetricsMode.Wind.KilometerPerHour.ordinal
 
                 ]
             )
         }
 
-        private fun getDataFromPreference(locale: Locale): WeatherDisplayMode {
-            return WeatherDisplayMode(
-                temperature = WeatherDisplayMode.Temperature.values()[
+        private fun getDataFromPreference(locale: Locale): WeatherMetricsMode {
+            return WeatherMetricsMode(
+                temperature = WeatherMetricsMode.Temperature.values()[
                         if (locale == Locale.US)
-                            WeatherDisplayMode.Temperature.Fahrenheit.ordinal
+                            WeatherMetricsMode.Temperature.Fahrenheit.ordinal
                         else
-                            WeatherDisplayMode.Temperature.Celsius.ordinal
+                            WeatherMetricsMode.Temperature.Celsius.ordinal
                 ],
-                pressure = WeatherDisplayMode.Pressure.values()[
+                pressure = WeatherMetricsMode.Pressure.values()[
                         if (locale == Locale.US)
-                            WeatherDisplayMode.Pressure.Inches.ordinal
+                            WeatherMetricsMode.Pressure.Inches.ordinal
                         else
-                            WeatherDisplayMode.Pressure.Millibars.ordinal
+                            WeatherMetricsMode.Pressure.Millibars.ordinal
                 ],
-                wind = WeatherDisplayMode.Wind.values()[
+                wind = WeatherMetricsMode.Wind.values()[
                         if (locale == Locale.US)
-                            WeatherDisplayMode.Wind.MilePerHour.ordinal
+                            WeatherMetricsMode.Wind.MilePerHour.ordinal
                         else
-                            WeatherDisplayMode.Wind.KilometerPerHour.ordinal
+                            WeatherMetricsMode.Wind.KilometerPerHour.ordinal
                 ]
             )
         }

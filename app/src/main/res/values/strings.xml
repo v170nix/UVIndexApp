@@ -114,6 +114,8 @@
 
     <string name="uvindex_more_support_disclaimer_item">Disclaimer</string>
 
+    <string name="weather_temperature_feels_like">Ощущается как</string>
+
     <string name="uvindex_weather_temperature_celsius" translatable="false">%d°C</string>
     <string name="uvindex_weather_temperature_fahrenheit" translatable="false">%d°F</string>
     <string name="uvindex_weather_speed_kph">%dkph</string>

@@ -96,7 +96,7 @@ class WeatherApi(
         val cloud: Int? = null,
         val uv: Double? = null,
         val visible: Double? = null,
-        val air: Air? = Air()
+        val air: Air? = null
     )
 
     @Keep
@@ -184,7 +184,7 @@ class WeatherApi(
         @SerializedName("humidity") val humidity: Int? = null,
         @SerializedName("cloud") val cloud: Int? = null,
         @SerializedName("uv") val uv: Double? = null,
-        @SerializedName("visible") val visible: Int? = null,
+        @SerializedName("visible") val visible: Double? = null,
         @SerializedName("windchill") val windchill: Double? = null,
         @SerializedName("heatIndex") val heatIndex: Double? = null,
         @SerializedName("dewPoint") val dewPoint: Double? = null,

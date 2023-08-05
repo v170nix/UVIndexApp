@@ -14,8 +14,12 @@ import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.statement.bodyAsText
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import uv.index.features.weather.data.Weather
+import uv.index.features.weather.data.WeatherApi
 import uv.index.lib.data.*
 import uv.index.lib.domain.UVForecastHoursUseCase
 import uv.index.lib.domain.UVIndexRemoteUpdateUseCase
@@ -65,6 +69,22 @@ object UVIModule {
                 val call = execute(req)
                 val resp = call.response
                 Log.e("NETWORK", "[${resp.status.value}] ${req.url.build()}")
+//                Log.e("resp", resp.bodyAsText().toString())
+
+//                val j = Json {
+//                    ignoreUnknownKeys = true
+//                    isLenient = true
+//                    encodeDefaults = false
+//                }
+//
+//                try {
+//                    val r = resp.bodyAsText()
+//                val l = j.decodeFromString<WeatherApi.Result>(r)
+//                    Log.e("res", l.toString())
+//                } catch (e: Exception) {
+//                    Log.e("er", e.toString())
+//                }
+
                 call
 
             }

@@ -78,7 +78,7 @@ fun MoreScreen(
                         modifier = Modifier.clickable {
 //                            onDetailInfo(AppScreen.More.Parts.Item.UVInfo)
                         },
-                        headlineText = {
+                        headlineContent = {
                             Text(text = stringResource(id = R.string.uvindex_more_remove_ads_item))
                         }
                     )
@@ -129,7 +129,7 @@ fun MoreScreen(
                         modifier = Modifier.clickable {
                             onDetailInfo(AppScreen.More.Parts.Item.UVInfo)
                         },
-                        headlineText = {
+                        headlineContent = {
                             Text(text = stringResource(id = R.string.uvindex_more_info_uvindex_item))
                         }
                     )
@@ -146,7 +146,7 @@ fun MoreScreen(
                         modifier = Modifier.clickable {
                             onDetailInfo(AppScreen.More.Parts.Item.PrivacyInfo)
                         },
-                        headlineText = {
+                        headlineContent = {
                             Text(text = stringResource(id = R.string.uvindex_more_support_privacy_item))
                         }
                     )

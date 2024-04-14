@@ -216,7 +216,7 @@ private fun AutoDetectRow(
 @Composable
 private fun NotPremiumItemRow() {
     ListItem(
-        headlineText = {
+        headlineContent = {
             Column {
                 Text(
                     text = stringResource(R.string.place_location_premium_info),
@@ -232,7 +232,7 @@ private fun NotPremiumItemRow() {
 @Composable
 private fun ErrorItemRow() {
     ListItem(
-        headlineText = {
+        headlineContent = {
             Text(
                 text = stringResource(R.string.place_location_error_time_zone_auto_find),
                 color = MaterialTheme.colorScheme.error
@@ -256,7 +256,7 @@ private fun CustomItemRow(
 ) {
     ListItem(
         modifier = modifier,
-        supportingText = {
+        supportingContent = {
             Text(
                 text = item.displayLongName,
                 style = MaterialTheme.typography.bodyMedium,
@@ -271,7 +271,7 @@ private fun CustomItemRow(
                 color = textColor
             )
         },
-        headlineText = {
+        headlineContent = {
             Text(
                 text = item.displayName,
                 maxLines = 1,

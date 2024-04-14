@@ -9,7 +9,7 @@ plugins {
     kotlin("kapt")
 //    id("com.google.devtools.ksp") version "1.7.10-1.0.6"
     id("dagger.hilt.android.plugin")
-    kotlin("plugin.serialization") version "1.8.21"
+    kotlin("plugin.serialization") version "1.9.10"
     id("com.google.gms.google-services")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("io.gitlab.arturbosch.detekt") version("1.21.0")
@@ -38,12 +38,12 @@ tasks.withType<Detekt>().configureEach {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "uv.index"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1000
         versionName = "1.0"
 
@@ -76,7 +76,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.7"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 
     namespace = "uv.index"
@@ -99,7 +99,7 @@ kapt {
 
 dependencies {
 
-    val composeBom = platform("androidx.compose:compose-bom:2023.05.00")
+    val composeBom = platform("androidx.compose:compose-bom:2023.10.00")
     implementation (composeBom)
     androidTestImplementation (composeBom)
 
@@ -123,10 +123,10 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.45")
     kapt("com.google.dagger:hilt-android-compiler:2.45")
 
-    implementation("androidx.navigation:navigation-compose:2.6.0")
-    implementation("androidx.navigation:navigation-common-ktx:2.6.0")
+    implementation("androidx.navigation:navigation-compose:2.7.4")
+    implementation("androidx.navigation:navigation-common-ktx:2.7.4")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation("androidx.collection:collection-ktx:1.2.0")
+    implementation("androidx.collection:collection-ktx:1.3.0")
 
     implementation("androidx.work:work-runtime-ktx:2.8.1")
 
@@ -141,21 +141,21 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
 
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.3")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.activity:activity-compose:1.8.0")
 
 //    implementation("com.google.accompanist:accompanist-insets:0.25.0")
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.28.0")
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.28.0")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.32.0")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.32.0")
 
     implementation("com.google.android.libraries.places:places:3.2.0")
     implementation("com.google.maps.android:maps-ktx:3.4.0")
@@ -188,7 +188,7 @@ dependencies {
     testImplementation("androidx.room:room-testing:2.5.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.3")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.4.3")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.4.3")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.3")
 }
